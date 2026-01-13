@@ -1,0 +1,195 @@
+2026-01-13T05:56:33.996617Z  INFO tailwindcss_oxide::scanner: Provided sources:
+2026-01-13T05:56:33.997004Z  INFO tailwindcss_oxide::scanner: Source: PublicSourceEntry { base: "D:\\IT SA Zakky\\Projects\\yuri-invent", pattern: "**/*", negated: false }
+2026-01-13T05:56:33.997287Z  INFO tailwindcss_oxide::scanner: Optimized sources:
+2026-01-13T05:56:33.997314Z  INFO tailwindcss_oxide::scanner: Source: Auto { base: "D:\\IT SA Zakky\\Projects\\yuri-invent" }
+2026-01-13T05:56:33.999537Z  INFO scan_sources: tailwindcss_oxide::scanner: enter
+2026-01-13T05:56:34.000981Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\app"
+2026-01-13T05:56:34.001189Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\app\\(dashboard)"
+2026-01-13T05:56:34.007700Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\app\\(dashboard)\\dashboard"
+2026-01-13T05:56:34.007883Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\app\\(dashboard)\\dashboard\\page.tsx"
+2026-01-13T05:56:34.007990Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\app\\(dashboard)\\layout.tsx"
+2026-01-13T05:56:34.008127Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\app\\generated"
+2026-01-13T05:56:34.008400Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\app\\globals.css"
+2026-01-13T05:56:34.008464Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\app\\layout.tsx"
+2026-01-13T05:56:34.008522Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\app\\page.tsx"
+2026-01-13T05:56:34.008640Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\components"
+2026-01-13T05:56:34.008791Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\components\\layout"
+2026-01-13T05:56:34.008915Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\components\\layout\\Sidebar.tsx"
+2026-01-13T05:56:34.009039Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\eslint.config.mjs"
+2026-01-13T05:56:34.009153Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\i18n"
+2026-01-13T05:56:34.009277Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\i18n\\request.ts"
+2026-01-13T05:56:34.009389Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\lib"
+2026-01-13T05:56:34.009506Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\lib\\format.ts"
+2026-01-13T05:56:34.009567Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\lib\\prisma.ts"
+2026-01-13T05:56:34.009632Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\lib\\utils.ts"
+2026-01-13T05:56:34.009751Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\messages"
+2026-01-13T05:56:34.009875Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\messages\\en.json"
+2026-01-13T05:56:34.009934Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\messages\\id.json"
+2026-01-13T05:56:34.010027Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\next.config.ts"
+2026-01-13T05:56:34.010282Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\package.json"
+2026-01-13T05:56:34.010349Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\postcss.config.mjs"
+2026-01-13T05:56:34.010498Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\prisma"
+2026-01-13T05:56:34.010627Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\prisma\\schema.prisma"
+2026-01-13T05:56:34.010713Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\prisma.config.ts"
+2026-01-13T05:56:34.010819Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\public"
+2026-01-13T05:56:34.010938Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\public\\file.svg"
+2026-01-13T05:56:34.010997Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\public\\globe.svg"
+2026-01-13T05:56:34.011058Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\public\\next.svg"
+2026-01-13T05:56:34.011119Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\public\\vercel.svg"
+2026-01-13T05:56:34.011180Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\public\\window.svg"
+2026-01-13T05:56:34.011263Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\README.md"
+2026-01-13T05:56:34.011335Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\tsconfig.json"
+2026-01-13T05:56:34.011417Z  INFO scan_sources: tailwindcss_oxide::scanner: exit
+2026-01-13T05:56:34.011426Z  INFO extract_candidates: tailwindcss_oxide::scanner: enter
+2026-01-13T05:56:34.011433Z  INFO extract_candidates:read_all_files: tailwindcss_oxide::scanner: enter
+2026-01-13T05:56:34.011438Z  INFO extract_candidates:read_all_files: tailwindcss_oxide::scanner: Reading 24 file(s)
+2026-01-13T05:56:34.011939Z  INFO tailwindcss_oxide::scanner: Reading "D:\\IT SA Zakky\\Projects\\yuri-invent\\next.config.ts"
+2026-01-13T05:56:34.011938Z  INFO tailwindcss_oxide::scanner: Reading "D:\\IT SA Zakky\\Projects\\yuri-invent\\app\\(dashboard)\\dashboard\\page.tsx"
+2026-01-13T05:56:34.012004Z  INFO tailwindcss_oxide::scanner: Reading "D:\\IT SA Zakky\\Projects\\yuri-invent\\i18n\\request.ts"
+2026-01-13T05:56:34.012039Z  INFO tailwindcss_oxide::scanner: Reading "D:\\IT SA Zakky\\Projects\\yuri-invent\\app\\(dashboard)\\layout.tsx"
+2026-01-13T05:56:34.012047Z  INFO tailwindcss_oxide::scanner: Reading "D:\\IT SA Zakky\\Projects\\yuri-invent\\public\\globe.svg"
+2026-01-13T05:56:34.012097Z  INFO tailwindcss_oxide::scanner: Reading "D:\\IT SA Zakky\\Projects\\yuri-invent\\lib\\format.ts"
+2026-01-13T05:56:34.012104Z  INFO tailwindcss_oxide::scanner: Reading "D:\\IT SA Zakky\\Projects\\yuri-invent\\app\\layout.tsx"
+2026-01-13T05:56:34.012107Z  INFO tailwindcss_oxide::scanner: Reading "D:\\IT SA Zakky\\Projects\\yuri-invent\\public\\next.svg"
+2026-01-13T05:56:34.012159Z  INFO tailwindcss_oxide::scanner: Reading "D:\\IT SA Zakky\\Projects\\yuri-invent\\lib\\prisma.ts"
+2026-01-13T05:56:34.012159Z  INFO tailwindcss_oxide::scanner: Reading "D:\\IT SA Zakky\\Projects\\yuri-invent\\app\\page.tsx"
+2026-01-13T05:56:34.012161Z  INFO tailwindcss_oxide::scanner: Reading "D:\\IT SA Zakky\\Projects\\yuri-invent\\public\\vercel.svg"
+2026-01-13T05:56:34.012216Z  INFO tailwindcss_oxide::scanner: Reading "D:\\IT SA Zakky\\Projects\\yuri-invent\\lib\\utils.ts"
+2026-01-13T05:56:34.012225Z  INFO tailwindcss_oxide::scanner: Reading "D:\\IT SA Zakky\\Projects\\yuri-invent\\components\\layout\\Sidebar.tsx"
+2026-01-13T05:56:34.012226Z  INFO tailwindcss_oxide::scanner: Reading "D:\\IT SA Zakky\\Projects\\yuri-invent\\public\\window.svg"
+2026-01-13T05:56:34.012273Z  INFO tailwindcss_oxide::scanner: Reading "D:\\IT SA Zakky\\Projects\\yuri-invent\\messages\\en.json"
+2026-01-13T05:56:34.012279Z  INFO tailwindcss_oxide::scanner: Reading "D:\\IT SA Zakky\\Projects\\yuri-invent\\eslint.config.mjs"
+2026-01-13T05:56:34.012337Z  INFO tailwindcss_oxide::scanner: Reading "D:\\IT SA Zakky\\Projects\\yuri-invent\\README.md"
+2026-01-13T05:56:34.012348Z  INFO tailwindcss_oxide::scanner: Reading "D:\\IT SA Zakky\\Projects\\yuri-invent\\messages\\id.json"
+2026-01-13T05:56:34.012383Z  INFO tailwindcss_oxide::scanner: Reading "D:\\IT SA Zakky\\Projects\\yuri-invent\\prisma\\schema.prisma"
+2026-01-13T05:56:34.012395Z  INFO tailwindcss_oxide::scanner: Reading "D:\\IT SA Zakky\\Projects\\yuri-invent\\tsconfig.json"
+2026-01-13T05:56:34.012420Z  INFO tailwindcss_oxide::scanner: Reading "D:\\IT SA Zakky\\Projects\\yuri-invent\\postcss.config.mjs"
+2026-01-13T05:56:34.012287Z  INFO tailwindcss_oxide::scanner: Reading "D:\\IT SA Zakky\\Projects\\yuri-invent\\package.json"
+2026-01-13T05:56:34.012449Z  INFO tailwindcss_oxide::scanner: Reading "D:\\IT SA Zakky\\Projects\\yuri-invent\\prisma.config.ts"
+2026-01-13T05:56:34.012465Z  INFO tailwindcss_oxide::scanner: Reading "D:\\IT SA Zakky\\Projects\\yuri-invent\\public\\file.svg"
+2026-01-13T05:56:34.012588Z  INFO extract_candidates:read_all_files: tailwindcss_oxide::scanner: exit
+2026-01-13T05:56:34.012601Z  INFO extract_candidates:parse_all_blobs: tailwindcss_oxide::scanner: enter
+2026-01-13T05:56:34.012608Z  INFO extract_candidates:parse_all_blobs:extract: tailwindcss_oxide::scanner: enter
+2026-01-13T05:56:34.015784Z  INFO extract_candidates:parse_all_blobs:extract: tailwindcss_oxide::scanner: exit
+2026-01-13T05:56:34.015824Z  INFO extract_candidates:parse_all_blobs: tailwindcss_oxide::scanner: exit
+2026-01-13T05:56:34.015833Z  INFO extract_candidates:read_all_files: tailwindcss_oxide::scanner: enter
+2026-01-13T05:56:34.015839Z  INFO extract_candidates:read_all_files: tailwindcss_oxide::scanner: Reading 1 file(s)
+2026-01-13T05:56:34.016014Z  INFO extract_candidates:read_all_files: tailwindcss_oxide::scanner: Reading "D:\\IT SA Zakky\\Projects\\yuri-invent\\app\\globals.css"
+2026-01-13T05:56:34.016040Z  INFO extract_candidates:read_all_files: tailwindcss_oxide::scanner: exit
+2026-01-13T05:56:34.016054Z  INFO extract_candidates:extract_css_variables: tailwindcss_oxide::scanner: enter
+2026-01-13T05:56:34.016060Z  INFO extract_candidates:extract_css_variables:extract: tailwindcss_oxide::scanner: enter
+2026-01-13T05:56:34.017116Z  INFO extract_candidates:extract_css_variables:extract: tailwindcss_oxide::scanner: exit
+2026-01-13T05:56:34.017143Z  INFO extract_candidates:extract_css_variables: tailwindcss_oxide::scanner: exit
+2026-01-13T05:56:34.017569Z  INFO extract_candidates: tailwindcss_oxide::scanner: exit
+2026-01-13T05:56:34.018160Z  INFO get_files: tailwindcss_oxide::scanner: enter
+2026-01-13T05:56:34.018181Z  INFO get_files:scan_sources: tailwindcss_oxide::scanner: enter
+2026-01-13T05:56:34.019592Z  INFO get_files:scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\app"
+2026-01-13T05:56:34.019767Z  INFO get_files:scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\app\\(dashboard)"
+2026-01-13T05:56:34.019924Z  INFO get_files:scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\app\\(dashboard)\\dashboard"
+2026-01-13T05:56:34.020207Z  INFO get_files:scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\app\\generated"
+2026-01-13T05:56:34.020617Z  INFO get_files:scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\components"
+2026-01-13T05:56:34.020825Z  INFO get_files:scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\components\\layout"
+2026-01-13T05:56:34.021125Z  INFO get_files:scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\i18n"
+2026-01-13T05:56:34.021339Z  INFO get_files:scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\lib"
+2026-01-13T05:56:34.021618Z  INFO get_files:scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\messages"
+2026-01-13T05:56:34.022306Z  INFO get_files:scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\prisma"
+2026-01-13T05:56:34.022735Z  INFO get_files:scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\public"
+2026-01-13T05:56:34.023209Z  INFO get_files:scan_sources: tailwindcss_oxide::scanner: exit
+2026-01-13T05:56:34.023323Z  INFO get_files: tailwindcss_oxide::scanner: exit
+2026-01-13T05:56:34.023657Z  INFO get_globs: tailwindcss_oxide::scanner: enter
+2026-01-13T05:56:34.023672Z  INFO get_globs:scan_sources: tailwindcss_oxide::scanner: enter
+2026-01-13T05:56:34.025039Z  INFO get_globs:scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\app"
+2026-01-13T05:56:34.025238Z  INFO get_globs:scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\app\\(dashboard)"
+2026-01-13T05:56:34.025405Z  INFO get_globs:scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\app\\(dashboard)\\dashboard"
+2026-01-13T05:56:34.025724Z  INFO get_globs:scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\app\\generated"
+2026-01-13T05:56:34.026190Z  INFO get_globs:scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\components"
+2026-01-13T05:56:34.026351Z  INFO get_globs:scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\components\\layout"
+2026-01-13T05:56:34.026626Z  INFO get_globs:scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\i18n"
+2026-01-13T05:56:34.026830Z  INFO get_globs:scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\lib"
+2026-01-13T05:56:34.027105Z  INFO get_globs:scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\messages"
+2026-01-13T05:56:34.027692Z  INFO get_globs:scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\prisma"
+2026-01-13T05:56:34.027953Z  INFO get_globs:scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\public"
+2026-01-13T05:56:34.028778Z  INFO get_globs:scan_sources: tailwindcss_oxide::scanner: exit
+2026-01-13T05:56:34.035827Z  INFO get_globs: tailwindcss_oxide::scanner: exit
+2026-01-13T05:57:20.920626Z  INFO scan_sources: tailwindcss_oxide::scanner: enter
+2026-01-13T05:57:20.923637Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\app"
+2026-01-13T05:57:20.923853Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\app\\(dashboard)"
+2026-01-13T05:57:20.924041Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\app\\(dashboard)\\dashboard"
+2026-01-13T05:57:20.924377Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\app\\generated"
+2026-01-13T05:57:20.924904Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\components"
+2026-01-13T05:57:20.925105Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\components\\layout"
+2026-01-13T05:57:20.925464Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\i18n"
+2026-01-13T05:57:20.925728Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\lib"
+2026-01-13T05:57:20.926028Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\messages"
+2026-01-13T05:57:20.926754Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\prisma"
+2026-01-13T05:57:20.927016Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\prisma\\schema.prisma"
+2026-01-13T05:57:20.927215Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\public"
+2026-01-13T05:57:20.927721Z  INFO scan_sources: tailwindcss_oxide::scanner: exit
+2026-01-13T05:57:20.927738Z  INFO extract_candidates: tailwindcss_oxide::scanner: enter
+2026-01-13T05:57:20.927746Z  INFO extract_candidates:read_all_files: tailwindcss_oxide::scanner: enter
+2026-01-13T05:57:20.927751Z  INFO extract_candidates:read_all_files: tailwindcss_oxide::scanner: Reading 1 file(s)
+2026-01-13T05:57:20.927850Z  INFO extract_candidates:read_all_files: tailwindcss_oxide::scanner: Reading "D:\\IT SA Zakky\\Projects\\yuri-invent\\prisma\\schema.prisma"
+2026-01-13T05:57:20.927872Z  INFO extract_candidates:read_all_files: tailwindcss_oxide::scanner: exit
+2026-01-13T05:57:20.927880Z  INFO extract_candidates:parse_all_blobs: tailwindcss_oxide::scanner: enter
+2026-01-13T05:57:20.927887Z  INFO extract_candidates:parse_all_blobs:extract: tailwindcss_oxide::scanner: enter
+2026-01-13T05:57:20.944382Z  INFO extract_candidates:parse_all_blobs:extract: tailwindcss_oxide::scanner: exit
+2026-01-13T05:57:20.944429Z  INFO extract_candidates:parse_all_blobs: tailwindcss_oxide::scanner: exit
+2026-01-13T05:57:20.944549Z  INFO extract_candidates: tailwindcss_oxide::scanner: exit
+2026-01-13T05:57:20.945177Z  INFO get_files: tailwindcss_oxide::scanner: enter
+2026-01-13T05:57:20.945214Z  INFO get_files:scan_sources: tailwindcss_oxide::scanner: enter
+2026-01-13T05:57:20.946848Z  INFO get_files:scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\app"
+2026-01-13T05:57:20.947124Z  INFO get_files:scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\app\\(dashboard)"
+2026-01-13T05:57:20.947306Z  INFO get_files:scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\app\\(dashboard)\\dashboard"
+2026-01-13T05:57:20.947618Z  INFO get_files:scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\app\\generated"
+2026-01-13T05:57:20.948077Z  INFO get_files:scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\components"
+2026-01-13T05:57:20.948260Z  INFO get_files:scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\components\\layout"
+2026-01-13T05:57:20.948604Z  INFO get_files:scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\i18n"
+2026-01-13T05:57:20.948832Z  INFO get_files:scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\lib"
+2026-01-13T05:57:20.949133Z  INFO get_files:scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\messages"
+2026-01-13T05:57:20.949716Z  INFO get_files:scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\prisma"
+2026-01-13T05:57:20.950008Z  INFO get_files:scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\public"
+2026-01-13T05:57:20.950465Z  INFO get_files:scan_sources: tailwindcss_oxide::scanner: exit
+2026-01-13T05:57:20.950531Z  INFO get_files: tailwindcss_oxide::scanner: exit
+2026-01-13T05:57:20.950758Z  INFO get_globs: tailwindcss_oxide::scanner: enter
+2026-01-13T05:57:20.950773Z  INFO get_globs: tailwindcss_oxide::scanner: exit
+2026-01-13T05:57:22.843127Z  INFO scan_sources: tailwindcss_oxide::scanner: enter
+2026-01-13T05:57:22.844531Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\app"
+2026-01-13T05:57:22.844715Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\app\\(dashboard)"
+2026-01-13T05:57:22.844889Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\app\\(dashboard)\\dashboard"
+2026-01-13T05:57:22.845214Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\app\\generated"
+2026-01-13T05:57:22.845716Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\components"
+2026-01-13T05:57:22.845883Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\components\\layout"
+2026-01-13T05:57:22.846196Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\i18n"
+2026-01-13T05:57:22.846413Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\lib"
+2026-01-13T05:57:22.846572Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\lib\\prisma.ts"
+2026-01-13T05:57:22.846735Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\messages"
+2026-01-13T05:57:22.847251Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\prisma"
+2026-01-13T05:57:22.847531Z  INFO scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\public"
+2026-01-13T05:57:22.847963Z  INFO scan_sources: tailwindcss_oxide::scanner: exit
+2026-01-13T05:57:22.847978Z  INFO extract_candidates: tailwindcss_oxide::scanner: enter
+2026-01-13T05:57:22.847985Z  INFO extract_candidates:read_all_files: tailwindcss_oxide::scanner: enter
+2026-01-13T05:57:22.847990Z  INFO extract_candidates:read_all_files: tailwindcss_oxide::scanner: Reading 1 file(s)
+2026-01-13T05:57:22.848083Z  INFO extract_candidates:read_all_files: tailwindcss_oxide::scanner: Reading "D:\\IT SA Zakky\\Projects\\yuri-invent\\lib\\prisma.ts"
+2026-01-13T05:57:22.848096Z  INFO extract_candidates:read_all_files: tailwindcss_oxide::scanner: exit
+2026-01-13T05:57:22.848103Z  INFO extract_candidates:parse_all_blobs: tailwindcss_oxide::scanner: enter
+2026-01-13T05:57:22.848108Z  INFO extract_candidates:parse_all_blobs:extract: tailwindcss_oxide::scanner: enter
+2026-01-13T05:57:22.848346Z  INFO extract_candidates:parse_all_blobs:extract: tailwindcss_oxide::scanner: exit
+2026-01-13T05:57:22.848369Z  INFO extract_candidates:parse_all_blobs: tailwindcss_oxide::scanner: exit
+2026-01-13T05:57:22.848411Z  INFO extract_candidates: tailwindcss_oxide::scanner: exit
+2026-01-13T05:57:22.848893Z  INFO get_files: tailwindcss_oxide::scanner: enter
+2026-01-13T05:57:22.848908Z  INFO get_files:scan_sources: tailwindcss_oxide::scanner: enter
+2026-01-13T05:57:22.850244Z  INFO get_files:scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\app"
+2026-01-13T05:57:22.850424Z  INFO get_files:scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\app\\(dashboard)"
+2026-01-13T05:57:22.850584Z  INFO get_files:scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\app\\(dashboard)\\dashboard"
+2026-01-13T05:57:22.850876Z  INFO get_files:scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\app\\generated"
+2026-01-13T05:57:22.851340Z  INFO get_files:scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\components"
+2026-01-13T05:57:22.851493Z  INFO get_files:scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\components\\layout"
+2026-01-13T05:57:22.852080Z  INFO get_files:scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\i18n"
+2026-01-13T05:57:22.852293Z  INFO get_files:scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\lib"
+2026-01-13T05:57:22.852565Z  INFO get_files:scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\messages"
+2026-01-13T05:57:22.853112Z  INFO get_files:scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\prisma"
+2026-01-13T05:57:22.853357Z  INFO get_files:scan_sources: tailwindcss_oxide::scanner: Discovering "D:\\IT SA Zakky\\Projects\\yuri-invent\\public"
+2026-01-13T05:57:22.853803Z  INFO get_files:scan_sources: tailwindcss_oxide::scanner: exit
+2026-01-13T05:57:22.857718Z  INFO get_files: tailwindcss_oxide::scanner: exit
+2026-01-13T05:57:22.857973Z  INFO get_globs: tailwindcss_oxide::scanner: enter
+2026-01-13T05:57:22.857998Z  INFO get_globs: tailwindcss_oxide::scanner: exit
