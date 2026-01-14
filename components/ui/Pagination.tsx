@@ -59,7 +59,7 @@ export function Pagination({
             )}
         >
             {/* Info */}
-            <p className="text-sm text-[var(--color-text-secondary)]">
+            <p className="text-sm text-(--color-text-secondary)">
                 Showing <span className="font-medium">{startItem}</span> to{' '}
                 <span className="font-medium">{endItem}</span> of{' '}
                 <span className="font-medium">{totalItems}</span> results
@@ -75,8 +75,8 @@ export function Pagination({
                         className={cn(
                             'p-1.5 rounded transition-colors',
                             currentPage === 1
-                                ? 'text-[var(--color-text-muted)] cursor-not-allowed'
-                                : 'text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-hover)]'
+                                ? 'text-(--color-text-muted) cursor-not-allowed'
+                                : 'text-(--color-text-secondary) hover:bg-(--color-bg-hover)'
                         )}
                     >
                         <ChevronsLeft size={16} />
@@ -89,8 +89,8 @@ export function Pagination({
                         className={cn(
                             'p-1.5 rounded transition-colors',
                             currentPage === 1
-                                ? 'text-[var(--color-text-muted)] cursor-not-allowed'
-                                : 'text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-hover)]'
+                                ? 'text-(--color-text-muted) cursor-not-allowed'
+                                : 'text-(--color-text-secondary) hover:bg-(--color-bg-hover)'
                         )}
                     >
                         <ChevronLeft size={16} />
@@ -102,7 +102,7 @@ export function Pagination({
                             page === 'ellipsis' ? (
                                 <span
                                     key={`ellipsis-${index}`}
-                                    className="px-2 text-[var(--color-text-muted)]"
+                                    className="px-2 text-(--color-text-muted)"
                                 >
                                     ...
                                 </span>
@@ -113,8 +113,8 @@ export function Pagination({
                                     className={cn(
                                         'min-w-[32px] h-8 px-2 rounded text-sm font-medium transition-colors',
                                         page === currentPage
-                                            ? 'bg-[var(--color-primary)] text-white'
-                                            : 'text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-hover)]'
+                                            ? 'bg-(--color-primary) text-white'
+                                            : 'text-(--color-text-secondary) hover:bg-(--color-bg-hover)'
                                     )}
                                 >
                                     {page}
@@ -130,8 +130,8 @@ export function Pagination({
                         className={cn(
                             'p-1.5 rounded transition-colors',
                             currentPage === totalPages
-                                ? 'text-[var(--color-text-muted)] cursor-not-allowed'
-                                : 'text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-hover)]'
+                                ? 'text-(--color-text-muted) cursor-not-allowed'
+                                : 'text-(--color-text-secondary) hover:bg-(--color-bg-hover)'
                         )}
                     >
                         <ChevronRight size={16} />
@@ -144,8 +144,8 @@ export function Pagination({
                         className={cn(
                             'p-1.5 rounded transition-colors',
                             currentPage === totalPages
-                                ? 'text-[var(--color-text-muted)] cursor-not-allowed'
-                                : 'text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-hover)]'
+                                ? 'text-(--color-text-muted) cursor-not-allowed'
+                                : 'text-(--color-text-secondary) hover:bg-(--color-bg-hover)'
                         )}
                     >
                         <ChevronsRight size={16} />

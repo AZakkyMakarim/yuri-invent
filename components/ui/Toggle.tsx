@@ -30,9 +30,9 @@ export const Toggle = forwardRef<HTMLInputElement, ToggleProps>(
                     <div
                         className={cn(
                             'w-11 h-6 rounded-full transition-colors',
-                            'bg-[var(--color-bg-tertiary)]',
-                            'peer-checked:bg-[var(--color-primary)]',
-                            'peer-focus-visible:ring-2 peer-focus-visible:ring-[var(--color-primary)] peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-[var(--color-bg-secondary)]'
+                            'bg-(--color-bg-tertiary)',
+                            'peer-checked:bg-(--color-primary)',
+                            'peer-focus-visible:ring-2 peer-focus-visible:ring-(--color-primary) peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-(--color-bg-secondary)'
                         )}
                     />
                     <div
@@ -47,7 +47,7 @@ export const Toggle = forwardRef<HTMLInputElement, ToggleProps>(
                     <div className="flex flex-col">
                         {label && <span className="font-medium text-sm">{label}</span>}
                         {description && (
-                            <span className="text-xs text-[var(--color-text-muted)]">{description}</span>
+                            <span className="text-xs text-(--color-text-muted)">{description}</span>
                         )}
                     </div>
                 )}

@@ -355,7 +355,7 @@ export default function ItemsPage() {
         <div className="animate-fadeIn">
             <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
-                    <Package size={24} className="text-[var(--color-primary)]" />
+                    <Package size={24} className="text-(--color-primary)" />
                     <h1 className="text-xl font-bold">{t('title')}</h1>
                 </div>
                 <Button onClick={() => openModal()} leftIcon={<Plus size={18} />}>
@@ -488,20 +488,20 @@ export default function ItemsPage() {
                     ) : (
                         items.map((item, index) => (
                             <TableRow key={item.id}>
-                                <TableCell className="text-[var(--color-text-muted)]">
+                                <TableCell className="text-(--color-text-muted)">
                                     {(page - 1) * ITEMS_PER_PAGE + index + 1}
                                 </TableCell>
                                 <TableCell className="font-medium font-mono">{item.sku}</TableCell>
                                 <TableCell>{item.name}</TableCell>
                                 <TableCell>
-                                    <span className="text-xs px-2 py-0.5 rounded bg-[var(--color-bg-tertiary)]">
+                                    <span className="text-xs px-2 py-0.5 rounded bg-(--color-bg-tertiary)">
                                         {item.category.code}
                                     </span>
                                 </TableCell>
                                 <TableCell>{item.uom.symbol}</TableCell>
                                 <TableCell className="text-center">{item.minStockLevel}</TableCell>
                                 <TableCell className="text-center">{item.maxStockLevel}</TableCell>
-                                <TableCell className="text-sm text-[var(--color-text-secondary)]">
+                                <TableCell className="text-sm text-(--color-text-secondary)">
                                     {formatDate(item.createdAt)}
                                 </TableCell>
                                 <TableCell className="text-sm">{item.createdBy?.name || '-'}</TableCell>

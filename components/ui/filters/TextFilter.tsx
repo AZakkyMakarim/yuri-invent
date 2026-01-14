@@ -27,16 +27,16 @@ export function TextFilter({
                 placeholder={placeholder}
                 className={cn(
                     'w-full h-full px-3 text-sm rounded-lg border transition-colors',
-                    'bg-[var(--color-bg-tertiary)] border-[var(--color-border)]',
-                    'text-[var(--color-text-primary)] placeholder:text-[var(--color-text-muted)]',
-                    'focus:outline-none focus:border-[var(--color-primary)]',
-                    hasValue && 'border-[var(--color-primary)]/50 bg-[var(--color-primary)]/5 pr-8'
+                    'bg-(--color-bg-tertiary) border-(--color-border)',
+                    'text-(--color-text-primary) placeholder:text-(--color-text-muted)',
+                    'focus:outline-none focus:border-(--color-primary)',
+                    hasValue && 'border-(--color-primary)/50 bg-(--color-primary)/5 pr-8'
                 )}
             />
             {hasValue && (
                 <button
                     onClick={() => onChange('')}
-                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)] hover:text-[var(--color-danger)]"
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-(--color-text-muted) hover:text-(--color-danger)"
                 >
                     <X size={14} />
                 </button>

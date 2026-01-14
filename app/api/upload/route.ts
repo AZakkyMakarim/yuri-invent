@@ -1,7 +1,5 @@
 import { NextResponse } from 'next/server';
-import { writeFile, mkdir } from 'fs/promises';
-import { join } from 'path';
-import { existsSync } from 'fs';
+import { uploadFile } from '@/lib/supabase';
 
 export async function POST(request: Request) {
     try {
@@ -36,36 +34,18 @@ export async function POST(request: Request) {
             );
         }
 
-        const bytes = await file.arrayBuffer();
-        const buffer = Buffer.from(bytes);
-
-        // Create uploads directory if it doesn't exist
-        const uploadDir = join(process.cwd(), 'public', 'uploads', 'spk-documents');
-        if (!existsSync(uploadDir)) {
-            await mkdir(uploadDir, { recursive: true });
-        }
-
-        // Generate unique filename
-        const timestamp = Date.now();
-        const originalName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
-        const filename = `${timestamp}-${originalName}`;
-        const filepath = join(uploadDir, filename);
-
-        // Save file
-        await writeFile(filepath, buffer);
-
-        // Return the public URL path
-        const publicPath = `/uploads/spk-documents/${filename}`;
+        // Upload to Supabase Storage
+        const publicUrl = await uploadFile(file);
 
         return NextResponse.json({
             success: true,
-            path: publicPath,
-            filename: originalName
+            path: publicUrl,
+            filename: file.name
         });
     } catch (error) {
         console.error('Error uploading file:', error);
         return NextResponse.json(
-            { error: 'Failed to upload file' },
+            { error: error instanceof Error ? error.message : 'Failed to upload file' },
             { status: 500 }
         );
     }

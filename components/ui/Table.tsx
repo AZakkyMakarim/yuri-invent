@@ -85,7 +85,7 @@ export function TableEmpty({ message = 'No data available', colSpan }: TableEmpt
         <tr>
             <td
                 colSpan={colSpan}
-                className="py-12 text-center text-[var(--color-text-muted)]"
+                className="py-12 text-center text-(--color-text-muted)"
             >
                 {message}
             </td>

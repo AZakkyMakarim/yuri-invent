@@ -46,3 +46,22 @@ export async function apiFetch<T>(
 
     return response.json();
 }
+
+/**
+ * Format number to currency string
+ * @param amount - The number to format
+ * @param currency - Currency code (default: 'IDR')
+ * @param locale - Locale code (default: 'id-ID')
+ */
+export function formatCurrency(
+    amount: number,
+    currency: string = 'IDR',
+    locale: string = 'id-ID'
+): string {
+    return new Intl.NumberFormat(locale, {
+        style: 'currency',
+        currency: currency,
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0,
+    }).format(amount);
+}

@@ -2,10 +2,11 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { ArrowLeft, Building2, Edit, MapPin, Phone, Mail, User, CreditCard, Package, Plus, Trash2, DollarSign } from 'lucide-react';
+import { ArrowLeft, Building2, Edit, MapPin, Phone, Mail, User, CreditCard, Package, Plus, Trash2, DollarSign, FileText } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Table, TableHead, TableBody, TableRow, TableCell, TableHeader } from '@/components/ui/Table';
+import { Tabs } from '@/components/ui/Tabs';
 import { Modal } from '@/components/ui/Modal';
 import { Input } from '@/components/ui/Input';
 import { Dropdown } from '@/components/ui/Dropdown';
@@ -25,6 +26,7 @@ interface Vendor {
     bankBranch: string | null;
     bankAccount: string | null;
     isActive: boolean;
+    spkDocumentPath: string | null;
     createdAt: string;
     updatedAt: string;
     _count: {
@@ -238,254 +240,292 @@ export default function VendorDetailPage() {
 
     return (
         <div className="p-8">
-            {/* Header with Better Spacing */}
-            <div className="mb-8">
+            {/* Header */}
+            <div className="mb-6">
                 <div className="flex items-center gap-3 mb-4">
                     <Button
                         variant="ghost"
                         size="sm"
                         onClick={() => router.push('/master/vendor')}
-                        className="flex items-center gap-2 text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)]"
+                        className="flex items-center gap-2 text-(--color-text-muted) hover:text-(--color-text-primary)"
                     >
                         <ArrowLeft size={18} />
                         Back to Vendors
                     </Button>
                 </div>
 
-                <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                        <h1 className="text-3xl font-bold">{vendor.name}</h1>
-                        <div className="flex items-center gap-2">
-                            <Badge variant={vendor.isActive ? 'success' : 'danger'}>
-                                {vendor.isActive ? 'Active' : 'Inactive'}
-                            </Badge>
-                            <Badge variant="info">{vendor.vendorType}</Badge>
-                        </div>
-                    </div>
+                <div className="flex items-center gap-4">
+                    <h1 className="text-3xl font-bold">{vendor.name}</h1>
+                    <Badge variant={vendor.isActive ? 'success' : 'danger'}>
+                        {vendor.isActive ? 'Active' : 'Inactive'}
+                    </Badge>
+                    <Badge variant="info">{vendor.vendorType}</Badge>
                 </div>
             </div>
 
-            {/* Vendor Information Card with Better Organization */}
-            <div className="bg-[var(--color-bg-secondary)] border border-[var(--color-border)] rounded-xl shadow-sm mb-6">
-                <div className="p-6 border-b border-[var(--color-border)]">
-                    <h2 className="text-xl font-semibold">Vendor Information</h2>
-                </div>
+            {/* Two Column Layout */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                {/* Left Column: Vendor Information - Sticky */}
+                <div className="lg:col-span-4">
+                    <div className="bg-(--color-bg-secondary) border border-(--color-border) rounded-xl shadow-sm sticky top-6">
+                        <div className="p-6 border-b border-(--color-border)">
+                            <h2 className="text-xl font-semibold">Vendor Details</h2>
+                        </div>
 
-                <div className="p-6">
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                        {/* Contact Information Section */}
-                        <div className="space-y-5">
-                            <h3 className="text-sm font-semibold text-[var(--color-text-muted)] uppercase tracking-wide mb-4">
-                                Contact Details
-                            </h3>
-
-                            <div className="flex items-start gap-3">
-                                <div className="p-2 bg-[var(--color-bg-tertiary)] rounded-lg">
-                                    <Building2 size={18} className="text-[var(--color-primary)]" />
+                        <div className="p-6 space-y-6">
+                            {/* Vendor Code */}
+                            <div className="flex items-center gap-4">
+                                <div className="p-4 bg-linear-to-br from-indigo-500 to-purple-600 rounded-xl shadow-md">
+                                    <Building2 size={24} className="text-white" />
                                 </div>
                                 <div className="flex-1">
-                                    <div className="text-xs text-[var(--color-text-muted)] mb-1">Vendor Code</div>
-                                    <div className="font-mono font-medium">{vendor.code}</div>
+                                    <div className="text-xs text-(--color-text-muted) mb-1">Vendor Code</div>
+                                    <div className="text-lg font-bold font-mono">{vendor.code}</div>
                                 </div>
                             </div>
 
-                            {vendor.phone && (
-                                <div className="flex items-start gap-3">
-                                    <div className="p-2 bg-[var(--color-bg-tertiary)] rounded-lg">
-                                        <Phone size={18} className="text-[var(--color-primary)]" />
-                                    </div>
-                                    <div className="flex-1">
-                                        <div className="text-xs text-[var(--color-text-muted)] mb-1">Phone Number</div>
-                                        <div className="font-medium">{vendor.phone}</div>
-                                    </div>
-                                </div>
-                            )}
-
-                            {vendor.email && (
-                                <div className="flex items-start gap-3">
-                                    <div className="p-2 bg-[var(--color-bg-tertiary)] rounded-lg">
-                                        <Mail size={18} className="text-[var(--color-primary)]" />
-                                    </div>
-                                    <div className="flex-1">
-                                        <div className="text-xs text-[var(--color-text-muted)] mb-1">Email Address</div>
-                                        <div className="font-medium">{vendor.email}</div>
-                                    </div>
-                                </div>
-                            )}
-
+                            {/* Contact Person */}
                             {vendor.contactName && (
-                                <div className="flex items-start gap-3">
-                                    <div className="p-2 bg-[var(--color-bg-tertiary)] rounded-lg">
-                                        <User size={18} className="text-[var(--color-primary)]" />
+                                <div className="flex items-center gap-3">
+                                    <div className="p-3 bg-orange-500 bg-opacity-10 rounded-lg">
+                                        <User size={20} className="text-orange-500" />
                                     </div>
                                     <div className="flex-1">
-                                        <div className="text-xs text-[var(--color-text-muted)] mb-1">Contact Person</div>
-                                        <div className="font-medium">{vendor.contactName}</div>
+                                        <div className="text-xs text-(--color-text-muted) mb-1">Contact Person</div>
+                                        <div className="text-sm font-medium">{vendor.contactName}</div>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Phone */}
+                            {vendor.phone && (
+                                <div className="flex items-center gap-4">
+                                    <div className="p-4 bg-linear-to-br from-green-500 to-emerald-600 rounded-xl shadow-md">
+                                        <Phone size={24} className="text-white" />
+                                    </div>
+                                    <div className="flex-1">
+                                        <div className="text-xs text-(--color-text-muted) mb-1">Phone Number</div>
+                                        <div className="text-sm font-medium">{vendor.phone}</div>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Email */}
+                            {vendor.email && (
+                                <div className="flex items-center gap-3">
+                                    <div className="p-3 bg-purple-500 bg-opacity-10 rounded-lg">
+                                        <Mail size={20} className="text-purple-500" />
+                                    </div>
+                                    <div className="flex-1">
+                                        <div className="text-xs text-(--color-text-muted) mb-1">Email Address</div>
+                                        <div className="text-sm font-medium break-all">{vendor.email}</div>
                                     </div>
                                 </div>
                             )}
                         </div>
 
                         {/* Address Section */}
-                        <div className="space-y-5">
-                            <h3 className="text-sm font-semibold text-[var(--color-text-muted)] uppercase tracking-wide mb-4">
-                                Location
-                            </h3>
-
-                            {vendor.address ? (
-                                <div className="flex items-start gap-3">
-                                    <div className="p-2 bg-[var(--color-bg-tertiary)] rounded-lg">
-                                        <MapPin size={18} className="text-[var(--color-primary)]" />
-                                    </div>
-                                    <div className="flex-1">
-                                        <div className="text-xs text-[var(--color-text-muted)] mb-1">Address</div>
-                                        <div className="font-medium leading-relaxed">{vendor.address}</div>
-                                    </div>
-                                </div>
-                            ) : (
-                                <div className="text-sm text-[var(--color-text-muted)] italic">No address provided</div>
-                            )}
+                        <div className="px-6 pb-6">
+                            <div className="border-t border-(--color-border) pt-6">
+                                <h3 className="text-sm font-semibold mb-4 flex items-center gap-2">
+                                    <MapPin size={16} />
+                                    Address
+                                </h3>
+                                {vendor.address ? (
+                                    <p className="text-sm text-(--color-text-muted) leading-relaxed">{vendor.address}</p>
+                                ) : (
+                                    <p className="text-sm text-(--color-text-muted) italic">No address provided</p>
+                                )}
+                            </div>
                         </div>
 
-                        {/* Banking & Stats Section */}
-                        <div className="space-y-5">
-                            <h3 className="text-sm font-semibold text-[var(--color-text-muted)] uppercase tracking-wide mb-4">
-                                Banking & Statistics
-                            </h3>
-
-                            {vendor.bank && (
-                                <div className="flex items-start gap-3">
-                                    <div className="p-2 bg-[var(--color-bg-tertiary)] rounded-lg">
-                                        <CreditCard size={18} className="text-[var(--color-primary)]" />
-                                    </div>
-                                    <div className="flex-1">
-                                        <div className="text-xs text-[var(--color-text-muted)] mb-1">Bank Details</div>
-                                        <div className="font-medium">{vendor.bank}</div>
+                        {/* Banking Information */}
+                        {vendor.bank && (
+                            <div className="px-6 pb-6">
+                                <div className="border-t border-(--color-border) pt-6">
+                                    <h3 className="text-sm font-semibold mb-4 flex items-center gap-2">
+                                        <CreditCard size={16} />
+                                        Banking Information
+                                    </h3>
+                                    <div className="space-y-3">
+                                        <div>
+                                            <div className="text-xs text-(--color-text-muted) mb-1">Bank Name</div>
+                                            <div className="text-sm font-medium">{vendor.bank}</div>
+                                        </div>
                                         {vendor.bankBranch && (
-                                            <div className="text-sm text-[var(--color-text-muted)] mt-1">{vendor.bankBranch}</div>
+                                            <div>
+                                                <div className="text-xs text-(--color-text-muted) mb-1">Branch</div>
+                                                <div className="text-sm font-medium">{vendor.bankBranch}</div>
+                                            </div>
                                         )}
                                         {vendor.bankAccount && (
-                                            <div className="text-sm font-mono mt-1">{vendor.bankAccount}</div>
+                                            <div>
+                                                <div className="text-xs text-(--color-text-muted) mb-1">Account Number</div>
+                                                <div className="text-sm font-mono font-medium">{vendor.bankAccount}</div>
+                                            </div>
                                         )}
                                     </div>
                                 </div>
-                            )}
+                            </div>
+                        )}
 
-                            <div className="flex items-start gap-3">
-                                <div className="p-2 bg-[var(--color-bg-tertiary)] rounded-lg">
-                                    <Package size={18} className="text-[var(--color-primary)]" />
+                        {/* SPK Document */}
+                        {vendor.vendorType === 'SPK' && vendor.spkDocumentPath && (
+                            <div className="px-6 pb-6">
+                                <div className="border-t border-(--color-border) pt-6">
+                                    <h3 className="text-sm font-semibold mb-3 flex items-center gap-2">
+                                        <FileText size={16} />
+                                        SPK Document
+                                    </h3>
+                                    <Button
+                                        variant="secondary"
+                                        size="sm"
+                                        onClick={() => window.open(vendor.spkDocumentPath ?? '', '_blank')}
+                                        leftIcon={<FileText size={16} />}
+                                        className="w-full"
+                                    >
+                                        View Document
+                                    </Button>
                                 </div>
-                                <div className="flex-1">
-                                    <div className="text-xs text-[var(--color-text-muted)] mb-1">Items Supplied</div>
-                                    <div className="text-2xl font-bold text-[var(--color-primary)]">
-                                        {vendor._count.suppliedItems}
-                                    </div>
+                            </div>
+                        )}
+
+                        {/* Footer */}
+                        <div className="px-6 py-4 bg-(--color-bg-tertiary) border-t border-(--color-border) rounded-b-xl">
+                            <div className="space-y-2 text-xs text-(--color-text-muted)">
+                                <div className="flex justify-between">
+                                    <span>Created:</span>
+                                    <span>{formatDate(vendor.createdAt)}</span>
+                                </div>
+                                <div className="flex justify-between">
+                                    <span>Updated:</span>
+                                    <span>{formatDate(vendor.updatedAt)}</span>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div className="px-6 py-4 bg-[var(--color-bg-tertiary)] border-t border-[var(--color-border)] rounded-b-xl">
-                    <div className="flex items-center gap-6 text-xs text-[var(--color-text-muted)]">
-                        <div className="flex items-center gap-2">
-                            <span className="font-medium">Created:</span>
-                            <span>{formatDate(vendor.createdAt)}</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                            <span className="font-medium">Last Updated:</span>
-                            <span>{formatDate(vendor.updatedAt)}</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {/* Supplied Items Card with Better Table */}
-            <div className="bg-[var(--color-bg-secondary)] border border-[var(--color-border)] rounded-xl shadow-sm">
-                <div className="p-6 border-b border-[var(--color-border)] flex items-center justify-between">
-                    <div>
-                        <h2 className="text-xl font-semibold">Supplied Items</h2>
-                        <p className="text-sm text-[var(--color-text-muted)] mt-1">
-                            Manage items supplied by this vendor
-                        </p>
-                    </div>
-                    <Button onClick={() => setAddItemModalOpen(true)} size="sm">
-                        <Plus size={16} className="mr-2" />
-                        Add Item
-                    </Button>
-                </div>
-
-                <div className="p-6">
-                    {itemsLoading ? (
-                        <div className="text-center py-12 text-[var(--color-text-muted)]">
-                            <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--color-primary)] mb-4"></div>
-                            <p>Loading items...</p>
-                        </div>
-                    ) : vendorItems.length === 0 ? (
-                        <div className="text-center py-16 text-[var(--color-text-muted)]">
-                            <div className="inline-flex items-center justify-center w-16 h-16 bg-[var(--color-bg-tertiary)] rounded-full mb-4">
-                                <Package size={32} className="opacity-50" />
-                            </div>
-                            <h3 className="text-lg font-medium mb-2">No items added yet</h3>
-                            <p className="text-sm">Click "Add Item" to start adding items this vendor supplies</p>
-                        </div>
-                    ) : (
-                        <div className="overflow-x-auto">
-                            <Table>
-                                <TableHeader>
-                                    <TableRow>
-                                        <TableHead>SKU</TableHead>
-                                        <TableHead>Item Name</TableHead>
-                                        <TableHead>Category</TableHead>
-                                        <TableHead>UOM</TableHead>
-                                        <TableHead>COGS per UOM</TableHead>
-                                        <TableHead>Added Date</TableHead>
-                                        <TableHead>Actions</TableHead>
-                                    </TableRow>
-                                </TableHeader>
-                                <TableBody>
-                                    {vendorItems.map((vendorItem) => (
-                                        <TableRow key={vendorItem.id}>
-                                            <TableCell className="font-mono text-sm">{vendorItem.item.sku}</TableCell>
-                                            <TableCell className="font-medium">{vendorItem.item.name}</TableCell>
-                                            <TableCell>{vendorItem.item.category.name}</TableCell>
-                                            <TableCell>
-                                                <span className="px-2 py-1 bg-[var(--color-bg-tertiary)] rounded text-sm">
-                                                    {vendorItem.item.uom.symbol}
-                                                </span>
-                                            </TableCell>
-                                            <TableCell className="font-semibold text-[var(--color-primary)]">
-                                                Rp {vendorItem.cogsPerUom.toLocaleString('id-ID')}
-                                            </TableCell>
-                                            <TableCell className="text-sm text-[var(--color-text-muted)]">
-                                                {formatDate(vendorItem.createdAt)}
-                                            </TableCell>
-                                            <TableCell>
-                                                <div className="flex items-center gap-1">
-                                                    <Button
-                                                        size="sm"
-                                                        variant="ghost"
-                                                        onClick={() => openEditCogsModal(vendorItem)}
-                                                        className="hover:bg-[var(--color-bg-tertiary)]"
-                                                    >
-                                                        <Edit size={16} />
-                                                    </Button>
-                                                    <Button
-                                                        size="sm"
-                                                        variant="ghost"
-                                                        onClick={() => openDeleteConfirm(vendorItem.itemId)}
-                                                        className="hover:bg-[var(--color-bg-tertiary)] hover:text-[var(--color-danger)]"
-                                                    >
-                                                        <Trash2 size={16} />
-                                                    </Button>
+                {/* Right Column: Tabbed Content */}
+                <div className="lg:col-span-8">
+                    <div className="bg-(--color-bg-secondary) border border-(--color-border) rounded-xl shadow-sm">
+                        <Tabs
+                            tabs={[
+                                { id: 'items', label: 'Supplied Items', icon: <Package size={16} /> },
+                                { id: 'purchases', label: 'Purchase History', icon: <DollarSign size={16} /> },
+                                { id: 'prices', label: 'Price History', icon: <FileText size={16} /> },
+                            ]}
+                            defaultTab="items"
+                        >
+                            {(activeTab) => (
+                                <div className="p-6">
+                                    {activeTab === 'items' && (
+                                        <div className="space-y-4">
+                                            <div className="flex items-center justify-between mb-4">
+                                                <div>
+                                                    <h3 className="text-lg font-semibold">Supplied Items</h3>
+                                                    <p className="text-sm text-(--color-text-muted) mt-1">
+                                                        Manage items supplied by this vendor
+                                                    </p>
                                                 </div>
-                                            </TableCell>
-                                        </TableRow>
-                                    ))}
-                                </TableBody>
-                            </Table>
-                        </div>
-                    )}
+                                                <Button onClick={() => setAddItemModalOpen(true)} size="sm">
+                                                    <Plus size={16} className="mr-2" />
+                                                    Add Item
+                                                </Button>
+                                            </div>
+
+                                            {itemsLoading ? (
+                                                <div className="text-center py-12 text-(--color-text-muted)">
+                                                    <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-(--color-primary) mb-4"></div>
+                                                    <p>Loading items...</p>
+                                                </div>
+                                            ) : vendorItems.length === 0 ? (
+                                                <div className="text-center py-16 text-(--color-text-muted)">
+                                                    <div className="inline-flex items-center justify-center w-16 h-16 bg-(--color-bg-tertiary) rounded-full mb-4">
+                                                        <Package size={32} className="opacity-50" />
+                                                    </div>
+                                                    <h3 className="text-lg font-medium mb-2">No items added yet</h3>
+                                                    <p className="text-sm">Click "Add Item" to start adding items this vendor supplies</p>
+                                                </div>
+                                            ) : (
+                                                <div className="overflow-x-auto">
+                                                    <Table>
+                                                        <TableHeader>
+                                                            <TableRow>
+                                                                <TableHead>SKU</TableHead>
+                                                                <TableHead>Item Name</TableHead>
+                                                                <TableHead>Category</TableHead>
+                                                                <TableHead>UOM</TableHead>
+                                                                <TableHead>COGS per UOM</TableHead>
+                                                                <TableHead>Added Date</TableHead>
+                                                                <TableHead>Actions</TableHead>
+                                                            </TableRow>
+                                                        </TableHeader>
+                                                        <TableBody>
+                                                            {vendorItems.map((vendorItem) => (
+                                                                <TableRow key={vendorItem.id}>
+                                                                    <TableCell className="font-mono text-sm">{vendorItem.item.sku}</TableCell>
+                                                                    <TableCell className="font-medium">{vendorItem.item.name}</TableCell>
+                                                                    <TableCell>{vendorItem.item.category.name}</TableCell>
+                                                                    <TableCell>
+                                                                        <span className="px-2 py-1 bg-(--color-bg-tertiary) rounded text-sm">
+                                                                            {vendorItem.item.uom.symbol}
+                                                                        </span>
+                                                                    </TableCell>
+                                                                    <TableCell className="font-semibold text-(--color-primary)">
+                                                                        Rp {vendorItem.cogsPerUom.toLocaleString('id-ID')}
+                                                                    </TableCell>
+                                                                    <TableCell className="text-sm text-(--color-text-muted)">
+                                                                        {formatDate(vendorItem.createdAt)}
+                                                                    </TableCell>
+                                                                    <TableCell>
+                                                                        <div className="flex items-center gap-1">
+                                                                            <Button
+                                                                                size="sm"
+                                                                                variant="ghost"
+                                                                                onClick={() => openEditCogsModal(vendorItem)}
+                                                                                className="hover:bg-(--color-bg-tertiary)"
+                                                                            >
+                                                                                <Edit size={16} />
+                                                                            </Button>
+                                                                            <Button
+                                                                                size="sm"
+                                                                                variant="ghost"
+                                                                                onClick={() => openDeleteConfirm(vendorItem.itemId)}
+                                                                                className="hover:bg-(--color-bg-tertiary) hover:text-(--color-danger)"
+                                                                            >
+                                                                                <Trash2 size={16} />
+                                                                            </Button>
+                                                                        </div>
+                                                                    </TableCell>
+                                                                </TableRow>
+                                                            ))}
+                                                        </TableBody>
+                                                    </Table>
+                                                </div>
+                                            )}
+                                        </div>
+                                    )}
+
+                                    {activeTab === 'purchases' && (
+                                        <div className="text-center py-16 text-(--color-text-muted)">
+                                            <DollarSign size={48} className="mx-auto mb-4 opacity-40" />
+                                            <h3 className="text-lg font-medium mb-2">Purchase History</h3>
+                                            <p className="text-sm">Coming soon - View all purchases from this vendor</p>
+                                        </div>
+                                    )}
+
+                                    {activeTab === 'prices' && (
+                                        <div className="text-center py-16 text-(--color-text-muted)">
+                                            <FileText size={48} className="mx-auto mb-4 opacity-40" />
+                                            <h3 className="text-lg font-medium mb-2">Price History</h3>
+                                            <p className="text-sm">Coming soon - Track price changes over time</p>
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+                        </Tabs>
+                    </div>
                 </div>
             </div>
 
@@ -512,25 +552,32 @@ export default function VendorDetailPage() {
                             placeholder="Select an item..."
                         />
                         {selectedItem && (
-                            <div className="mt-2 text-sm text-[var(--color-text-muted)]">
+                            <div className="mt-2 text-sm text-(--color-text-muted)">
                                 UOM: {selectedItem.uom.name} ({selectedItem.uom.symbol})
                             </div>
                         )}
                     </div>
 
                     <div>
-                        <label className="text-sm font-medium mb-1 block">COGS per UOM (Rp)</label>
-                        <div className="relative">
-                            <DollarSign size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)]" />
-                            <Input
-                                type="number"
-                                min="0"
-                                step="0.01"
-                                value={addItemForm.cogsPerUom}
-                                onChange={(e) => setAddItemForm({ ...addItemForm, cogsPerUom: e.target.value })}
-                                placeholder="Enter cost..."
-                                className="pl-9"
+                        <label className="text-sm font-medium mb-1 block">COGS per UOM</label>
+                        <div className="relative flex items-center">
+                            <span className="absolute left-4 text-sm font-semibold text-(--color-text-primary) pointer-events-none z-10">Rp</span>
+                            <input
+                                disabled={!addItemForm.itemId}
+                                type="text"
+                                value={addItemForm.cogsPerUom ? parseInt(addItemForm.cogsPerUom.toString()).toLocaleString('id-ID') : ''}
+                                onChange={(e) => {
+                                    const value = e.target.value.replace(/[^0-9]/g, '');
+                                    setAddItemForm({ ...addItemForm, cogsPerUom: value });
+                                }}
+                                placeholder="10.000"
+                                className="w-full pl-12 pr-20 py-2.5 border border-(--color-border) rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-(--color-primary) focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
                             />
+                            {selectedItem && (
+                                <span className="absolute right-4 text-sm font-semibold text-(--color-text-muted) pointer-events-none">
+                                    /{selectedItem.uom.symbol}
+                                </span>
+                            )}
                         </div>
                     </div>
 
@@ -564,26 +611,31 @@ export default function VendorDetailPage() {
                 {editingVendorItem && (
                     <div className="space-y-4">
                         <div>
-                            <div className="text-sm text-[var(--color-text-muted)]">Item</div>
+                            <div className="text-sm text-(--color-text-muted)">Item</div>
                             <div className="font-medium">{editingVendorItem.item.name}</div>
-                            <div className="text-sm text-[var(--color-text-muted)] mt-1">
+                            <div className="text-sm text-(--color-text-muted) mt-1">
                                 UOM: {editingVendorItem.item.uom.name} ({editingVendorItem.item.uom.symbol})
                             </div>
                         </div>
 
                         <div>
-                            <label className="text-sm font-medium mb-1 block">COGS per UOM (Rp)</label>
-                            <div className="relative">
-                                <DollarSign size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)]" />
-                                <Input
-                                    type="number"
-                                    min="0"
-                                    step="0.01"
-                                    value={editCogs}
-                                    onChange={(e) => setEditCogs(e.target.value)}
-                                    placeholder="Enter cost..."
-                                    className="pl-9"
+                            <label className="text-sm font-medium mb-1 block">COGS per UOM</label>
+                            <div className="relative flex items-center">
+                                <span className="absolute left-4 text-sm font-semibold text-(--color-text-primary) pointer-events-none z-10">Rp</span>
+                                <input
+                                    disabled={!editingVendorItem}
+                                    type="text"
+                                    value={editCogs ? parseInt(editCogs.toString()).toLocaleString('id-ID') : ''}
+                                    onChange={(e) => {
+                                        const value = e.target.value.replace(/[^0-9]/g, '');
+                                        setEditCogs(value);
+                                    }}
+                                    placeholder="10.000"
+                                    className="w-full pl-12 pr-20 py-2.5 border border-(--color-border) rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-(--color-primary) focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
                                 />
+                                <span className="absolute right-4 text-sm font-semibold text-(--color-text-muted) pointer-events-none">
+                                    /{editingVendorItem.item.uom.symbol}
+                                </span>
                             </div>
                         </div>
 

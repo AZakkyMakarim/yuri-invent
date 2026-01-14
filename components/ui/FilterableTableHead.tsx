@@ -69,8 +69,8 @@ export function FilterableTableHead({
                         <button
                             onClick={onSort}
                             className={cn(
-                                'p-0.5 rounded hover:bg-[var(--color-bg-hover)] flex-shrink-0',
-                                sortDirection ? 'text-[var(--color-primary)]' : 'text-[var(--color-text-muted)]'
+                                'p-0.5 rounded hover:bg-(--color-bg-hover) shrink-0',
+                                sortDirection ? 'text-(--color-primary)' : 'text-(--color-text-muted)'
                             )}
                         >
                             {sortDirection === 'asc' && <ArrowUp size={12} />}

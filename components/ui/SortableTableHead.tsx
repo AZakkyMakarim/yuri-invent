@@ -28,12 +28,12 @@ export function SortableTableHead({
                     onClick={onSort}
                     className={cn(
                         'flex items-center gap-1.5 w-full text-left transition-colors',
-                        'hover:text-[var(--color-text-primary)]',
-                        sortDirection ? 'text-[var(--color-primary)]' : ''
+                        'hover:text-(--color-text-primary)',
+                        sortDirection ? 'text-(--color-primary)' : ''
                     )}
                 >
                     <span>{children}</span>
-                    <span className="flex-shrink-0">
+                    <span className="shrink-0">
                         {sortDirection === 'asc' && <ArrowUp size={12} />}
                         {sortDirection === 'desc' && <ArrowDown size={12} />}
                         {!sortDirection && <ArrowUpDown size={12} className="opacity-40" />}

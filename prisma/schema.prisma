@@ -123,18 +123,20 @@ enum BankName {
 }
 
 // =============================================================================
-// MASTER DATA
+// AUTHENTICATION & RBAC (Role-Based Access Control)
 // =============================================================================
 
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  name      String
-  password  String
-  role      UserRole @default(WAREHOUSE_STAFF)
-  isActive  Boolean  @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          String   @id @default(cuid())
+  supabaseId  String   @unique // Link to Supabase Auth user
+  email       String   @unique
+  name        String?
+  password    String? // Legacy - will use Supabase Auth
+  roleId      String?
+  role        Role?    @relation(fields: [roleId], references: [id])
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   // Relations
   createdPurchaseRequests  PurchaseRequest[]  @relation("PRCreatedBy")
@@ -163,6 +165,36 @@ model User {
 
   @@map("users")
 }
+
+model Role {
+  id          String       @id @default(cuid())
+  name        String       @unique
+  description String?
+  isSystem    Boolean      @default(false) // System roles can't be deleted
+  users       User[]
+  permissions Permission[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  @@map("roles")
+}
+
+model Permission {
+  id          String   @id @default(cuid())
+  name        String   @unique // e.g., "vendors.create", "items.delete"
+  description String?
+  module      String // e.g., "vendors", "items", "categories"
+  action      String // e.g., "create", "read", "update", "delete"
+  roles       Role[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("permissions")
+}
+
+// =============================================================================
+// MASTER DATA
+// =============================================================================
 
 model Category {
   id          String   @id @default(cuid())
@@ -292,6 +324,7 @@ model Item {
   returnItems           ReturnItem[]
   priceHistories        ItemPriceHistory[]
   vendorSupplies        VendorItem[]           @relation("ItemVendorSupplies")
+  rabLines              RABLine[]
 
   @@map("items")
 }
@@ -360,15 +393,20 @@ model RAB {
 }
 
 model RABLine {
-  id          String  @id @default(cuid())
-  rabId       String
-  description String
-  amount      Decimal @db.Decimal(18, 2)
-  usedAmount  Decimal @db.Decimal(18, 2) @default(0)
-  notes       String?
+  id                String  @id @default(cuid())
+  rabId             String
+  itemId            String
+  requiredQty       Int
+  lastStockSnapshot Int      // Stock at time of RAB creation
+  replenishQty      Int      // requiredQty - lastStockSnapshot
+  unitPrice         Decimal  @db.Decimal(18, 2) // Highest vendor price
+  totalAmount       Decimal  @db.Decimal(18, 2) // replenishQty * unitPrice
+  usedAmount        Decimal  @db.Decimal(18, 2) @default(0) // Track usage by PR
+  notes             String?
 
   // Relations
-  rab RAB @relation(fields: [rabId], references: [id], onDelete: Cascade)
+  rab  RAB  @relation(fields: [rabId], references: [id], onDelete: Cascade)
+  item Item @relation(fields: [itemId], references: [id])
 
   @@map("rab_lines")
 }

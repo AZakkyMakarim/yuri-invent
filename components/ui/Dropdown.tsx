@@ -96,11 +96,11 @@ export function Dropdown({
                     disabled={disabled}
                     className={cn(
                         'w-full flex items-center justify-between gap-2 px-3 py-2.5 rounded-lg text-left transition-all',
-                        'bg-[var(--color-bg-secondary)] border',
+                        'bg-(--color-bg-secondary) border',
                         isOpen
-                            ? 'border-[var(--color-primary)] ring-1 ring-[var(--color-primary)]'
-                            : 'border-[var(--color-border)] hover:border-[var(--color-border-hover)]',
-                        error && 'border-[var(--color-danger)]',
+                            ? 'border-(--color-primary) ring-1 ring-(--color-primary)'
+                            : 'border-(--color-border) hover:border-(--color-border-hover)',
+                        error && 'border-(--color-danger)',
                         disabled && 'opacity-50 cursor-not-allowed'
                     )}
                 >
@@ -108,8 +108,8 @@ export function Dropdown({
                         className={cn(
                             'flex-1 truncate',
                             selectedOption
-                                ? 'text-[var(--color-text-primary)]'
-                                : 'text-[var(--color-text-muted)]'
+                                ? 'text-(--color-text-primary)'
+                                : 'text-(--color-text-muted)'
                         )}
                     >
                         {selectedOption?.label || placeholder}
@@ -126,7 +126,7 @@ export function Dropdown({
                                         handleClear(e as any);
                                     }
                                 }}
-                                className="p-0.5 rounded hover:bg-[var(--color-bg-hover)] text-[var(--color-text-muted)] cursor-pointer"
+                                className="p-0.5 rounded hover:bg-(--color-bg-hover) text-(--color-text-muted) cursor-pointer"
                             >
                                 <X size={14} />
                             </div>
@@ -134,7 +134,7 @@ export function Dropdown({
                         <ChevronDown
                             size={16}
                             className={cn(
-                                'text-[var(--color-text-muted)] transition-transform',
+                                'text-(--color-text-muted) transition-transform',
                                 isOpen && 'rotate-180'
                             )}
                         />
@@ -143,14 +143,14 @@ export function Dropdown({
 
                 {/* Dropdown Menu */}
                 {isOpen && (
-                    <div className="absolute z-50 w-full mt-1 py-1 bg-[var(--color-bg-secondary)] border border-[var(--color-border)] rounded-lg shadow-lg max-h-60 overflow-auto">
+                    <div className="absolute z-50 w-full mt-1 py-1 bg-(--color-bg-secondary) border border-(--color-border) rounded-lg shadow-lg max-h-60 overflow-auto">
                         {/* Search Input */}
                         {searchable && (
-                            <div className="px-2 pb-2 pt-1 border-b border-[var(--color-border)]">
+                            <div className="px-2 pb-2 pt-1 border-b border-(--color-border)">
                                 <div className="relative">
                                     <Search
                                         size={14}
-                                        className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)]"
+                                        className="absolute left-2.5 top-1/2 -translate-y-1/2 text-(--color-text-muted)"
                                     />
                                     <input
                                         ref={searchInputRef}
@@ -158,7 +158,7 @@ export function Dropdown({
                                         value={search}
                                         onChange={(e) => setSearch(e.target.value)}
                                         placeholder="Search..."
-                                        className="w-full pl-8 pr-3 py-1.5 text-sm bg-[var(--color-bg-tertiary)] border border-[var(--color-border)] rounded focus:border-[var(--color-primary)] focus:outline-none text-[var(--color-text-primary)]"
+                                        className="w-full pl-8 pr-3 py-1.5 text-sm bg-(--color-bg-tertiary) border border-(--color-border) rounded focus:border-(--color-primary) focus:outline-none text-(--color-text-primary)"
                                     />
                                 </div>
                             </div>
@@ -166,7 +166,7 @@ export function Dropdown({
 
                         {/* Options */}
                         {filteredOptions.length === 0 ? (
-                            <div className="px-3 py-2 text-sm text-[var(--color-text-muted)]">
+                            <div className="px-3 py-2 text-sm text-(--color-text-muted)">
                                 No options found
                             </div>
                         ) : (
@@ -178,13 +178,13 @@ export function Dropdown({
                                     className={cn(
                                         'w-full flex items-center gap-2 px-3 py-2 text-sm text-left transition-colors',
                                         option.value === value
-                                            ? 'bg-[var(--color-primary)]/10 text-[var(--color-primary)]'
-                                            : 'text-[var(--color-text-primary)] hover:bg-[var(--color-bg-hover)]'
+                                            ? 'bg-(--color-primary)/10 text-(--color-primary)'
+                                            : 'text-(--color-text-primary) hover:bg-(--color-bg-hover)'
                                     )}
                                 >
                                     <span className="flex-1 truncate">{option.label}</span>
                                     {option.value === value && (
-                                        <Check size={14} className="text-[var(--color-primary)]" />
+                                        <Check size={14} className="text-(--color-primary)" />
                                     )}
                                 </button>
                             ))
@@ -192,7 +192,7 @@ export function Dropdown({
                     </div>
                 )}
             </div>
-            {error && <p className="mt-1 text-sm text-[var(--color-danger)]">{error}</p>}
+            {error && <p className="mt-1 text-sm text-(--color-danger)">{error}</p>}
         </div>
     );
 }

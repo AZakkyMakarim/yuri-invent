@@ -1,7 +1,47 @@
 @import "tailwindcss";
 
 :root {
-  /* Color Palette - Modern Dark Theme */
+  /* Color Palette - Light Theme (Default) */
+  --color-primary: #4f46e5;
+  --color-primary-hover: #4338ca;
+  --color-secondary: #7c3aed;
+  --color-accent: #06b6d4;
+
+  --color-success: #059669;
+  --color-warning: #d97706;
+  --color-danger: #dc2626;
+  --color-info: #2563eb;
+
+  /* Background Colors */
+  --color-bg-primary: #ffffff;
+  --color-bg-secondary: #f8fafc;
+  /* Slate 50 */
+  --color-bg-tertiary: #f1f5f9;
+  /* Slate 100 */
+  --color-bg-card: #ffffff;
+  --color-bg-hover: #f1f5f9;
+
+  /* Text Colors */
+  --color-text-primary: #0f172a;
+  /* Slate 900 */
+  --color-text-secondary: #64748b;
+  /* Slate 500 */
+  --color-text-muted: #94a3b8;
+  /* Slate 400 */
+
+  /* Border Colors */
+  --color-border: #e2e8f0;
+  /* Slate 200 */
+  --color-border-hover: #cbd5e1;
+  /* Slate 300 */
+
+  /* Sidebar */
+  --sidebar-width: 280px;
+  --sidebar-collapsed-width: 80px;
+}
+
+.dark {
+  /* Color Palette - Modern Dark Theme (Overrides) */
   --color-primary: #6366f1;
   --color-primary-hover: #4f46e5;
   --color-secondary: #8b5cf6;
@@ -27,10 +67,6 @@
   /* Border Colors */
   --color-border: #334155;
   --color-border-hover: #475569;
-
-  /* Sidebar */
-  --sidebar-width: 280px;
-  --sidebar-collapsed-width: 80px;
 }
 
 * {

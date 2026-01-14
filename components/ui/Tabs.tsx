@@ -38,16 +38,16 @@ export function Tabs({ tabs, defaultTab, children, className, activeTab: control
     return (
         <div className={className}>
             {/* Tab Headers */}
-            <div className="flex border-b border-[var(--color-border)] mb-6">
+            <div className="flex border-b border-(--color-border) mb-6">
                 {tabs.map((tab) => (
                     <button
                         key={tab.id}
                         onClick={() => handleTabChange(tab.id)}
                         className={cn(
-                            'flex items-center gap-2 px-4 py-3 font-medium text-sm transition-colors border-b-2 -mb-[1px]',
+                            'flex items-center gap-2 px-4 py-3 font-medium text-sm transition-colors border-b-2 -mb-px',
                             activeTab === tab.id
-                                ? 'text-[var(--color-primary)] border-[var(--color-primary)]'
-                                : 'text-[var(--color-text-secondary)] border-transparent hover:text-[var(--color-text-primary)] hover:border-[var(--color-border)]'
+                                ? 'text-(--color-primary) border-(--color-primary)'
+                                : 'text-(--color-text-secondary) border-transparent hover:text-(--color-text-primary) hover:border-(--color-border)'
                         )}
                     >
                         {tab.icon}

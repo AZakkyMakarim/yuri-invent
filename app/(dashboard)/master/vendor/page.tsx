@@ -19,7 +19,8 @@ import {
     Eye,
     Package,
     FileText,
-    Upload
+    Upload,
+    PhoneIcon
 } from 'lucide-react';
 import {
     Button,
@@ -135,7 +136,7 @@ export default function VendorsPage() {
     });
 
     // Master items for dropdown
-    const [items, setItems] = useState<Array<{ id: string; name: string; sku: string }>>([]);
+    const [items, setItems] = useState<Array<{ id: string; name: string; sku: string; uom: { symbol: string } }>>([]);
 
     // SPK file state - store the file object, upload on submit
     const [selectedSPKFile, setSelectedSPKFile] = useState<File | null>(null);
@@ -194,7 +195,7 @@ export default function VendorsPage() {
     useEffect(() => {
         const fetchItems = async () => {
             try {
-                const response = await apiFetch<{ data: Array<{ id: string; name: string; sku: string }> }>('/items?limit=999');
+                const response = await apiFetch<{ data: Array<{ id: string; name: string; sku: string; uom: { symbol: string } }> }>('/items?limit=999');
                 if (response.data) {
                     setItems(response.data);
                 }
@@ -446,7 +447,7 @@ export default function VendorsPage() {
                         </TableFilters>
 
                         {/* Table */}
-                        <div className="bg-[var(--color-bg-secondary)] rounded-xl border border-[var(--color-border)] overflow-hidden">
+                        <div className="bg-(--color-bg-secondary) rounded-xl border border-(--color-border) overflow-hidden">
                             <div className="overflow-x-auto">
                                 <Table>
                                     <TableHeader>
@@ -497,7 +498,7 @@ export default function VendorsPage() {
                                         ) : (
                                             vendors.map((vendor, index) => (
                                                 <TableRow key={vendor.id}>
-                                                    <TableCell className="text-[var(--color-text-muted)]">
+                                                    <TableCell className="text-(--color-text-muted)">
                                                         {(page - 1) * ITEMS_PER_PAGE + index + 1}
                                                     </TableCell>
                                                     <TableCell className="font-medium">{vendor.name}</TableCell>
@@ -536,30 +537,6 @@ export default function VendorsPage() {
                                                             >
                                                                 <Pencil size={16} />
                                                             </Button>
-                                                            {/* Delete Button (Optional per user request but good for testing) */}
-                                                            {/* <Button
-                                                                variant="ghost"
-                                                                size="sm"
-                                                                onClick={() => handleDelete(vendor.id)}
-                                                            >
-                                                                <Trash2 size={16} />
-                                                            </Button> */}
-                                                            {/* User specifically asked for "Detail Button and Edit Button". 
-                                                                I'll implement Edit button as requested (Pencil) which opens Modal.
-                                                                "Detail" usually means view-only mode or separate page. 
-                                                                I'll add a Detail button that maybe opens modal in view mode? 
-                                                                Or just stick to Edit for now as it shows details.
-                                                                I'll uncomment Delete for dev/admin utility or add it if needed.
-                                                                Let's add Delete for full CRUD compliance.
-                                                            */}
-                                                            <Button
-                                                                variant="ghost"
-                                                                size="sm"
-                                                                onClick={() => handleDelete(vendor.id)}
-                                                                title="Delete"
-                                                            >
-                                                                <Trash2 size={16} />
-                                                            </Button>
                                                         </div>
                                                     </TableCell>
                                                 </TableRow>
@@ -591,8 +568,8 @@ export default function VendorsPage() {
                     {/* Basic Information Section */}
                     <div className="space-y-4">
                         <div className="flex items-center gap-2 mb-3">
-                            <Building2 size={18} className="text-[var(--color-primary)]" />
-                            <h3 className="text-sm font-semibold text-[var(--color-text-primary)]">Basic Information</h3>
+                            <Building2 size={18} className="text-(--color-primary)" />
+                            <h3 className="text-sm font-semibold text-(--color-text-primary)">Basic Information</h3>
                         </div>
 
                         <div className="grid grid-cols-1 gap-4">
@@ -637,18 +614,18 @@ export default function VendorsPage() {
 
                     {/* SPK Document Section - Only for SPK vendors */}
                     {formData.vendorType === 'SPK' && (
-                        <div className="space-y-4 pt-4 border-t border-[var(--color-border)]">
+                        <div className="space-y-4 pt-4 border-t border-(--color-border)">
                             <div className="flex items-center gap-2 mb-3">
-                                <FileText size={18} className="text-[var(--color-primary)]" />
-                                <h3 className="text-sm font-semibold text-[var(--color-text-primary)]">SPK Document</h3>
-                                <span className="text-xs text-[var(--color-text-muted)]">(Required for SPK vendors)</span>
+                                <FileText size={18} className="text-(--color-primary)" />
+                                <h3 className="text-sm font-semibold text-(--color-text-primary)">SPK Document</h3>
+                                <span className="text-xs text-(--color-text-muted)">(Required for SPK vendors)</span>
                             </div>
 
                             <div>
                                 <label className="text-sm font-medium mb-1.5 block">
                                     Upload SPK Document <span className="text-red-500">*</span>
                                 </label>
-                                <p className="text-xs text-[var(--color-text-muted)] mb-2">
+                                <p className="text-xs text-(--color-text-muted) mb-2">
                                     Accepted formats: Only PDF (Max 5MB)
                                 </p>
 
@@ -656,12 +633,12 @@ export default function VendorsPage() {
                                     <label className="flex-1 cursor-pointer">
                                         <div className={`
                                             flex items-center justify-center gap-2 px-4 py-3 
-                                            border-2 border-dashed border-[var(--color-border)] 
-                                            rounded-lg hover:border-[var(--color-primary)] 
+                                            border-2 border-dashed border-(--color-border) 
+                                            rounded-lg hover:border-(--color-primary) 
                                             transition-colors
                                         `}>
-                                            <Upload size={18} className="text-[var(--color-text-muted)]" />
-                                            <span className="text-sm text-[var(--color-text-muted)]">
+                                            <Upload size={18} className="text-(--color-text-muted)" />
+                                            <span className="text-sm text-(--color-text-muted)">
                                                 {selectedSPKFile ? selectedSPKFile.name : 'Click to select PDF document'}
                                             </span>
                                         </div>
@@ -675,8 +652,8 @@ export default function VendorsPage() {
                                 </div>
 
                                 {(selectedSPKFile || formData.spkDocumentPath) && (
-                                    <div className="mt-3 flex items-center gap-2 p-3 bg-[var(--color-bg-tertiary)] rounded-lg">
-                                        <FileText size={16} className="text-[var(--color-success)]" />
+                                    <div className="mt-3 flex items-center gap-2 p-3 bg-(--color-bg-tertiary) rounded-lg">
+                                        <FileText size={16} className="text-(--color-success)" />
                                         <div className="flex-1">
                                             <p className="text-sm font-medium">
                                                 {selectedSPKFile ? `Selected: ${selectedSPKFile.name}` : 'Document uploaded'}
@@ -686,7 +663,7 @@ export default function VendorsPage() {
                                                     href={formData.spkDocumentPath}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
-                                                    className="text-xs text-[var(--color-primary)] hover:underline"
+                                                    className="text-xs text-(--color-primary) hover:underline"
                                                 >
                                                     View current document
                                                 </a>
@@ -709,10 +686,10 @@ export default function VendorsPage() {
                     )}
 
                     {/* Contact Information Section */}
-                    <div className="space-y-4 pt-4 border-t border-[var(--color-border)]">
+                    <div className="space-y-4 pt-4 border-t border-(--color-border)">
                         <div className="flex items-center gap-2 mb-3">
-                            <Phone size={18} className="text-[var(--color-primary)]" />
-                            <h3 className="text-sm font-semibold text-[var(--color-text-primary)]">Contact Information</h3>
+                            <Phone size={18} className="text-(--color-primary)" />
+                            <h3 className="text-sm font-semibold text-(--color-text-primary)">Contact Information</h3>
                         </div>
 
                         <div className="grid grid-cols-1 gap-4">
@@ -731,13 +708,12 @@ export default function VendorsPage() {
                             <div>
                                 <label className="text-sm font-medium mb-1.5 block">Address</label>
                                 <div className="relative">
-                                    <MapPin size={16} className="absolute left-3 top-3 text-[var(--color-text-muted)]" />
                                     <textarea
                                         value={formData.address}
                                         onChange={(e) => setFormData({ ...formData, address: e.target.value })}
                                         placeholder="Enter full address..."
                                         rows={3}
-                                        className="w-full pl-9 pr-3 py-2 border border-[var(--color-border)] rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent"
+                                        className="w-full pl-3 pr-3 py-2 border border-(--color-border) rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-(--color-primary) focus:border-transparent"
                                     />
                                 </div>
                             </div>
@@ -745,22 +721,22 @@ export default function VendorsPage() {
                     </div>
 
                     {/* Item List Section */}
-                    <div className="space-y-4 pt-4 border-t border-[var(--color-border)]">
+                    <div className="space-y-4 pt-4 border-t border-(--color-border)">
                         <div className="flex items-center justify-between mb-3">
                             <div className="flex items-center gap-2">
-                                <Package size={18} className="text-[var(--color-primary)]" />
-                                <h3 className="text-sm font-semibold text-[var(--color-text-primary)]">Vendor Items</h3>
-                                <span className="text-xs text-[var(--color-text-muted)]">(Optional)</span>
+                                <Package size={18} className="text-(--color-primary)" />
+                                <h3 className="text-sm font-semibold text-(--color-text-primary)">Vendor Items</h3>
+                                <span className="text-xs text-(--color-text-muted)">(Optional)</span>
                             </div>
                         </div>
 
                         {/* Items List */}
                         <div className="space-y-3">
                             {formData.vendorItems.map((vendorItem, index) => (
-                                <div key={index} className="flex gap-3 items-start p-3 bg-[var(--color-bg-tertiary)] rounded-lg">
+                                <div key={index} className="flex gap-3 items-center p-4 bg-(--color-bg-tertiary) rounded-lg border border-(--color-border)">
                                     <div className="flex-1 grid grid-cols-2 gap-3">
                                         <div>
-                                            <label className="text-xs font-medium mb-1 block">Item</label>
+                                            <label className="text-sm font-medium mb-1.5 block">Item</label>
                                             <Dropdown
                                                 options={items.map(item => ({ value: item.id, label: `${item.sku} - ${item.name}` }))}
                                                 value={vendorItem.itemId}
@@ -778,17 +754,28 @@ export default function VendorsPage() {
                                             />
                                         </div>
                                         <div>
-                                            <label className="text-xs font-medium mb-1 block">COGS per UOM</label>
-                                            <NumberInput
-                                                value={vendorItem.cogsPerUom}
-                                                onChange={(v) => {
-                                                    const newVendorItems = [...formData.vendorItems];
-                                                    newVendorItems[index] = { ...vendorItem, cogsPerUom: v };
-                                                    setFormData({ ...formData, vendorItems: newVendorItems });
-                                                }}
-                                                placeholder="Enter COGS"
-                                                min={0}
-                                            />
+                                            <label className="text-sm font-medium mb-1.5 block">COGS per UOM</label>
+                                            <div className="relative flex items-center">
+                                                <span className="absolute left-3 text-sm font-semibold text-(--color-text-primary) pointer-events-none z-10">Rp</span>
+                                                <input
+                                                    type="text"
+                                                    disabled={!vendorItem.itemId}
+                                                    value={vendorItem.cogsPerUom ? parseInt(vendorItem.cogsPerUom.toString()).toLocaleString('id-ID') : ''}
+                                                    onChange={(e) => {
+                                                        const value = e.target.value.replace(/[^0-9]/g, '');
+                                                        const newVendorItems = [...formData.vendorItems];
+                                                        newVendorItems[index] = { ...vendorItem, cogsPerUom: parseFloat(value) || 0 };
+                                                        setFormData({ ...formData, vendorItems: newVendorItems });
+                                                    }}
+                                                    placeholder="10.000"
+                                                    className="w-full pl-10 pr-14 py-3 bg-(--color-bg-secondary) border border-(--color-border) rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-(--color-primary) focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
+                                                />
+                                                {vendorItem.itemId && items.find(i => i.id === vendorItem.itemId) && (
+                                                    <span className="absolute right-3 text-sm font-semibold text-(--color-text-muted) pointer-events-none">
+                                                        /{items.find(i => i.id === vendorItem.itemId)!.uom.symbol}
+                                                    </span>
+                                                )}
+                                            </div>
                                         </div>
                                     </div>
                                     <Button
@@ -823,11 +810,11 @@ export default function VendorsPage() {
                     </div>
 
                     {/* Banking Information Section */}
-                    <div className="space-y-4 pt-4 border-t border-[var(--color-border)]">
+                    <div className="space-y-4 pt-4 border-t border-(--color-border)">
                         <div className="flex items-center gap-2 mb-3">
-                            <CreditCard size={18} className="text-[var(--color-primary)]" />
-                            <h3 className="text-sm font-semibold text-[var(--color-text-primary)]">Banking Information</h3>
-                            <span className="text-xs text-[var(--color-text-muted)]">(Optional)</span>
+                            <CreditCard size={18} className="text-(--color-primary)" />
+                            <h3 className="text-sm font-semibold text-(--color-text-primary)">Banking Information</h3>
+                            <span className="text-xs text-(--color-text-muted)">(Optional)</span>
                         </div>
 
                         <div className="grid grid-cols-1 gap-4">
@@ -868,7 +855,7 @@ export default function VendorsPage() {
                     </div>
 
                     {/* Action Buttons */}
-                    <div className="pt-6 border-t border-[var(--color-border)] flex justify-end gap-3">
+                    <div className="pt-6 border-t border-(--color-border) flex justify-end gap-3">
                         <Button
                             variant="secondary"
                             onClick={() => setModalOpen(false)}

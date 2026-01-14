@@ -66,7 +66,8 @@
         "category": "Kategori & Satuan",
         "itemMaster": "Barang & Stok",
         "vendor": "Vendor",
-        "mitra": "Mitra"
+        "mitra": "Mitra",
+        "users": "Pengguna & Peran"
     },
     "status": {
         "draft": "Draft",
@@ -131,6 +132,12 @@
             "email": "Email",
             "address": "Alamat",
             "addNew": "Tambah Mitra Baru"
+        },
+        "user": {
+            "title": "Pengguna & Peran",
+            "name": "Nama",
+            "email": "Email",
+            "role": "Peran"
         }
     },
     "budget": {

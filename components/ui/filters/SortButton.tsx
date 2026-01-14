@@ -16,8 +16,8 @@ export function SortButton({ direction, onSort, className }: SortButtonProps) {
         <button
             onClick={onSort}
             className={cn(
-                'p-1 rounded hover:bg-[var(--color-bg-hover)]',
-                direction ? 'text-[var(--color-primary)]' : 'text-[var(--color-text-muted)]',
+                'p-1 rounded hover:bg-(--color-bg-hover)',
+                direction ? 'text-(--color-primary)' : 'text-(--color-text-muted)',
                 className
             )}
         >

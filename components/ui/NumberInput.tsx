@@ -121,17 +121,17 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
                     placeholder="0"
                     className={cn(
                         'w-full px-3 py-2.5 rounded-lg',
-                        'bg-[var(--color-bg-secondary)] border border-[var(--color-border)]',
-                        'text-[var(--color-text-primary)] text-right font-medium',
-                        'focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)] focus:outline-none',
+                        'bg-(--color-bg-secondary) border border-(--color-border)',
+                        'text-(--color-text-primary) text-right font-medium',
+                        'focus:border-(--color-primary) focus:ring-1 focus:ring-(--color-primary) focus:outline-none',
                         'transition-all',
-                        'placeholder:text-[var(--color-text-muted)]',
-                        error && 'border-[var(--color-danger)] focus:border-[var(--color-danger)] focus:ring-[var(--color-danger)]',
+                        'placeholder:text-(--color-text-muted)',
+                        error && 'border-(--color-danger) focus:border-(--color-danger) focus:ring-(--color-danger)',
                         disabled && 'opacity-50 cursor-not-allowed'
                     )}
                     {...props}
                 />
-                {error && <p className="mt-1 text-sm text-[var(--color-danger)]">{error}</p>}
+                {error && <p className="mt-1 text-sm text-(--color-danger)">{error}</p>}
             </div>
         );
     }

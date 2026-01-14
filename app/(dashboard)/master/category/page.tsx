@@ -462,12 +462,12 @@ export default function CategoryPage() {
                                         ) : (
                                             categories.map((category, index) => (
                                                 <TableRow key={category.id}>
-                                                    <TableCell className="text-[var(--color-text-muted)]">
+                                                    <TableCell className="text-(--color-text-muted)">
                                                         {(categoryPage - 1) * ITEMS_PER_PAGE + index + 1}
                                                     </TableCell>
                                                     <TableCell className="font-medium">{category.code}</TableCell>
                                                     <TableCell>{category.name}</TableCell>
-                                                    <TableCell className="text-sm text-[var(--color-text-secondary)]">
+                                                    <TableCell className="text-sm text-(--color-text-secondary)">
                                                         {formatDate(category.createdAt)}
                                                     </TableCell>
                                                     <TableCell className="text-sm">
@@ -608,12 +608,12 @@ export default function CategoryPage() {
                                         ) : (
                                             uoms.map((uom, index) => (
                                                 <TableRow key={uom.id}>
-                                                    <TableCell className="text-[var(--color-text-muted)]">
+                                                    <TableCell className="text-(--color-text-muted)">
                                                         {(uomPage - 1) * ITEMS_PER_PAGE + index + 1}
                                                     </TableCell>
                                                     <TableCell className="font-medium">{uom.symbol}</TableCell>
                                                     <TableCell>{uom.name}</TableCell>
-                                                    <TableCell className="text-sm text-[var(--color-text-secondary)]">
+                                                    <TableCell className="text-sm text-(--color-text-secondary)">
                                                         {formatDate(uom.createdAt)}
                                                     </TableCell>
                                                     <TableCell className="text-sm">

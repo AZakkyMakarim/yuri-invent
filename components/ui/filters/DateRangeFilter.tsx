@@ -165,15 +165,15 @@ export function DateRangeFilter({
                 onClick={() => setIsOpen(!isOpen)}
                 className={cn(
                     'w-full h-full flex items-center gap-2 px-3 text-sm rounded-lg border transition-colors',
-                    'bg-[var(--color-bg-tertiary)] border-[var(--color-border)]',
-                    'hover:border-[var(--color-border-hover)]',
-                    hasValue && 'border-[var(--color-primary)]/50 bg-[var(--color-primary)]/5'
+                    'bg-(--color-bg-tertiary) border-(--color-border)',
+                    'hover:border-(--color-border-hover)',
+                    hasValue && 'border-(--color-primary)/50 bg-(--color-primary)/5'
                 )}
             >
-                <Calendar size={14} className="shrink-0 text-[var(--color-text-muted)]" />
+                <Calendar size={14} className="shrink-0 text-(--color-text-muted)" />
                 <span className={cn(
                     'flex-1 text-left truncate',
-                    hasValue ? 'text-[var(--color-text-primary)]' : 'text-[var(--color-text-muted)]'
+                    hasValue ? 'text-(--color-text-primary)' : 'text-(--color-text-muted)'
                 )}>
                     {displayValue}
                 </span>
@@ -181,14 +181,14 @@ export function DateRangeFilter({
                     <X
                         size={14}
                         onClick={clearDates}
-                        className="shrink-0 text-[var(--color-text-muted)] hover:text-[var(--color-danger)]"
+                        className="shrink-0 text-(--color-text-muted) hover:text-(--color-danger)"
                     />
                 )}
             </button>
 
             {/* Calendar Dropdown */}
             {isOpen && (
-                <div className="absolute top-full right-0 mt-1 z-50 bg-[var(--color-bg-secondary)] border border-[var(--color-border)] rounded-lg shadow-lg p-3 animate-fadeIn w-[280px]">
+                <div className="absolute top-full right-0 mt-1 z-50 bg-(--color-bg-secondary) border border-(--color-border) rounded-lg shadow-lg p-3 animate-fadeIn w-[280px]">
                     {/* Selection Indicator */}
                     <div className="flex gap-2 mb-3">
                         <button
@@ -196,8 +196,8 @@ export function DateRangeFilter({
                             className={cn(
                                 'flex-1 py-1.5 px-2 text-xs rounded-md border transition-colors',
                                 selectingStart
-                                    ? 'bg-[var(--color-primary)] border-[var(--color-primary)] text-white'
-                                    : 'border-[var(--color-border)] text-[var(--color-text-secondary)]'
+                                    ? 'bg-(--color-primary) border-(--color-primary) text-white'
+                                    : 'border-(--color-border) text-(--color-text-secondary)'
                             )}
                         >
                             Start: {startDate ? formatDisplayDate(startDate) : 'Select'}
@@ -207,8 +207,8 @@ export function DateRangeFilter({
                             className={cn(
                                 'flex-1 py-1.5 px-2 text-xs rounded-md border transition-colors',
                                 !selectingStart
-                                    ? 'bg-[var(--color-primary)] border-[var(--color-primary)] text-white'
-                                    : 'border-[var(--color-border)] text-[var(--color-text-secondary)]'
+                                    ? 'bg-(--color-primary) border-(--color-primary) text-white'
+                                    : 'border-(--color-border) text-(--color-text-secondary)'
                             )}
                         >
                             End: {endDate ? formatDisplayDate(endDate) : 'Select'}
@@ -219,16 +219,16 @@ export function DateRangeFilter({
                     <div className="flex items-center justify-between mb-3">
                         <button
                             onClick={handlePrevMonth}
-                            className="p-1.5 rounded-md hover:bg-[var(--color-bg-hover)] text-[var(--color-text-secondary)]"
+                            className="p-1.5 rounded-md hover:bg-(--color-bg-hover) text-(--color-text-secondary)"
                         >
                             <ChevronLeft size={16} />
                         </button>
-                        <span className="font-medium text-sm text-[var(--color-text-primary)]">
+                        <span className="font-medium text-sm text-(--color-text-primary)">
                             {MONTHS[viewDate.getMonth()]} {viewDate.getFullYear()}
                         </span>
                         <button
                             onClick={handleNextMonth}
-                            className="p-1.5 rounded-md hover:bg-[var(--color-bg-hover)] text-[var(--color-text-secondary)]"
+                            className="p-1.5 rounded-md hover:bg-(--color-bg-hover) text-(--color-text-secondary)"
                         >
                             <ChevronRight size={16} />
                         </button>
@@ -239,7 +239,7 @@ export function DateRangeFilter({
                         {DAYS.map((day) => (
                             <div
                                 key={day}
-                                className="text-center text-xs font-medium text-[var(--color-text-muted)] py-1"
+                                className="text-center text-xs font-medium text-(--color-text-muted) py-1"
                             >
                                 {day}
                             </div>
@@ -255,11 +255,11 @@ export function DateRangeFilter({
                                         onClick={() => handleDayClick(day)}
                                         className={cn(
                                             'w-full h-full flex items-center justify-center text-xs rounded-md transition-colors',
-                                            isStart(day) && 'bg-[var(--color-primary)] text-white',
-                                            isEnd(day) && 'bg-[var(--color-primary)] text-white',
-                                            isInRange(day) && 'bg-[var(--color-primary)]/20 text-[var(--color-text-primary)]',
-                                            !isStart(day) && !isEnd(day) && !isInRange(day) && 'hover:bg-[var(--color-bg-hover)] text-[var(--color-text-primary)]',
-                                            isToday(day) && !isStart(day) && !isEnd(day) && 'ring-1 ring-[var(--color-primary)] ring-inset'
+                                            isStart(day) && 'bg-(--color-primary) text-white',
+                                            isEnd(day) && 'bg-(--color-primary) text-white',
+                                            isInRange(day) && 'bg-(--color-primary)/20 text-(--color-text-primary)',
+                                            !isStart(day) && !isEnd(day) && !isInRange(day) && 'hover:bg-(--color-bg-hover) text-(--color-text-primary)',
+                                            isToday(day) && !isStart(day) && !isEnd(day) && 'ring-1 ring-(--color-primary) ring-inset'
                                         )}
                                     >
                                         {day}
@@ -270,7 +270,7 @@ export function DateRangeFilter({
                     </div>
 
                     {/* Quick Actions */}
-                    <div className="flex gap-2 mt-3 pt-3 border-t border-[var(--color-border)]">
+                    <div className="flex gap-2 mt-3 pt-3 border-t border-(--color-border)">
                         <button
                             onClick={() => {
                                 const today = new Date();
@@ -279,7 +279,7 @@ export function DateRangeFilter({
                                 onChange(formatDate(weekAgo), formatDate(today));
                                 setIsOpen(false);
                             }}
-                            className="flex-1 py-1.5 text-xs rounded-md bg-[var(--color-bg-tertiary)] hover:bg-[var(--color-bg-hover)] text-[var(--color-text-secondary)]"
+                            className="flex-1 py-1.5 text-xs rounded-md bg-(--color-bg-tertiary) hover:bg-(--color-bg-hover) text-(--color-text-secondary)"
                         >
                             Last 7 days
                         </button>
@@ -291,7 +291,7 @@ export function DateRangeFilter({
                                 onChange(formatDate(monthAgo), formatDate(today));
                                 setIsOpen(false);
                             }}
-                            className="flex-1 py-1.5 text-xs rounded-md bg-[var(--color-bg-tertiary)] hover:bg-[var(--color-bg-hover)] text-[var(--color-text-secondary)]"
+                            className="flex-1 py-1.5 text-xs rounded-md bg-(--color-bg-tertiary) hover:bg-(--color-bg-hover) text-(--color-text-secondary)"
                         >
                             Last 30 days
                         </button>
