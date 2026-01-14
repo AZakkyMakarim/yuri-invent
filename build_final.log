@@ -1,0 +1,19 @@
+.next/dev/types/validator.ts(351,31): error TS2344: Type 'typeof import("D:/IT SA Zakky/Projects/yuri-invent/app/api/vendors/[id]/items/[itemId]/route")' does not satisfy the constraint 'RouteHandlerConfig<"/api/vendors/[id]/items/[itemId]">'.
+  Types of property 'PUT' are incompatible.
+    Type '(request: Request, { params }: { params: { id: string; itemId: string; }; }) => Promise<NextResponse<{ error: string; }> | NextResponse<{ item: { category: { id: string; createdAt: Date; ... 4 more ...; code: string; }; uom: { ...; }; } & { ...; }; } & { ...; }>>' is not assignable to type '(request: NextRequest, context: { params: Promise<{ id: string; itemId: string; }>; }) => void | Response | Promise<void | Response>'.
+      Types of parameters '__1' and 'context' are incompatible.
+        Type '{ params: Promise<{ id: string; itemId: string; }>; }' is not assignable to type '{ params: { id: string; itemId: string; }; }'.
+          Types of property 'params' are incompatible.
+            Type 'Promise<{ id: string; itemId: string; }>' is missing the following properties from type '{ id: string; itemId: string; }': id, itemId
+.next/types/validator.ts(270,31): error TS2344: Type 'typeof import("D:/IT SA Zakky/Projects/yuri-invent/app/api/vendors/[id]/items/[itemId]/route")' does not satisfy the constraint 'RouteHandlerConfig<"/api/vendors/[id]/items/[itemId]">'.
+  Types of property 'PUT' are incompatible.
+    Type '(request: Request, { params }: { params: { id: string; itemId: string; }; }) => Promise<NextResponse<{ error: string; }> | NextResponse<{ item: { category: { id: string; createdAt: Date; ... 4 more ...; code: string; }; uom: { ...; }; } & { ...; }; } & { ...; }>>' is not assignable to type '(request: NextRequest, context: { params: Promise<{ id: string; itemId: string; }>; }) => void | Response | Promise<void | Response>'.
+      Types of parameters '__1' and 'context' are incompatible.
+        Type '{ params: Promise<{ id: string; itemId: string; }>; }' is not assignable to type '{ params: { id: string; itemId: string; }; }'.
+          Types of property 'params' are incompatible.
+            Type 'Promise<{ id: string; itemId: string; }>' is missing the following properties from type '{ id: string; itemId: string; }': id, itemId
+app/(dashboard)/purchase/[id]/edit/page.tsx(39,17): error TS1117: An object literal cannot have multiple properties with the same name.
+app/(dashboard)/purchase/page.tsx(184,57): error TS2322: Type '"icon"' is not assignable to type '"sm" | "md" | "lg" | undefined'.
+app/(dashboard)/purchase/page.tsx(196,65): error TS2322: Type '"icon"' is not assignable to type '"sm" | "md" | "lg" | undefined'.
+app/(dashboard)/purchase/page.tsx(204,65): error TS2322: Type '"icon"' is not assignable to type '"sm" | "md" | "lg" | undefined'.
+app/actions/purchase.ts(170,17): error TS2353: Object literal may only specify known properties, and 'suppliedItems' does not exist in type 'PurchaseRequestInclude<DefaultArgs>'.

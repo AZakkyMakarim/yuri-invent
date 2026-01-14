@@ -4,10 +4,10 @@ import prisma from '@/lib/prisma';
 // GET all items for a specific vendor
 export async function GET(
     request: Request,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
-        const vendorId = params.id;
+        const { id: vendorId } = await params;
         const { searchParams } = new URL(request.url);
 
         const page = Math.max(1, parseInt(searchParams.get('page') || '1'));
@@ -51,10 +51,10 @@ export async function GET(
 // POST add item(s) to vendor
 export async function POST(
     request: Request,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
-        const vendorId = params.id;
+        const { id: vendorId } = await params;
         const body = await request.json();
         const { itemId, cogsPerUom } = body;
 

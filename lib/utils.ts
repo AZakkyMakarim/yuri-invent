@@ -65,3 +65,34 @@ export function formatCurrency(
         maximumFractionDigits: 0,
     }).format(amount);
 }
+
+/**
+ * Recursively converts Prisma Decimal objects to numbers
+ * Useful for passing server data to client components
+ */
+export function serializeDecimal(obj: any): any {
+    if (obj === null || obj === undefined) return obj;
+    if (typeof obj === 'number') return obj;
+    if (typeof obj === 'string') return obj;
+    if (typeof obj === 'boolean') return obj;
+    if (obj instanceof Date) return obj;
+
+    // Handle Prisma Decimal
+    if (typeof obj === 'object' && obj !== null) {
+        if (typeof obj.toNumber === 'function') {
+            return obj.toNumber();
+        }
+
+        if (Array.isArray(obj)) {
+            return obj.map(serializeDecimal);
+        }
+
+        const newObj: any = {};
+        for (const key of Object.keys(obj)) {
+            newObj[key] = serializeDecimal(obj[key]);
+        }
+        return newObj;
+    }
+
+    return obj;
+}

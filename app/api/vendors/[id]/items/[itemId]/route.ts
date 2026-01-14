@@ -4,10 +4,10 @@ import prisma from '@/lib/prisma';
 // PUT update COGS for vendor-item
 export async function PUT(
     request: Request,
-    { params }: { params: { id: string; itemId: string } }
+    { params }: { params: Promise<{ id: string; itemId: string }> }
 ) {
     try {
-        const { id: vendorId, itemId } = params;
+        const { id: vendorId, itemId } = await params;
         const body = await request.json();
         const { cogsPerUom } = body;
 
@@ -65,10 +65,10 @@ export async function PUT(
 // DELETE remove item from vendor
 export async function DELETE(
     request: Request,
-    { params }: { params: { id: string; itemId: string } }
+    { params }: { params: Promise<{ id: string; itemId: string }> }
 ) {
     try {
-        const { id: vendorId, itemId } = params;
+        const { id: vendorId, itemId } = await params;
 
         // Find the vendor-item relationship
         const vendorItem = await prisma.vendorItem.findFirst({

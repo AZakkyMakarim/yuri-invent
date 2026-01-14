@@ -128,7 +128,16 @@ export async function createRAB(data: CreateRABInput) {
         });
 
         revalidatePath('/budget');
-        return { success: true, data: rab };
+
+        // Serialize Decimal fields for client component compatibility
+        const serializedRab = {
+            ...rab,
+            totalBudget: rab.totalBudget.toNumber(),
+            usedBudget: rab.usedBudget.toNumber(),
+            remainingBudget: rab.remainingBudget.toNumber(),
+        };
+
+        return { success: true, data: serializedRab };
 
     } catch (error: any) {
         console.error('Failed to create RAB:', error);
@@ -140,7 +149,12 @@ export async function getAllItems() {
     try {
         const items = await prisma.item.findMany({
             where: { isActive: true },
-            select: { id: true, sku: true, name: true },
+            select: {
+                id: true,
+                sku: true,
+                name: true,
+                uom: { select: { symbol: true } }
+            },
             orderBy: { name: 'asc' }
         });
         return { success: true, data: items };
@@ -158,7 +172,16 @@ export async function getRABList() {
             },
             orderBy: [{ fiscalYear: 'desc' }, { fiscalMonth: 'desc' }]
         });
-        return { success: true, data: rabs };
+
+        // Serialize Decimal fields to numbers for client component compatibility
+        const serializedRabs = rabs.map(rab => ({
+            ...rab,
+            totalBudget: rab.totalBudget.toNumber(),
+            usedBudget: rab.usedBudget.toNumber(),
+            remainingBudget: rab.remainingBudget.toNumber(),
+        }));
+
+        return { success: true, data: serializedRabs };
     } catch (error: any) {
         return { success: false, error: error.message };
     }
@@ -187,7 +210,21 @@ export async function getRABDetails(id: string) {
 
         if (!rab) return { success: false, error: "RAB not found" };
 
-        return { success: true, data: rab };
+        // Serialize Decimal fields to numbers for client component compatibility
+        const serializedRab = {
+            ...rab,
+            totalBudget: rab.totalBudget.toNumber(),
+            usedBudget: rab.usedBudget.toNumber(),
+            remainingBudget: rab.remainingBudget.toNumber(),
+            rabLines: rab.rabLines.map(line => ({
+                ...line,
+                unitPrice: line.unitPrice.toNumber(),
+                totalAmount: line.totalAmount.toNumber(),
+                usedAmount: line.usedAmount.toNumber(),
+            }))
+        };
+
+        return { success: true, data: serializedRab };
     } catch (error: any) {
         return { success: false, error: error.message };
     }

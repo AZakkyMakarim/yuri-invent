@@ -1,0 +1,48 @@
+.next/dev/types/validator.ts(351,31): error TS2344: Type 'typeof import("D:/IT SA Zakky/Projects/yuri-invent/app/api/vendors/[id]/items/[itemId]/route")' does not satisfy the constraint 'RouteHandlerConfig<"/api/vendors/[id]/items/[itemId]">'.
+  Types of property 'PUT' are incompatible.
+    Type '(request: Request, { params }: { params: { id: string; itemId: string; }; }) => Promise<NextResponse<{ error: string; }> | NextResponse<{ item: { category: { id: string; name: string; isActive: boolean; createdAt: Date; updatedAt: Date; code: string; createdById: string | null; }; uom: { ...; }; } & { ...; }; } & { ...' is not assignable to type '(request: NextRequest, context: { params: Promise<{ id: string; itemId: string; }>; }) => void | Response | Promise<void | Response>'.
+      Types of parameters '__1' and 'context' are incompatible.
+        Type '{ params: Promise<{ id: string; itemId: string; }>; }' is not assignable to type '{ params: { id: string; itemId: string; }; }'.
+          Types of property 'params' are incompatible.
+            Type 'Promise<{ id: string; itemId: string; }>' is missing the following properties from type '{ id: string; itemId: string; }': id, itemId
+.next/dev/types/validator.ts(360,31): error TS2344: Type 'typeof import("D:/IT SA Zakky/Projects/yuri-invent/app/api/vendors/[id]/items/route")' does not satisfy the constraint 'RouteHandlerConfig<"/api/vendors/[id]/items">'.
+  Types of property 'GET' are incompatible.
+    Type '(request: Request, { params }: { params: { id: string; }; }) => Promise<NextResponse<{ data: ({ item: { category: { id: string; name: string; isActive: boolean; createdAt: Date; updatedAt: Date; code: string; createdById: string | null; }; uom: { ...; }; } & { ...; }; } & { ...; })[]; total: number; page: number; li...' is not assignable to type '(request: NextRequest, context: { params: Promise<{ id: string; }>; }) => void | Response | Promise<void | Response>'.
+      Types of parameters '__1' and 'context' are incompatible.
+        Type '{ params: Promise<{ id: string; }>; }' is not assignable to type '{ params: { id: string; }; }'.
+          Types of property 'params' are incompatible.
+            Property 'id' is missing in type 'Promise<{ id: string; }>' but required in type '{ id: string; }'.
+.next/types/validator.ts(270,31): error TS2344: Type 'typeof import("D:/IT SA Zakky/Projects/yuri-invent/app/api/vendors/[id]/items/[itemId]/route")' does not satisfy the constraint 'RouteHandlerConfig<"/api/vendors/[id]/items/[itemId]">'.
+  Types of property 'PUT' are incompatible.
+    Type '(request: Request, { params }: { params: { id: string; itemId: string; }; }) => Promise<NextResponse<{ error: string; }> | NextResponse<{ item: { category: { id: string; name: string; isActive: boolean; createdAt: Date; updatedAt: Date; code: string; createdById: string | null; }; uom: { ...; }; } & { ...; }; } & { ...' is not assignable to type '(request: NextRequest, context: { params: Promise<{ id: string; itemId: string; }>; }) => void | Response | Promise<void | Response>'.
+      Types of parameters '__1' and 'context' are incompatible.
+        Type '{ params: Promise<{ id: string; itemId: string; }>; }' is not assignable to type '{ params: { id: string; itemId: string; }; }'.
+          Types of property 'params' are incompatible.
+            Type 'Promise<{ id: string; itemId: string; }>' is missing the following properties from type '{ id: string; itemId: string; }': id, itemId
+.next/types/validator.ts(279,31): error TS2344: Type 'typeof import("D:/IT SA Zakky/Projects/yuri-invent/app/api/vendors/[id]/items/route")' does not satisfy the constraint 'RouteHandlerConfig<"/api/vendors/[id]/items">'.
+  Types of property 'GET' are incompatible.
+    Type '(request: Request, { params }: { params: { id: string; }; }) => Promise<NextResponse<{ data: ({ item: { category: { id: string; name: string; isActive: boolean; createdAt: Date; updatedAt: Date; code: string; createdById: string | null; }; uom: { ...; }; } & { ...; }; } & { ...; })[]; total: number; page: number; li...' is not assignable to type '(request: NextRequest, context: { params: Promise<{ id: string; }>; }) => void | Response | Promise<void | Response>'.
+      Types of parameters '__1' and 'context' are incompatible.
+        Type '{ params: Promise<{ id: string; }>; }' is not assignable to type '{ params: { id: string; }; }'.
+          Types of property 'params' are incompatible.
+            Property 'id' is missing in type 'Promise<{ id: string; }>' but required in type '{ id: string; }'.
+app/(dashboard)/purchase/[id]/edit/page.tsx(39,17): error TS2353: Object literal may only specify known properties, and 'items' does not exist in type 'RABInclude<DefaultArgs>'.
+app/(dashboard)/purchase/[id]/page.tsx(56,45): error TS2322: Type '"icon"' is not assignable to type '"sm" | "md" | "lg" | undefined'.
+app/(dashboard)/purchase/[id]/page.tsx(84,46): error TS2322: Type '{ children: Element; className: string; }' is not assignable to type 'IntrinsicAttributes & TableHeaderProps'.
+  Property 'className' does not exist on type 'IntrinsicAttributes & TableHeaderProps'.
+app/(dashboard)/purchase/[id]/page.tsx(98,111): error TS2339: Property 'code' does not exist on type '{ id: string; name: string; isActive: boolean; createdAt: Date; updatedAt: Date; description: string | null; createdById: string | null; sku: string; categoryId: string; uomId: string; minStockLevel: number; maxStockLevel: number; currentStock: number; }'.
+app/(dashboard)/purchase/[id]/page.tsx(102,121): error TS2339: Property 'uom' does not exist on type '{ id: string; name: string; isActive: boolean; createdAt: Date; updatedAt: Date; description: string | null; createdById: string | null; sku: string; categoryId: string; uomId: string; minStockLevel: number; maxStockLevel: number; currentStock: number; }'.
+app/(dashboard)/purchase/manager-verification/page.tsx(124,42): error TS2322: Type '{ children: Element; className: string; }' is not assignable to type 'IntrinsicAttributes & TableHeaderProps'.
+  Property 'className' does not exist on type 'IntrinsicAttributes & TableHeaderProps'.
+app/(dashboard)/purchase/page.tsx(137,42): error TS2322: Type '{ children: Element; className: string; }' is not assignable to type 'IntrinsicAttributes & TableHeaderProps'.
+  Property 'className' does not exist on type 'IntrinsicAttributes & TableHeaderProps'.
+app/(dashboard)/purchase/page.tsx(184,57): error TS2322: Type '"icon"' is not assignable to type '"sm" | "md" | "lg" | undefined'.
+app/(dashboard)/purchase/page.tsx(196,65): error TS2322: Type '"icon"' is not assignable to type '"sm" | "md" | "lg" | undefined'.
+app/(dashboard)/purchase/page.tsx(204,65): error TS2322: Type '"icon"' is not assignable to type '"sm" | "md" | "lg" | undefined'.
+app/(dashboard)/purchase/purchasing-verification/page.tsx(95,42): error TS2322: Type '{ children: Element; className: string; }' is not assignable to type 'IntrinsicAttributes & TableHeaderProps'.
+  Property 'className' does not exist on type 'IntrinsicAttributes & TableHeaderProps'.
+app/(dashboard)/purchase/purchasing-verification/page.tsx(143,57): error TS2322: Type '"icon"' is not assignable to type '"sm" | "md" | "lg" | undefined'.
+app/(dashboard)/purchase/purchasing-verification/page.tsx(150,57): error TS2322: Type '"default"' is not assignable to type '"primary" | "secondary" | "danger" | "ghost" | undefined'.
+app/actions/purchase.ts(170,38): error TS2353: Object literal may only specify known properties, and 'vendorItems' does not exist in type 'VendorInclude<DefaultArgs>'.
+app/api/admin/cleanup-roles/route.ts(32,26): error TS2551: Property 'rolePermission' does not exist on type 'PrismaClient'. Did you mean 'permission'?
+app/api/admin/cleanup-roles/route.ts(37,26): error TS2551: Property 'rolePermission' does not exist on type 'PrismaClient'. Did you mean 'permission'?

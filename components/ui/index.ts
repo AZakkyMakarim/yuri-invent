@@ -32,3 +32,5 @@ export {
     SortButton,
 } from './filters';
 export type { SortDirection } from './filters';
+export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent } from './Card';
+export { Textarea } from './Textarea';

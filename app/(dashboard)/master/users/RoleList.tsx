@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
-import { Shield, Save, Check, Plus, Loader2, Lock } from 'lucide-react';
+import { Shield, Save, Check, Plus, Loader2, Lock, Trash2 } from 'lucide-react';
 import { Button, Table, TableHeader, TableBody, TableRow, TableHead, TableCell, Modal, Input } from '@/components/ui';
 import { apiFetch, cn } from '@/lib/utils';
 import { updateRolePermissions, createRole } from '@/app/actions/roles';
@@ -32,7 +32,8 @@ const ORDERED_MODULES = [
     { key: 'outbound_verification', label: 'Outbound Verification' },
     { key: 'stock_card', label: 'Stock Card' },
     { key: 'items', label: 'Items' }, // 6
-    { key: 'pr_list_input', label: 'PR List & Input' },
+    { key: 'pr_list', label: 'PR List' },
+    { key: 'pr_input', label: 'Create PR' },
     { key: 'pr_verification', label: 'PR Verification (Manager)' },
     { key: 'po_verification', label: 'PO Verification (Purchasing)' },
     { key: 'opname_list', label: 'Opname List' }, // 10
@@ -174,6 +175,30 @@ export default function RoleList() {
         }
     };
 
+    const handleDeleteRole = async (roleId: string, roleName: string) => {
+        if (!confirm(`Are you sure you want to delete the role "${roleName}"?`)) {
+            return;
+        }
+
+        startLoading();
+        try {
+            const response = await fetch(`/api/roles/${roleId}`, {
+                method: 'DELETE'
+            });
+            const result = await response.json();
+
+            if (result.success) {
+                fetchData(); // Refresh the data
+            } else {
+                alert('❌ Error: ' + result.error);
+            }
+        } catch (error: any) {
+            alert('❌ Error: ' + error.message);
+        } finally {
+            stopLoading();
+        }
+    };
+
     const activeRole = roles.find(r => r.id === selectedRoleId);
 
     return (
@@ -194,24 +219,34 @@ export default function RoleList() {
                                 <div className="flex justify-center p-4"><Loader2 className="animate-spin text-[var(--color-text-muted)]" /></div>
                             ) : (
                                 roles.map(role => (
-                                    <button
-                                        key={role.id}
-                                        onClick={() => selectRole(role)}
-                                        className={cn(
-                                            "w-full text-left px-3 py-2.5 rounded-md text-sm font-medium transition-colors flex items-center justify-between group",
-                                            selectedRoleId === role.id
-                                                ? "bg-[var(--color-primary)] text-white"
-                                                : "text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-hover)] hover:text-[var(--color-text-primary)]"
+                                    <div key={role.id} className="flex items-center gap-1">
+                                        <button
+                                            onClick={() => selectRole(role)}
+                                            className={cn(
+                                                "flex-1 text-left px-3 py-2.5 rounded-md text-sm font-medium transition-colors flex items-center justify-between group",
+                                                selectedRoleId === role.id
+                                                    ? "bg-[var(--color-primary)] text-white"
+                                                    : "text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-hover)] hover:text-[var(--color-text-primary)]"
+                                            )}
+                                        >
+                                            <span>{role.name}</span>
+                                            {role.isSystem && (
+                                                <Lock size={12} className={cn(
+                                                    "opacity-50",
+                                                    selectedRoleId === role.id ? "text-white" : "text-[var(--color-text-muted)]"
+                                                )} />
+                                            )}
+                                        </button>
+                                        {!role.isSystem && (
+                                            <button
+                                                onClick={() => handleDeleteRole(role.id, role.name)}
+                                                className="p-2 rounded-md text-red-500 hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors"
+                                                title="Delete role"
+                                            >
+                                                <Trash2 size={14} />
+                                            </button>
                                         )}
-                                    >
-                                        <span>{role.name}</span>
-                                        {role.isSystem && (
-                                            <Lock size={12} className={cn(
-                                                "opacity-50",
-                                                selectedRoleId === role.id ? "text-white" : "text-[var(--color-text-muted)]"
-                                            )} />
-                                        )}
-                                    </button>
+                                    </div>
                                 ))
                             )}
                         </div>
