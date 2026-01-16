@@ -54,3 +54,31 @@ export async function getItemsForPicker(vendorId?: string) {
         };
     }
 }
+
+export async function searchItems(query: string) {
+    try {
+        if (!query) return [];
+
+        const items = await prisma.item.findMany({
+            where: {
+                OR: [
+                    { name: { contains: query, mode: 'insensitive' } },
+                    { sku: { contains: query, mode: 'insensitive' } }
+                ],
+                isActive: true
+            },
+            take: 20,
+            select: {
+                id: true,
+                name: true,
+                sku: true,
+                currentStock: true
+            }
+        });
+
+        return items;
+    } catch (error) {
+        console.error('Failed to search items:', error);
+        return [];
+    }
+}
