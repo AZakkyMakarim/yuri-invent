@@ -21,6 +21,9 @@ export type CreatePRInput = {
     description?: string;
     status: 'DRAFT' | 'PENDING_MANAGER_APPROVAL';
     items: PRLineInput[];
+    requiresJustification?: boolean;
+    justificationReason?: string;
+    justificationDocument?: string;
 };
 
 export type UpdatePRInput = CreatePRInput & { id: string };
@@ -55,7 +58,18 @@ async function generatePRNumber(date: Date): Promise<string> {
 
 export async function createPurchaseRequest(input: CreatePRInput) {
     try {
-        const { userId, vendorId, rabId, requestDate, description, status, items } = input;
+        const {
+            userId,
+            vendorId,
+            rabId,
+            requestDate,
+            description,
+            status,
+            items,
+            requiresJustification,
+            justificationReason,
+            justificationDocument
+        } = input;
 
         if (!items || items.length === 0) {
             throw new Error('Items are required');
@@ -77,6 +91,9 @@ export async function createPurchaseRequest(input: CreatePRInput) {
                     vendorId,
                     rabId: rabId || null,
                     createdById: userId,
+                    requiresJustification: requiresJustification || false,
+                    justificationReason: justificationReason || null,
+                    justificationDocument: justificationDocument || null,
                     items: {
                         create: items.map(item => ({
                             itemId: item.itemId,
@@ -140,7 +157,12 @@ export async function getPurchaseRequests(
                 orderBy: { createdAt: 'desc' },
                 include: {
                     vendor: true,
-                    createdBy: { select: { name: true } }
+                    createdBy: { select: { name: true } },
+                    items: {
+                        include: {
+                            item: true
+                        }
+                    }
                 }
             }),
             prisma.purchaseRequest.count({ where })

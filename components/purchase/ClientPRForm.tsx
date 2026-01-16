@@ -9,7 +9,11 @@ import {
     Trash2,
     Save,
     Send,
-    Loader2
+    Loader2,
+    AlertTriangle,
+    FileText,
+    Upload,
+    X
 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
@@ -19,6 +23,9 @@ import SearchableDropdown from '@/components/ui/SearchableDropdown';
 import { formatCurrency } from '@/lib/utils';
 import { useAuth } from '@/contexts/AuthContext';
 import { createPurchaseRequest, updatePurchaseRequest } from '@/app/actions/purchase';
+import ItemPickerModal from './ItemPickerModal';
+import { FormattedNumberInput } from '@/components/ui/FormattedNumberInput';
+import JustificationModal from './JustificationModal';
 
 interface PRItem {
     id: string; // Temporary ID for new items
@@ -32,6 +39,7 @@ interface PRItem {
     totalAmount: number;
     notes?: string;
     fromRabLineId?: string; // Link to RAB line if applicable
+    isSuppliedByVendor?: boolean; // Whether vendor has this item in their VendorItem list
 }
 
 interface ClientPRFormProps {
@@ -45,6 +53,7 @@ export default function ClientPRForm({ vendors, rabs, initialData }: ClientPRFor
     const { user } = useAuth();
     const [isSubmitting, setIsSubmitting] = useState(false);
     const isEditMode = !!initialData;
+    const [isItemPickerOpen, setIsItemPickerOpen] = useState(false);
 
     // Form State
     const [prDate, setPrDate] = useState(initialData ? format(new Date(initialData.requestDate), 'yyyy-MM-dd') : format(new Date(), 'yyyy-MM-dd'));
@@ -67,6 +76,13 @@ export default function ClientPRForm({ vendors, rabs, initialData }: ClientPRFor
         })) || []
     );
 
+    // Justification State
+    const [requiresJustification, setRequiresJustification] = useState(false);
+    const [justificationReason, setJustificationReason] = useState(initialData?.justificationReason || '');
+    const [justificationDocument, setJustificationDocument] = useState(initialData?.justificationDocument || '');
+    const [showJustificationModal, setShowJustificationModal] = useState(false);
+    const [itemsExceedingBudget, setItemsExceedingBudget] = useState<any[]>([]);
+
     // Derived State
     const selectedVendor = vendors.find(v => v.id === selectedVendorId);
 
@@ -83,7 +99,7 @@ export default function ClientPRForm({ vendors, rabs, initialData }: ClientPRFor
         }
     };
 
-    // Load Items from RAB
+    // Handle RAB Selection - just select the RAB, don't auto-load items
     const handleRabChange = (rabId: string) => {
         if (!selectedVendorId) {
             alert('Please select a Vendor first.');
@@ -92,48 +108,108 @@ export default function ClientPRForm({ vendors, rabs, initialData }: ClientPRFor
 
         setSelectedRabId(rabId);
 
-        if (!rabId) return;
+        // Note: Items are no longer auto-loaded. 
+        // User will add items manually using the "Add Item" button
+    };
 
-        const rab = rabs.find(r => r.id === rabId);
-        if (rab) {
-            const relevantLines = rab.rabLines.filter((line: any) => {
-                const vendorSuppliesItem = selectedVendor?.suppliedItems?.some((vi: any) => vi.itemId === line.itemId);
-                return vendorSuppliesItem && line.replenishQty > 0;
-            });
-
-            if (relevantLines.length === 0) {
-                alert('No items in this RAB are supplied by the selected Vendor (or all have 0 replenish qty).');
-                return;
-            }
-
-            const newItems: PRItem[] = relevantLines.map((line: any) => ({
-                id: Math.random().toString(36).substr(2, 9),
-                itemId: line.itemId,
-                code: line.item.code,
-                name: line.item.name,
-                spec: '',
-                uom: line.item.uom,
-                qty: line.replenishQty,
-                unitPrice: Number(line.unitPrice),
-                totalAmount: Number(line.replenishQty) * Number(line.unitPrice),
-                fromRabLineId: line.id
-            }));
-
-            if (items.length > 0) {
-                if (confirm('Replace existing items with RAB items?')) {
-                    setItems(newItems);
-                }
-            } else {
-                setItems(newItems);
-            }
+    // Handle adding item from modal
+    const handleAddItemFromModal = (itemOption: any) => {
+        // Check if item already exists
+        const exists = items.some(item => item.itemId === itemOption.itemId);
+        if (exists) {
+            alert('This item is already in the request');
+            return;
         }
+
+        const newItem: PRItem = {
+            id: Math.random().toString(36).substr(2, 9),
+            itemId: itemOption.itemId,
+            code: itemOption.code,
+            name: itemOption.name,
+            spec: '',
+            uom: itemOption.uom,
+            qty: itemOption.rabQty || 1,
+            unitPrice: itemOption.unitPrice,
+            totalAmount: (itemOption.rabQty || 1) * itemOption.unitPrice,
+            fromRabLineId: itemOption.fromRabLineId,
+            isSuppliedByVendor: itemOption.isSuppliedByVendor
+        };
+
+        setItems([...items, newItem]);
     };
 
     const calculateTotal = () => {
         return items.reduce((sum, item) => sum + item.totalAmount, 0);
     };
 
-    const handleSubmit = async (status: 'DRAFT' | 'PENDING_MANAGER_APPROVAL') => {
+    // Detect if justification is required (check against RAB)
+    useEffect(() => {
+        if (items.length === 0) {
+            setRequiresJustification(false);
+            setItemsExceedingBudget([]);
+            return;
+        }
+
+        // Case 1: No RAB selected - ALL items need justification
+        if (!selectedRabId) {
+            setRequiresJustification(true);
+            setItemsExceedingBudget(
+                items.map(item => ({
+                    name: item.name,
+                    isNotInRab: true
+                }))
+            );
+            return;
+        }
+
+        // Case 2 & 3: RAB selected - check if items exceed or not in RAB
+        const selectedRab = rabs.find(r => r.id === selectedRabId);
+        if (!selectedRab?.lines) {
+            // RAB has no lines, treat as no RAB
+            setRequiresJustification(true);
+            setItemsExceedingBudget(
+                items.map(item => ({
+                    name: item.name,
+                    isNotInRab: true
+                }))
+            );
+            return;
+        }
+
+        // Check if any item exceeds RAB or is not in RAB
+        let needsJustification = false;
+        const exceedingItems: any[] = [];
+
+        for (const item of items) {
+            const rabLine = selectedRab.lines.find((l: any) => l.itemId === item.itemId);
+
+            if (!rabLine) {
+                // Item not in RAB
+                needsJustification = true;
+                exceedingItems.push({
+                    name: item.name,
+                    isNotInRab: true
+                });
+            } else if (item.qty > rabLine.replenishQty) {
+                // Quantity exceeds RAB budget
+                needsJustification = true;
+                exceedingItems.push({
+                    name: item.name,
+                    requestedQty: item.qty,
+                    budgetQty: rabLine.replenishQty,
+                    isNotInRab: false
+                });
+            }
+        }
+
+        setRequiresJustification(needsJustification);
+        setItemsExceedingBudget(exceedingItems);
+    }, [items, selectedRabId, rabs]);
+
+    const handleSubmit = async (
+        status: 'DRAFT' | 'PENDING_MANAGER_APPROVAL',
+        justificationData?: { reason: string; document?: string }
+    ) => {
         if (!user?.id) {
             if (process.env.NODE_ENV !== 'development' || !user) {
                 alert('User not authenticated');
@@ -147,6 +223,30 @@ export default function ClientPRForm({ vendors, rabs, initialData }: ClientPRFor
         }
         if (items.length === 0) {
             alert('Please add at least one item');
+            return;
+        }
+
+        // Check for items not supplied by vendor
+        const unsuppliedItems = items.filter(item => item.fromRabLineId && !item.isSuppliedByVendor);
+
+        if (unsuppliedItems.length > 0 && status === 'PENDING_MANAGER_APPROVAL') {
+            const itemList = unsuppliedItems.map(item => `- ${item.name}`).join('\n');
+            const confirmMsg = `⚠️ Warning: The following ${unsuppliedItems.length} item(s) are not typically supplied by this vendor:\n\n${itemList}\n\nPrices may need verification. Continue with submission?`;
+
+            if (!confirm(confirmMsg)) {
+                return;
+            }
+        }
+
+        // Determine effective values (use passed data or state)
+        const effectiveReason = justificationData?.reason || justificationReason;
+        const effectiveDocument = justificationData?.document || justificationDocument;
+
+        // Justification validation - SHOW MODAL instead of blocking directly
+        if (requiresJustification && status === 'PENDING_MANAGER_APPROVAL' && !effectiveReason.trim()) {
+            // Open modal to collect justification
+            setShowJustificationModal(true);
+            setIsSubmitting(false);
             return;
         }
 
@@ -165,7 +265,11 @@ export default function ClientPRForm({ vendors, rabs, initialData }: ClientPRFor
                     unitPrice: item.unitPrice,
                     notes: item.notes,
                     fromRabLineId: item.fromRabLineId
-                }))
+                })),
+                requiresJustification,
+                // Use effective values here
+                justificationReason: requiresJustification ? effectiveReason : undefined,
+                justificationDocument: requiresJustification ? effectiveDocument : undefined
             };
 
             let result;
@@ -304,9 +408,17 @@ export default function ClientPRForm({ vendors, rabs, initialData }: ClientPRFor
                                 disabled={!selectedVendorId}
                                 className="w-full"
                             />
-                            {!selectedVendorId && (
+                            {selectedRabId ? (
+                                <p className="text-xs text-blue-600 dark:text-blue-400 mt-1">
+                                    ✓ RAB selected. Use "Add Item" button to add items from this RAB.
+                                </p>
+                            ) : !selectedVendorId ? (
                                 <p className="text-xs text-amber-500 mt-1">
                                     Select a vendor first to filter RAB items.
+                                </p>
+                            ) : (
+                                <p className="text-xs text-(--color-text-muted) mt-1">
+                                    Optional: Select a RAB to add budgeted items.
                                 </p>
                             )}
                         </div>
@@ -324,10 +436,10 @@ export default function ClientPRForm({ vendors, rabs, initialData }: ClientPRFor
                         disabled={!selectedVendorId}
                         variant="secondary"
                         className="border-(--color-primary) text-(--color-primary) hover:bg-(--color-primary)/10"
-                        onClick={() => alert('Manual Item Add Modal to be implemented')}
+                        onClick={() => setIsItemPickerOpen(true)}
                     >
                         <Plus size={16} className="mr-2" />
-                        Add Item Manually
+                        Add Item
                     </Button>
                 </CardHeader>
                 <div className="overflow-x-auto">
@@ -348,7 +460,7 @@ export default function ClientPRForm({ vendors, rabs, initialData }: ClientPRFor
                             {items.length === 0 ? (
                                 <tr>
                                     <td colSpan={8} className="px-4 py-8 text-center text-(--color-text-muted)">
-                                        No items added. Select a RAB or add manually.
+                                        No items added yet. Click "Add Item" to add items from {selectedRabId ? 'RAB or catalog' : 'catalog'}.
                                     </td>
                                 </tr>
                             ) : (
@@ -362,33 +474,64 @@ export default function ClientPRForm({ vendors, rabs, initialData }: ClientPRFor
                                             {item.spec && <div className="text-xs text-(--color-text-muted)">{item.spec}</div>}
                                         </td>
                                         <td className="px-4 py-3">
-                                            {item.fromRabLineId ? (
-                                                <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300">
-                                                    RAB
-                                                </span>
-                                            ) : (
-                                                <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300">
-                                                    Manual
-                                                </span>
-                                            )}
+                                            <div className="flex flex-col gap-1">
+                                                <div className="flex items-center gap-2">
+                                                    {/* RAB Badge */}
+                                                    {item.fromRabLineId && (
+                                                        <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300">
+                                                            RAB
+                                                        </span>
+                                                    )}
+
+                                                    {/* Vendor Supply Status */}
+                                                    {item.isSuppliedByVendor ? (
+                                                        <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300 inline-flex items-center gap-1">
+                                                            <span className="text-[10px]">✓</span> Supplied
+                                                        </span>
+                                                    ) : (
+                                                        <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300 inline-flex items-center gap-1">
+                                                            <span className="text-[10px]">✕</span> Unsupplied
+                                                        </span>
+                                                    )}
+                                                </div>
+                                                {!item.isSuppliedByVendor && (
+                                                    <div className="text-[10px] text-amber-600 dark:text-amber-400">
+                                                        Verify pricing
+                                                    </div>
+                                                )}
+                                            </div>
                                         </td>
                                         <td className="px-4 py-3 text-right">
-                                            <Input
-                                                type="number"
+                                            <FormattedNumberInput
                                                 value={item.qty}
-                                                onChange={(e) => {
-                                                    const val = Number(e.target.value);
+                                                onChange={(val) => {
                                                     const newItems = [...items];
                                                     newItems[index].qty = val;
                                                     newItems[index].totalAmount = val * newItems[index].unitPrice;
                                                     setItems(newItems);
                                                 }}
-                                                className="w-20 text-right h-8 bg-(--color-bg-secondary)"
+                                                decimals={0}
+                                                className="w-24 text-right h-8 bg-(--color-bg-secondary)"
+                                                placeholder="0"
                                             />
                                         </td>
                                         <td className="px-4 py-3 text-center text-(--color-text-secondary)">{item.uom}</td>
-                                        <td className="px-4 py-3 text-right text-(--color-text-secondary)">
-                                            {formatCurrency(item.unitPrice)}
+                                        <td className="px-4 py-3 text-right">
+                                            <FormattedNumberInput
+                                                value={item.unitPrice}
+                                                onChange={(val) => {
+                                                    const newItems = [...items];
+                                                    newItems[index].unitPrice = val;
+                                                    newItems[index].totalAmount = newItems[index].qty * val;
+                                                    setItems(newItems);
+                                                }}
+                                                decimals={2}
+                                                className={`w-32 text-right h-8 ${!item.isSuppliedByVendor
+                                                    ? 'bg-amber-50 dark:bg-amber-900/20 border-amber-300 dark:border-amber-700'
+                                                    : 'bg-(--color-bg-secondary)'
+                                                    }`}
+                                                placeholder="0,00"
+                                            />
                                         </td>
                                         <td className="px-4 py-3 text-right font-medium text-(--color-text-primary)">
                                             {formatCurrency(item.totalAmount)}
@@ -420,6 +563,38 @@ export default function ClientPRForm({ vendors, rabs, initialData }: ClientPRFor
                     </table>
                 </div>
             </Card>
+
+            {/* Item Picker Modal */}
+            <ItemPickerModal
+                isOpen={isItemPickerOpen}
+                onClose={() => setIsItemPickerOpen(false)}
+                onAddItem={handleAddItemFromModal}
+                vendorId={selectedVendorId}
+                vendorSuppliedItems={selectedVendor?.suppliedItems || []}
+                rabId={selectedRabId}
+                rab={rabs.find(r => r.id === selectedRabId)}
+            />
+
+            {/* Justification Modal */}
+            <JustificationModal
+                isOpen={showJustificationModal}
+                onClose={() => {
+                    setShowJustificationModal(false);
+                    setIsSubmitting(false);
+                }}
+                onSubmit={(data) => {
+                    setJustificationReason(data.reason);
+                    setJustificationDocument(data.document || '');
+                    setShowJustificationModal(false);
+
+                    // Trigger the actual PR submission with the new data explicitly!
+                    handleSubmit('PENDING_MANAGER_APPROVAL', {
+                        reason: data.reason,
+                        document: data.document
+                    });
+                }}
+                itemsExceedingBudget={itemsExceedingBudget}
+            />
         </div>
     );
 }

@@ -439,6 +439,14 @@ model PurchaseRequest {
   purchasingNotes        String?
   poNumber               String?        // Generated when accepted by purchasing
   poSentAt               DateTime?
+  poDocumentPath         String?        // Uploaded PO document
+  shippingTrackingNumber String?        // Optional shipping tracking number
+  estimatedShippingDate  DateTime?      // Expected delivery date
+  
+  // Justification for over-budget or non-RAB items
+  requiresJustification  Boolean  @default(false) // Auto-set if items exceed RAB
+  justificationReason    String?                   // Why exceeding budget?
+  justificationDocument  String?                   // Path to supporting document
 
   createdById           String
   createdAt             DateTime @default(now())
@@ -479,6 +487,24 @@ model PurchaseRequestItem {
 // INBOUND (BARANG MASUK)
 // =============================================================================
 
+enum InboundDiscrepancyType {
+  NONE
+  SHORTAGE
+  OVERAGE
+  WRONG_ITEM
+  DAMAGED
+}
+
+enum DiscrepancyResolution {
+  PENDING
+  WAIT_REMAINING      // For shortage
+  CLOSE_SHORT         // For shortage
+  RETURN_TO_VENDOR    // For overage/wrong
+  KEEP_EXCESS         // For overage
+  REPLACE_ITEM        // For wrong/damaged
+  REFUND              // For wrong/damaged
+}
+
 model Inbound {
   id                String        @id @default(cuid())
   grnNumber         String        @unique // Goods Received Note Number
@@ -487,6 +513,7 @@ model Inbound {
   receiveDate       DateTime      @default(now())
   status            InboundStatus @default(PENDING_VERIFICATION)
   notes             String?
+  proofDocumentUrl  String?       // Proof of delivery (Surat Jalan)
   
   createdById       String
   verifiedById      String?
@@ -513,7 +540,15 @@ model InboundItem {
   itemId           String
   expectedQuantity Int
   receivedQuantity Int
+  acceptedQuantity Int     @default(0)
+  rejectedQuantity Int     @default(0)
   notes            String?
+
+  // Discrepancy Tracking
+  discrepancyType      InboundDiscrepancyType @default(NONE)
+  discrepancyReason    String?
+  discrepancyAction    DiscrepancyResolution?
+  discrepancyDocumentUrl String? // Specific document for this issue (e.g. photo of damage)
 
   // Relations
   inbound Inbound @relation(fields: [inboundId], references: [id], onDelete: Cascade)

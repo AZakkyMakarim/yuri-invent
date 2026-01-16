@@ -22,7 +22,9 @@ import {
     TableRow,
 } from "@/components/ui/Table";
 import { formatCurrency } from '@/lib/utils';
-import { getPurchaseRequests, acceptPurchaseRequest } from '@/app/actions/purchase';
+import { getPurchaseRequests } from '@/app/actions/purchase';
+import { verifyPurchaseOrder } from '@/app/actions/po-verification';
+import POVerificationModal, { POVerificationData } from '@/components/purchase/POVerificationModal';
 import { useAuth } from '@/contexts/AuthContext';
 
 export default function PurchasingVerificationPage() {
@@ -32,6 +34,10 @@ export default function PurchasingVerificationPage() {
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState('');
     const [processingId, setProcessingId] = useState<string | null>(null);
+
+    // Modal state
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedPR, setSelectedPR] = useState<any>(null);
 
     useEffect(() => {
         loadData();
@@ -49,19 +55,42 @@ export default function PurchasingVerificationPage() {
         setLoading(false);
     };
 
-    const handleAccept = async (id: string, prNumber: string) => {
-        if (!confirm(`Create Purchase Order for PR ${prNumber}?`)) return;
+    const handleOpenModal = (pr: any) => {
+        setSelectedPR(pr);
+        setIsModalOpen(true);
+    };
 
-        setProcessingId(id);
-        const result = await acceptPurchaseRequest(id, user?.id || 'purchasing-id');
+    const handleVerify = async (data: POVerificationData) => {
+        if (!selectedPR || !user?.id) return;
 
-        if (result.success) {
-            alert(`PO Created Successfully! Number: ${result.data?.poNumber}`);
-            loadData();
-        } else {
-            alert('Failed to create PO: ' + result.error);
+        setProcessingId(selectedPR.id);
+
+        try {
+            const result = await verifyPurchaseOrder({
+                prId: selectedPR.id,
+                userId: user.id,
+                ...data
+            });
+
+            if (result.success) {
+                alert(
+                    `✅ Purchase Order Created Successfully!\n\n` +
+                    `PO Number: ${result.data?.poNumber}\n` +
+                    `GRN Number: ${result.data?.grnNumber}\n\n` +
+                    `Inbound entry has been created and is ready for goods receipt.`
+                );
+                setIsModalOpen(false);
+                setSelectedPR(null);
+                await loadData();
+            } else {
+                throw new Error(result.error);
+            }
+        } catch (error: any) {
+            alert('Failed to create PO: ' + error.message);
+            throw error;
+        } finally {
+            setProcessingId(null);
         }
-        setProcessingId(null);
     };
 
     return (
@@ -149,12 +178,12 @@ export default function PurchasingVerificationPage() {
                                                     <Button
                                                         variant="primary"
                                                         size="sm"
-                                                        onClick={() => handleAccept(pr.id, pr.prNumber)}
+                                                        onClick={() => handleOpenModal(pr)}
                                                         disabled={processingId === pr.id}
                                                         className="bg-blue-600 hover:bg-blue-700 text-white"
                                                     >
                                                         {processingId === pr.id ? <Loader2 className="animate-spin h-4 w-4" /> : <FileText size={16} className="mr-2" />}
-                                                        Create PO
+                                                        Verify & Create PO
                                                     </Button>
                                                 </div>
                                             </TableCell>
@@ -166,6 +195,19 @@ export default function PurchasingVerificationPage() {
                     </div>
                 </CardContent>
             </Card>
+
+            {/* PO Verification Modal */}
+            {selectedPR && (
+                <POVerificationModal
+                    isOpen={isModalOpen}
+                    onClose={() => {
+                        setIsModalOpen(false);
+                        setSelectedPR(null);
+                    }}
+                    onVerify={handleVerify}
+                    purchaseRequest={selectedPR}
+                />
+            )}
         </div>
     );
 }

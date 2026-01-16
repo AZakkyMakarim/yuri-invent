@@ -5,16 +5,16 @@ import { Badge } from '@/components/ui/Badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/Table';
 import { formatCurrency } from '@/lib/utils';
-import { ArrowLeft, User, Clock, CheckCircle2, XCircle } from 'lucide-react';
+import { ArrowLeft, User, Clock, CheckCircle2, XCircle, AlertTriangle, FileText } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
 
 interface PageProps {
-    params: { id: string }
+    params: Promise<{ id: string }>
 }
 
 export default async function PRDetailPage({ params }: PageProps) {
-    const { id } = params;
+    const { id } = await params;
 
     const pr = await prisma.purchaseRequest.findUnique({
         where: { id },
@@ -128,6 +128,47 @@ export default async function PRDetailPage({ params }: PageProps) {
                             </CardContent>
                         </Card>
                     )}
+
+                    {/* Justification Section */}
+                    {pr.requiresJustification && (
+                        <Card className="border-amber-300 bg-amber-50 dark:bg-amber-900/20">
+                            <CardHeader className="py-3">
+                                <CardTitle className="text-base flex items-center gap-2 text-amber-900 dark:text-amber-100">
+                                    <AlertTriangle className="w-5 h-5" />
+                                    Budget Variance Justification
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent className="py-3 space-y-3">
+                                <div className="p-2 bg-amber-100 dark:bg-amber-800/30 border border-amber-200 dark:border-amber-700 rounded text-xs text-amber-900 dark:text-amber-100">
+                                    ⚠️ This PR contains items that exceed the RAB budget or are not included in the RAB.
+                                </div>
+
+                                <div>
+                                    <div className="text-xs font-medium text-amber-800 dark:text-amber-200 mb-1">Reason:</div>
+                                    <div className="text-sm text-(--color-text-primary) whitespace-pre-wrap bg-white dark:bg-gray-800 p-2 rounded border border-amber-200 dark:border-amber-700">
+                                        {pr.justificationReason}
+                                    </div>
+                                </div>
+
+                                {pr.justificationDocument && (
+                                    <div>
+                                        <div className="text-xs font-medium text-amber-800 dark:text-amber-200 mb-1">
+                                            Supporting Document:
+                                        </div>
+                                        <a
+                                            href={pr.justificationDocument}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="inline-flex items-center gap-2 text-sm text-blue-600 hover:text-blue-700 hover:underline"
+                                        >
+                                            <FileText size={16} />
+                                            View Document
+                                        </a>
+                                    </div>
+                                )}
+                            </CardContent>
+                        </Card>
+                    )}
                 </div>
 
                 {/* Sidebar (1 col) */}
@@ -174,7 +215,7 @@ export default async function PRDetailPage({ params }: PageProps) {
 
                             {/* Manager Approval */}
                             <div className={`flex gap-3 relative pb-4 border-l-2 ml-2 pl-4 ${pr.managerApprovedBy ? 'border-green-200' : 'border-gray-200'}`}>
-                                <div className={`absolute -left-[9px] top-0 bg-white dark:bg-gray-900 rounded-full ${params ? '' : ''}`}>
+                                <div className="absolute -left-[9px] top-0 bg-white dark:bg-gray-900 rounded-full">
                                     {pr.managerApprovedBy ? <CheckCircle2 className="w-4 h-4 text-green-500" /> : <Clock className="w-4 h-4 text-gray-300" />}
                                     {pr.managerApprovalStatus === 'REJECTED' && <XCircle className="w-4 h-4 text-red-500" />}
                                 </div>

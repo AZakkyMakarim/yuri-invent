@@ -11,7 +11,7 @@ interface ModalProps {
     title: string;
     children: React.ReactNode;
     footer?: React.ReactNode;
-    size?: 'sm' | 'md' | 'lg' | 'xl';
+    size?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl' | '5xl' | 'full';
 }
 
 export function Modal({
@@ -48,6 +48,11 @@ export function Modal({
         md: 'max-w-md',
         lg: 'max-w-lg',
         xl: 'max-w-xl',
+        '2xl': 'max-w-2xl',
+        '3xl': 'max-w-3xl',
+        '4xl': 'max-w-4xl',
+        '5xl': 'max-w-5xl',
+        full: 'max-w-full mx-4',
     };
 
     return (
@@ -62,12 +67,12 @@ export function Modal({
             <div
                 ref={modalRef}
                 className={cn(
-                    'relative w-full mx-4 bg-[var(--color-bg-secondary)] border border-[var(--color-border)] rounded-xl shadow-2xl animate-fadeIn',
+                    'relative w-full mx-4 bg-(--color-bg-secondary) border border-(--color-border) rounded-xl shadow-2xl animate-fadeIn',
                     sizes[size]
                 )}
             >
                 {/* Header */}
-                <div className="flex items-center justify-between px-6 py-4 border-b border-[var(--color-border)]">
+                <div className="flex items-center justify-between px-6 py-4 border-b border-(--color-border)">
                     <h2 className="text-lg font-semibold">{title}</h2>
                     <Button variant="ghost" size="sm" onClick={onClose} className="p-1">
                         <X size={20} />
@@ -79,7 +84,7 @@ export function Modal({
 
                 {/* Footer */}
                 {footer && (
-                    <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-[var(--color-border)]">
+                    <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-(--color-border)">
                         {footer}
                     </div>
                 )}

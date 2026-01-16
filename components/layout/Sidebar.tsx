@@ -47,6 +47,7 @@ const navItems: NavItem[] = [
         children: [
             { key: 'inboundList', href: '/inbound', permission: 'inbound_list' },
             { key: 'inboundVerification', href: '/inbound/verification', permission: 'inbound_verification' },
+            { key: 'inboundIssues', href: '/inbound/issues', permission: 'inbound_verification' },
         ],
     },
     {
