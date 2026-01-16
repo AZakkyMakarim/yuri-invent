@@ -5,7 +5,7 @@ import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
 import { Textarea } from '@/components/ui/Textarea';
 import { Loader2, Check } from 'lucide-react';
-import { InboundDiscrepancyType, DiscrepancyResolution } from '@/app/generated/prisma/client';
+import { InboundDiscrepancyType, DiscrepancyResolution } from '@prisma/client';
 
 interface ResolutionModalProps {
     isOpen: boolean;

@@ -8,7 +8,7 @@ import { Textarea } from '@/components/ui/Textarea';
 import { Loader2, Check, AlertTriangle, Upload, FileText, X } from 'lucide-react';
 import { verifyInbound, InboundVerificationItem } from '@/app/actions/inbound';
 import { useAuth } from '@/contexts/AuthContext';
-import { InboundDiscrepancyType } from '@/app/generated/prisma/client';
+import { InboundDiscrepancyType } from '@prisma/client';
 import { supabase } from '@/lib/supabase'; // Using client for auth session retrieval
 
 interface InboundVerificationModalProps {

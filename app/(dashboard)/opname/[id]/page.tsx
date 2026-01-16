@@ -187,7 +187,7 @@ export default function OpnameDetailPage() {
                                             ) : (
                                                 <div
                                                     onClick={() => handleEditStart(count)}
-                                                    className={`cursor-pointer border border-dashed border-gray-300 rounded py-1 px-3 inline-block min-w-[3rem] hover:bg-white hover:border-blue-400 transition-colors ${isSaved ? 'font-bold' : 'text-gray-400 font-light'}`}
+                                                    className={`cursor-pointer border border-dashed border-gray-300 rounded py-1 px-3 inline-block min-w-12 hover:bg-white hover:border-blue-400 transition-colors ${isSaved ? 'font-bold' : 'text-gray-400 font-light'}`}
                                                 >
                                                     {isSaved ? count.counterAQty : 'Tap to Count'}
                                                 </div>
