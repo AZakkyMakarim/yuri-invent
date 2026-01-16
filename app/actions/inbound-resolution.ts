@@ -1,7 +1,7 @@
 'use server';
 
 import { prisma } from '@/lib/prisma';
-import { DiscrepancyResolution } from '@/app/generated/prisma/client';
+import { DiscrepancyType, ResolutionAction } from '@prisma/client';
 import { revalidatePath } from 'next/cache';
 
 export async function resolveInboundDiscrepancy(

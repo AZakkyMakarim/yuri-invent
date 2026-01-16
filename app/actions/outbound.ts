@@ -1,7 +1,7 @@
 'use server';
 
 import { prisma } from '@/lib/prisma';
-import { OutboundStatus } from '@/app/generated/prisma/client';
+import { OutboundStatus } from '@prisma/client';
 
 export async function getOutboundList(
     page = 1,

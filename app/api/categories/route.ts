@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
-import type { Prisma } from '@/app/generated/prisma/client';
+import { Prisma } from '@prisma/client';
 
 export interface PaginatedResponse<T> {
     data: T[];

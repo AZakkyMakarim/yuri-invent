@@ -28,7 +28,7 @@ import { getInboundIssues } from '@/app/actions/inbound';
 import { useAuth } from '@/contexts/AuthContext';
 import { ResolutionModal } from '@/components/inbound/ResolutionModal';
 import { resolveInboundDiscrepancy } from '@/app/actions/inbound-resolution';
-import { DiscrepancyResolution } from '@/app/generated/prisma/client';
+import { DiscrepancyResolution } from '@prisma/client';
 
 export default function InboundIssuesPage() {
     const { user } = useAuth();

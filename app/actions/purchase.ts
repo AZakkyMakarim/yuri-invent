@@ -3,7 +3,7 @@
 import { prisma } from '@/lib/prisma';
 import { serializeDecimal } from '@/lib/utils';
 import { revalidatePath } from 'next/cache';
-import { Prisma } from '@/app/generated/prisma/client';
+import { Prisma } from '@prisma/client';
 
 export type PRLineInput = {
     itemId: string;

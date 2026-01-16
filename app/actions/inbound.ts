@@ -4,12 +4,13 @@ import { prisma } from '@/lib/prisma';
 import { serializeDecimal } from '@/lib/utils';
 import { revalidatePath } from 'next/cache';
 import {
+    InboundStatus,
+    InboundType,
     Prisma,
     StockMovementType,
-    InboundStatus,
     InboundDiscrepancyType,
     DiscrepancyResolution
-} from '@/app/generated/prisma/client';
+} from '@prisma/client';
 
 export type InboundVerificationItem = {
     itemId: string;

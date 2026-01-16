@@ -1,7 +1,7 @@
 'use server';
 
 import { prisma } from '@/lib/prisma';
-import { StockOpnameStatus } from '@/app/generated/prisma/client';
+import { Prisma, StockOpnameStatus } from '@prisma/client';
 import { revalidatePath } from 'next/cache';
 
 export async function getOpnameList(
