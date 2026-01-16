@@ -1,19 +1,21 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { ChevronDown, Check, X, Search } from 'lucide-react';
+import { ChevronDown, Check, X, Search, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 export interface DropdownOption {
     value: string;
     label: string;
+    [key: string]: any;
 }
 
 interface DropdownProps {
     label?: string;
     value: string;
-    onChange: (value: string) => void;
-    options: DropdownOption[];
+    onChange: (value: string, option?: DropdownOption) => void;
+    options?: DropdownOption[];
+    loadOptions?: (search: string) => Promise<DropdownOption[]>;
     placeholder?: string;
     searchable?: boolean;
     clearable?: boolean;
@@ -26,7 +28,8 @@ export function Dropdown({
     label,
     value,
     onChange,
-    options,
+    options = [],
+    loadOptions,
     placeholder = 'Select...',
     searchable = false,
     clearable = false,
@@ -36,10 +39,31 @@ export function Dropdown({
 }: DropdownProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [search, setSearch] = useState('');
+    const [asyncOptions, setAsyncOptions] = useState<DropdownOption[]>([]);
+    const [loading, setLoading] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
     const searchInputRef = useRef<HTMLInputElement>(null);
 
-    const selectedOption = options.find((opt) => opt.value === value);
+    const displayOptions = loadOptions ? asyncOptions : options;
+    const selectedOption = displayOptions.find((opt) => opt.value === value) || (loadOptions && value ? { value, label: value } : undefined);
+
+    // Initial load for async
+    useEffect(() => {
+        if (loadOptions && isOpen) {
+            const timer = setTimeout(async () => {
+                setLoading(true);
+                try {
+                    const res = await loadOptions(search);
+                    setAsyncOptions(res);
+                } catch (err) {
+                    console.error("Failed to load options", err);
+                } finally {
+                    setLoading(false);
+                }
+            }, 300);
+            return () => clearTimeout(timer);
+        }
+    }, [search, isOpen, loadOptions]);
 
     // Close on outside click
     useEffect(() => {
@@ -60,14 +84,17 @@ export function Dropdown({
         }
     }, [isOpen, searchable]);
 
-    const filteredOptions = searchable
-        ? options.filter((opt) =>
-            opt.label.toLowerCase().includes(search.toLowerCase())
-        )
-        : options;
+    const filteredOptions = loadOptions
+        ? asyncOptions
+        : (searchable
+            ? options.filter((opt) =>
+                opt.label.toLowerCase().includes(search.toLowerCase())
+            )
+            : options);
 
     const handleSelect = (optionValue: string) => {
-        onChange(optionValue);
+        const option = displayOptions.find((opt) => opt.value === optionValue);
+        onChange(optionValue, option);
         setIsOpen(false);
         setSearch('');
     };
@@ -165,7 +192,11 @@ export function Dropdown({
                         )}
 
                         {/* Options */}
-                        {filteredOptions.length === 0 ? (
+                        {loading ? (
+                            <div className="px-3 py-2 text-sm text-(--color-text-muted) flex items-center justify-center">
+                                <Loader2 className="animate-spin mr-2" size={16} /> Loading...
+                            </div>
+                        ) : filteredOptions.length === 0 ? (
                             <div className="px-3 py-2 text-sm text-(--color-text-muted)">
                                 No options found
                             </div>

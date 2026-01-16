@@ -11,7 +11,6 @@ import { Loader2, Save, ArrowLeft, Trash, Plus } from 'lucide-react';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
 import { createOutbound } from '@/app/actions/outbound';
-import { getVendors } from '@/app/actions/vendor'; // We actually need 'getMitras' or partners. For now reusing generic getVendors or getMitras if exists? 
 // Checking sidebar: '/master/mitra' exists. Let's assume there is a getMitras action or we just use getVendors if same table?
 // Prisma schema says: Mitra model. So we need getMitras.
 // If getMitras doesn't exist, we might need to create it. I will use a placeholder or check master actions.
@@ -111,7 +110,7 @@ export default function CreateOutboundPage() {
         <div className="p-6 max-w-4xl mx-auto space-y-6 animate-in fade-in duration-500">
             <div className="flex items-center gap-4">
                 <Link href="/outbound">
-                    <Button variant="ghost" size="icon">
+                    <Button variant="ghost" size="md">
                         <ArrowLeft size={20} />
                     </Button>
                 </Link>
@@ -206,7 +205,7 @@ export default function CreateOutboundPage() {
                                                 }}
                                             />
                                         </div>
-                                        <Button variant="ghost" size="icon" className="text-red-500 hover:text-red-700 mt-6" onClick={() => removeItem(index)}>
+                                        <Button variant="ghost" size="md" className="text-red-500 hover:text-red-700 mt-6" onClick={() => removeItem(index)}>
                                             <Trash size={18} />
                                         </Button>
                                     </div>
