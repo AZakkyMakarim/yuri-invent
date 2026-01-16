@@ -3,7 +3,7 @@
 
 generator client {
   provider = "prisma-client"
-  provider = "prisma-client"
+  output   = "../generated_client"
 }
 
 datasource db {
@@ -128,16 +128,16 @@ enum BankName {
 // =============================================================================
 
 model User {
-  id          String   @id @default(cuid())
-  supabaseId  String   @unique // Link to Supabase Auth user
-  email       String   @unique
-  name        String?
-  password    String? // Legacy - will use Supabase Auth
-  roleId      String?
-  role        Role?    @relation(fields: [roleId], references: [id])
-  isActive    Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id         String   @id @default(cuid())
+  supabaseId String   @unique // Link to Supabase Auth user
+  email      String   @unique
+  name       String?
+  password   String? // Legacy - will use Supabase Auth
+  roleId     String?
+  role       Role?    @relation(fields: [roleId], references: [id])
+  isActive   Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
   // Relations
   createdPurchaseRequests  PurchaseRequest[]  @relation("PRCreatedBy")
@@ -230,8 +230,8 @@ model UOM {
 }
 
 model Vendor {
-  id              String   @id @default(cuid())
-  code            String   @unique
+  id              String     @id @default(cuid())
+  code            String     @unique
   name            String
   address         String?
   phone           String?
@@ -243,11 +243,11 @@ model Vendor {
   vendorType      VendorType @default(NON_SPK)
   bank            BankName?
   bankBranch      String?
-  spkDocumentPath String?    // Path to uploaded SPK document for SPK vendors
+  spkDocumentPath String? // Path to uploaded SPK document for SPK vendors
   createdById     String?
   createdBy       User?      @relation("VendorCreatedBy", fields: [createdById], references: [id])
   createdAt       DateTime   @default(now())
-  updatedAt       DateTime @updatedAt
+  updatedAt       DateTime   @updatedAt
 
   // Relations
   purchaseRequests PurchaseRequest[]
@@ -261,15 +261,15 @@ model Vendor {
 }
 
 model VendorItem {
-  id          String   @id @default(cuid())
-  vendorId    String
-  vendor      Vendor   @relation("VendorSuppliedItems", fields: [vendorId], references: [id], onDelete: Cascade)
-  itemId      String
-  item        Item     @relation("ItemVendorSupplies", fields: [itemId], references: [id], onDelete: Cascade)
-  cogsPerUom  Float    // Cost of Goods Sold per Unit of Measure
-  isActive    Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id         String   @id @default(cuid())
+  vendorId   String
+  vendor     Vendor   @relation("VendorSuppliedItems", fields: [vendorId], references: [id], onDelete: Cascade)
+  itemId     String
+  item       Item     @relation("ItemVendorSupplies", fields: [itemId], references: [id], onDelete: Cascade)
+  cogsPerUom Float // Cost of Goods Sold per Unit of Measure
+  isActive   Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
   @@unique([vendorId, itemId])
   @@map("vendor_items")
@@ -295,8 +295,6 @@ model Mitra {
   @@map("mitras")
 }
 
-
-
 model Item {
   id            String   @id @default(cuid())
   sku           String   @unique
@@ -313,32 +311,32 @@ model Item {
   createdById   String?
 
   // Relations
-  category              Category               @relation(fields: [categoryId], references: [id])
-  uom                   UOM                    @relation(fields: [uomId], references: [id])
-  createdBy             User?                  @relation("ItemCreatedBy", fields: [createdById], references: [id])
-  purchaseRequestItems  PurchaseRequestItem[]
-  inboundItems          InboundItem[]
-  outboundItems         OutboundItem[]
-  stockCards            StockCard[]
-  stockOpnameCounts     StockOpnameCount[]
-  stockAdjustmentItems  StockAdjustmentItem[]
-  returnItems           ReturnItem[]
-  priceHistories        ItemPriceHistory[]
-  vendorSupplies        VendorItem[]           @relation("ItemVendorSupplies")
-  rabLines              RABLine[]
+  category             Category              @relation(fields: [categoryId], references: [id])
+  uom                  UOM                   @relation(fields: [uomId], references: [id])
+  createdBy            User?                 @relation("ItemCreatedBy", fields: [createdById], references: [id])
+  purchaseRequestItems PurchaseRequestItem[]
+  inboundItems         InboundItem[]
+  outboundItems        OutboundItem[]
+  stockCards           StockCard[]
+  stockOpnameCounts    StockOpnameCount[]
+  stockAdjustmentItems StockAdjustmentItem[]
+  returnItems          ReturnItem[]
+  priceHistories       ItemPriceHistory[]
+  vendorSupplies       VendorItem[]          @relation("ItemVendorSupplies")
+  rabLines             RABLine[]
 
   @@map("items")
 }
 
 model ItemPriceHistory {
-  id        String   @id @default(cuid())
+  id        String    @id @default(cuid())
   itemId    String
   vendorId  String
-  unitPrice Decimal  @db.Decimal(18, 2)
-  currency  String   @default("IDR")
-  validFrom DateTime @default(now())
+  unitPrice Decimal   @db.Decimal(18, 2)
+  currency  String    @default("IDR")
+  validFrom DateTime  @default(now())
   validTo   DateTime?
-  createdAt DateTime @default(now())
+  createdAt DateTime  @default(now())
 
   // Relations
   item   Item   @relation(fields: [itemId], references: [id])
@@ -350,9 +348,9 @@ model ItemPriceHistory {
 model Currency {
   id           String   @id @default(cuid())
   code         String   @unique // e.g., "IDR", "USD"
-  name         String   // e.g., "Indonesian Rupiah"
-  symbol       String   // e.g., "Rp", "$"
-  exchangeRate Decimal  @db.Decimal(18, 6) @default(1.0) // Rate to base currency
+  name         String // e.g., "Indonesian Rupiah"
+  symbol       String // e.g., "Rp", "$"
+  exchangeRate Decimal  @default(1.0) @db.Decimal(18, 6) // Rate to base currency
   isBase       Boolean  @default(false)
   isActive     Boolean  @default(true)
   createdAt    DateTime @default(now())
@@ -372,7 +370,7 @@ model RAB {
   fiscalYear      Int
   fiscalMonth     Int
   totalBudget     Decimal        @db.Decimal(18, 2)
-  usedBudget      Decimal        @db.Decimal(18, 2) @default(0)
+  usedBudget      Decimal        @default(0) @db.Decimal(18, 2)
   remainingBudget Decimal        @db.Decimal(18, 2)
   currency        String         @default("IDR")
   status          ApprovalStatus @default(DRAFT)
@@ -398,11 +396,11 @@ model RABLine {
   rabId             String
   itemId            String
   requiredQty       Int
-  lastStockSnapshot Int      // Stock at time of RAB creation
-  replenishQty      Int      // requiredQty - lastStockSnapshot
-  unitPrice         Decimal  @db.Decimal(18, 2) // Highest vendor price
-  totalAmount       Decimal  @db.Decimal(18, 2) // replenishQty * unitPrice
-  usedAmount        Decimal  @db.Decimal(18, 2) @default(0) // Track usage by PR
+  lastStockSnapshot Int // Stock at time of RAB creation
+  replenishQty      Int // requiredQty - lastStockSnapshot
+  unitPrice         Decimal @db.Decimal(18, 2) // Highest vendor price
+  totalAmount       Decimal @db.Decimal(18, 2) // replenishQty * unitPrice
+  usedAmount        Decimal @default(0) @db.Decimal(18, 2) // Track usage by PR
   notes             String?
 
   // Relations
@@ -417,16 +415,16 @@ model RABLine {
 // =============================================================================
 
 model PurchaseRequest {
-  id                    String   @id @default(cuid())
-  prNumber              String   @unique
-  vendorId              String
-  rabId                 String?
-  totalAmount           Decimal  @db.Decimal(18, 2)
-  currency              String   @default("IDR")
-  status                POStatus @default(DRAFT)
-  notes                 String?
-  requestDate           DateTime @default(now())
-  
+  id          String   @id @default(cuid())
+  prNumber    String   @unique
+  vendorId    String
+  rabId       String?
+  totalAmount Decimal  @db.Decimal(18, 2)
+  currency    String   @default("IDR")
+  status      POStatus @default(DRAFT)
+  notes       String?
+  requestDate DateTime @default(now())
+
   // Manager Approval
   managerApprovalStatus ApprovalStatus @default(PENDING)
   managerApprovedById   String?
@@ -437,31 +435,31 @@ model PurchaseRequest {
   purchasingAcceptedById String?
   purchasingAcceptedAt   DateTime?
   purchasingNotes        String?
-  poNumber               String?        // Generated when accepted by purchasing
+  poNumber               String? // Generated when accepted by purchasing
   poSentAt               DateTime?
-  poDocumentPath         String?        // Uploaded PO document
-  shippingTrackingNumber String?        // Optional shipping tracking number
-  estimatedShippingDate  DateTime?      // Expected delivery date
-  
-  // Justification for over-budget or non-RAB items
-  requiresJustification  Boolean  @default(false) // Auto-set if items exceed RAB
-  justificationReason    String?                   // Why exceeding budget?
-  justificationDocument  String?                   // Path to supporting document
+  poDocumentPath         String? // Uploaded PO document
+  shippingTrackingNumber String? // Optional shipping tracking number
+  estimatedShippingDate  DateTime? // Expected delivery date
 
-  createdById           String
-  createdAt             DateTime @default(now())
-  updatedAt             DateTime @updatedAt
+  // Justification for over-budget or non-RAB items
+  requiresJustification Boolean @default(false) // Auto-set if items exceed RAB
+  justificationReason   String? // Why exceeding budget?
+  justificationDocument String? // Path to supporting document
+
+  createdById String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   // Relations
-  vendor             Vendor                @relation(fields: [vendorId], references: [id])
-  rab                RAB?                  @relation(fields: [rabId], references: [id])
-  createdBy          User                  @relation("PRCreatedBy", fields: [createdById], references: [id])
-  managerApprovedBy  User?                 @relation("PRApprovedByManager", fields: [managerApprovedById], references: [id])
-  purchasingAcceptedBy User?               @relation("PRAcceptedByPurchasing", fields: [purchasingAcceptedById], references: [id])
-  items              PurchaseRequestItem[]
-  inbounds           Inbound[]
-  bills              Bill[]
-  returns            Return[]
+  vendor               Vendor                @relation(fields: [vendorId], references: [id])
+  rab                  RAB?                  @relation(fields: [rabId], references: [id])
+  createdBy            User                  @relation("PRCreatedBy", fields: [createdById], references: [id])
+  managerApprovedBy    User?                 @relation("PRApprovedByManager", fields: [managerApprovedById], references: [id])
+  purchasingAcceptedBy User?                 @relation("PRAcceptedByPurchasing", fields: [purchasingAcceptedById], references: [id])
+  items                PurchaseRequestItem[]
+  inbounds             Inbound[]
+  bills                Bill[]
+  returns              Return[]
 
   @@map("purchase_requests")
 }
@@ -497,12 +495,12 @@ enum InboundDiscrepancyType {
 
 enum DiscrepancyResolution {
   PENDING
-  WAIT_REMAINING      // For shortage
-  CLOSE_SHORT         // For shortage
-  RETURN_TO_VENDOR    // For overage/wrong
-  KEEP_EXCESS         // For overage
-  REPLACE_ITEM        // For wrong/damaged
-  REFUND              // For wrong/damaged
+  WAIT_REMAINING // For shortage
+  CLOSE_SHORT // For shortage
+  RETURN_TO_VENDOR // For overage/wrong
+  KEEP_EXCESS // For overage
+  REPLACE_ITEM // For wrong/damaged
+  REFUND // For wrong/damaged
 }
 
 model Inbound {
@@ -513,15 +511,15 @@ model Inbound {
   receiveDate       DateTime      @default(now())
   status            InboundStatus @default(PENDING_VERIFICATION)
   notes             String?
-  proofDocumentUrl  String?       // Proof of delivery (Surat Jalan)
-  
+  proofDocumentUrl  String? // Proof of delivery (Surat Jalan)
+
   createdById       String
   verifiedById      String?
   verifiedAt        DateTime?
   verificationNotes String?
-  
-  createdAt         DateTime      @default(now())
-  updatedAt         DateTime      @updatedAt
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   // Relations
   purchaseRequest PurchaseRequest @relation(fields: [purchaseRequestId], references: [id])
@@ -535,7 +533,7 @@ model Inbound {
 }
 
 model InboundItem {
-  id               String @id @default(cuid())
+  id               String  @id @default(cuid())
   inboundId        String
   itemId           String
   expectedQuantity Int
@@ -545,9 +543,9 @@ model InboundItem {
   notes            String?
 
   // Discrepancy Tracking
-  discrepancyType      InboundDiscrepancyType @default(NONE)
-  discrepancyReason    String?
-  discrepancyAction    DiscrepancyResolution?
+  discrepancyType        InboundDiscrepancyType @default(NONE)
+  discrepancyReason      String?
+  discrepancyAction      DiscrepancyResolution?
   discrepancyDocumentUrl String? // Specific document for this issue (e.g. photo of damage)
 
   // Relations
@@ -562,27 +560,27 @@ model InboundItem {
 // =============================================================================
 
 model Outbound {
-  id            String         @id @default(cuid())
-  outboundCode  String         @unique
-  mitraId       String?
-  requestDate   DateTime       @default(now())
-  releaseDate   DateTime?
-  status        OutboundStatus @default(DRAFT)
-  purpose       String?        // Internal use, Sale, etc.
-  notes         String?
-  
+  id           String         @id @default(cuid())
+  outboundCode String         @unique
+  mitraId      String?
+  requestDate  DateTime       @default(now())
+  releaseDate  DateTime?
+  status       OutboundStatus @default(DRAFT)
+  purpose      String? // Internal use, Sale, etc.
+  notes        String?
+
   createdById   String
   approvedById  String?
   approvedAt    DateTime?
   approvalNotes String?
-  
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   // Relations
-  mitra      Mitra?        @relation(fields: [mitraId], references: [id])
-  createdBy  User          @relation("OutboundCreatedBy", fields: [createdById], references: [id])
-  approvedBy User?         @relation("OutboundApprovedBy", fields: [approvedById], references: [id])
+  mitra      Mitra?         @relation(fields: [mitraId], references: [id])
+  createdBy  User           @relation("OutboundCreatedBy", fields: [createdById], references: [id])
+  approvedBy User?          @relation("OutboundApprovedBy", fields: [approvedById], references: [id])
   items      OutboundItem[]
   stockCards StockCard[]
 
@@ -590,12 +588,12 @@ model Outbound {
 }
 
 model OutboundItem {
-  id              String @id @default(cuid())
-  outboundId      String
-  itemId          String
-  requestedQty    Int
-  releasedQty     Int    @default(0)
-  notes           String?
+  id           String  @id @default(cuid())
+  outboundId   String
+  itemId       String
+  requestedQty Int
+  releasedQty  Int     @default(0)
+  notes        String?
 
   // Relations
   outbound Outbound @relation(fields: [outboundId], references: [id], onDelete: Cascade)
@@ -612,10 +610,10 @@ model StockCard {
   id              String            @id @default(cuid())
   itemId          String
   movementType    StockMovementType
-  referenceType   String            // "INBOUND", "OUTBOUND", "ADJUSTMENT", "RETURN"
+  referenceType   String // "INBOUND", "OUTBOUND", "ADJUSTMENT", "RETURN"
   referenceId     String
   quantityBefore  Int
-  quantityChange  Int               // Positive for IN, Negative for OUT
+  quantityChange  Int // Positive for IN, Negative for OUT
   quantityAfter   Int
   notes           String?
   transactionDate DateTime          @default(now())
@@ -643,48 +641,48 @@ model StockCard {
 // =============================================================================
 
 model StockOpname {
-  id              String            @id @default(cuid())
-  opnameCode      String            @unique
-  scheduledDate   DateTime
-  startedAt       DateTime?
-  completedAt     DateTime?
-  status          StockOpnameStatus @default(SCHEDULED)
-  notes           String?
-  createdAt       DateTime          @default(now())
-  updatedAt       DateTime          @updatedAt
+  id            String            @id @default(cuid())
+  opnameCode    String            @unique
+  scheduledDate DateTime
+  startedAt     DateTime?
+  completedAt   DateTime?
+  status        StockOpnameStatus @default(SCHEDULED)
+  notes         String?
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
 
   // Relations
-  counts          StockOpnameCount[]
-  adjustment      StockAdjustment?
+  counts     StockOpnameCount[]
+  adjustment StockAdjustment?
 
   @@map("stock_opnames")
 }
 
 model StockOpnameCount {
-  id             String   @id @default(cuid())
-  stockOpnameId  String
-  itemId         String
-  systemQty      Int      // Snapshot of system quantity at opname start
-  
+  id            String @id @default(cuid())
+  stockOpnameId String
+  itemId        String
+  systemQty     Int // Snapshot of system quantity at opname start
+
   // Counter A
-  counterAId     String?
-  counterAQty    Int?
-  counterAAt     DateTime?
-  
+  counterAId  String?
+  counterAQty Int?
+  counterAAt  DateTime?
+
   // Counter B
-  counterBId     String?
-  counterBQty    Int?
-  counterBAt     DateTime?
-  
+  counterBId  String?
+  counterBQty Int?
+  counterBAt  DateTime?
+
   // Comparison & Recount
-  isMatching     Boolean  @default(false)
-  recountRound   Int      @default(0)
-  finalQty       Int?
-  variance       Int?     // finalQty - systemQty
-  
-  notes          String?
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  isMatching   Boolean @default(false)
+  recountRound Int     @default(0)
+  finalQty     Int?
+  variance     Int? // finalQty - systemQty
+
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   // Relations
   stockOpname StockOpname @relation(fields: [stockOpnameId], references: [id], onDelete: Cascade)
@@ -701,20 +699,20 @@ model StockOpnameCount {
 // =============================================================================
 
 model StockAdjustment {
-  id              String         @id @default(cuid())
-  adjustmentCode  String         @unique
-  adjustmentType  AdjustmentType
-  stockOpnameId   String?        @unique // Link if from Opname
-  status          ApprovalStatus @default(DRAFT)
-  notes           String?
-  
-  createdById     String
-  approvedById    String?
-  approvedAt      DateTime?
-  approvalNotes   String?
-  
-  createdAt       DateTime       @default(now())
-  updatedAt       DateTime       @updatedAt
+  id             String         @id @default(cuid())
+  adjustmentCode String         @unique
+  adjustmentType AdjustmentType
+  stockOpnameId  String?        @unique // Link if from Opname
+  status         ApprovalStatus @default(DRAFT)
+  notes          String?
+
+  createdById   String
+  approvedById  String?
+  approvedAt    DateTime?
+  approvalNotes String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   // Relations
   stockOpname StockOpname?          @relation(fields: [stockOpnameId], references: [id])
@@ -727,12 +725,12 @@ model StockAdjustment {
 }
 
 model StockAdjustmentItem {
-  id                String @id @default(cuid())
+  id                String  @id @default(cuid())
   stockAdjustmentId String
   itemId            String
   systemQty         Int
   adjustedQty       Int
-  variance          Int    // adjustedQty - systemQty
+  variance          Int // adjustedQty - systemQty
   reason            String?
 
   // Relations
@@ -755,16 +753,16 @@ model Return {
   reason            ReturnReason
   status            ReturnStatus @default(DRAFT)
   notes             String?
-  
-  createdById       String
-  approvedById      String?
-  approvedAt        DateTime?
-  approvalNotes     String?
-  sentToVendorAt    DateTime?
-  completedAt       DateTime?
-  
-  createdAt         DateTime     @default(now())
-  updatedAt         DateTime     @updatedAt
+
+  createdById    String
+  approvedById   String?
+  approvedAt     DateTime?
+  approvalNotes  String?
+  sentToVendorAt DateTime?
+  completedAt    DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   // Relations
   purchaseRequest PurchaseRequest @relation(fields: [purchaseRequestId], references: [id])
@@ -778,13 +776,13 @@ model Return {
 }
 
 model ReturnItem {
-  id           String @id @default(cuid())
-  returnId     String
-  itemId       String
-  quantity     Int
-  unitPrice    Decimal @db.Decimal(18, 2)
-  totalPrice   Decimal @db.Decimal(18, 2)
-  reason       String?
+  id         String  @id @default(cuid())
+  returnId   String
+  itemId     String
+  quantity   Int
+  unitPrice  Decimal @db.Decimal(18, 2)
+  totalPrice Decimal @db.Decimal(18, 2)
+  reason     String?
 
   // Relations
   return Return @relation(fields: [returnId], references: [id], onDelete: Cascade)
@@ -805,19 +803,19 @@ model Bill {
   billDate          DateTime   @default(now())
   dueDate           DateTime?
   totalAmount       Decimal    @db.Decimal(18, 2)
-  paidAmount        Decimal    @db.Decimal(18, 2) @default(0)
+  paidAmount        Decimal    @default(0) @db.Decimal(18, 2)
   remainingAmount   Decimal    @db.Decimal(18, 2)
   currency          String     @default("IDR")
   status            BillStatus @default(DRAFT)
   notes             String?
-  
+
   createdById       String
   verifiedById      String?
   verifiedAt        DateTime?
   verificationNotes String?
-  
-  createdAt         DateTime   @default(now())
-  updatedAt         DateTime   @updatedAt
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   // Relations
   vendor          Vendor          @relation(fields: [vendorId], references: [id])
@@ -836,18 +834,18 @@ model Payment {
   paymentDate     DateTime      @default(now())
   amount          Decimal       @db.Decimal(18, 2)
   currency        String        @default("IDR")
-  paymentMethod   String?       // Bank Transfer, Cash, etc.
-  referenceNumber String?       // Bank reference
+  paymentMethod   String? // Bank Transfer, Cash, etc.
+  referenceNumber String? // Bank reference
   status          PaymentStatus @default(PENDING_VALIDATION)
   notes           String?
-  
+
   createdById     String
   validatedById   String?
   validatedAt     DateTime?
   validationNotes String?
-  
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   // Relations
   bill        Bill  @relation(fields: [billId], references: [id])

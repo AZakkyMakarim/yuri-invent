@@ -5,7 +5,6 @@ import { serializeDecimal } from '@/lib/utils';
 import { revalidatePath } from 'next/cache';
 import {
     InboundStatus,
-    InboundType,
     Prisma,
     StockMovementType,
     InboundDiscrepancyType,

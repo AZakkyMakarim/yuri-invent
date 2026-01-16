@@ -1,7 +1,7 @@
 'use server';
 
 import { prisma } from '@/lib/prisma';
-import { DiscrepancyType, ResolutionAction } from '@prisma/client';
+import { InboundDiscrepancyType, DiscrepancyResolution, Prisma } from '@prisma/client';
 import { revalidatePath } from 'next/cache';
 
 export async function resolveInboundDiscrepancy(
@@ -24,7 +24,7 @@ export async function resolveInboundDiscrepancy(
         if (action === 'KEEP_EXCESS' && item.rejectedQuantity > 0) {
             const qtyToAdd = item.rejectedQuantity;
 
-            await prisma.$transaction(async (tx) => {
+            await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
                 // 1. Move qty from Rejected to Accepted
                 await tx.inboundItem.update({
                     where: { id: inboundItemId },

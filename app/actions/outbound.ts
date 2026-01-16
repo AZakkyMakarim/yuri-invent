@@ -64,7 +64,7 @@ export async function getOutboundById(id: string) {
                         item: {
                             include: {
                                 uom: true,
-                                brand: true
+                                category: true
                             }
                         }
                     }

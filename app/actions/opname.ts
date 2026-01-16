@@ -105,7 +105,7 @@ export async function createOpname(data: {
                 opnameCode: code,
                 scheduledDate: data.scheduledDate,
                 notes: data.notes,
-                status: 'SCHEDULED',
+                status: StockOpnameStatus.SCHEDULED,
                 counts: {
                     create: allItems.map(item => ({
                         itemId: item.id,
@@ -152,7 +152,7 @@ export async function updateOpnameCount(
             // Should we update parent status to IN_PROGRESS?
             await tx.stockOpname.update({
                 where: { id: current.stockOpnameId },
-                data: { status: 'IN_PROGRESS', startedAt: new Date() } // idempotent
+                data: { status: StockOpnameStatus.COUNTING_IN_PROGRESS, startedAt: new Date() } // idempotent
             });
         });
 
@@ -173,7 +173,7 @@ export async function finalizeOpname(opnameId: string) {
         await prisma.stockOpname.update({
             where: { id: opnameId },
             data: {
-                status: 'COMPLETED',
+                status: StockOpnameStatus.FINALIZED,
                 completedAt: new Date()
             }
         });
