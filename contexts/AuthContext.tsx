@@ -15,6 +15,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const [user, setUser] = useState<AuthUser | null>(null);
     const [loading, setLoading] = useState(true);
 
+    const INACTIVITY_TIMEOUT = 6 * 60 * 60 * 1000; // 6 hours in milliseconds
+
     useEffect(() => {
         // Load initial user
         loadUser();
@@ -29,6 +31,40 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             subscription.unsubscribe();
         };
     }, []);
+
+    // Inactivity Check
+    useEffect(() => {
+        if (!user) return; // Only track when logged in
+
+        let timeoutId: NodeJS.Timeout;
+
+        const resetTimer = () => {
+            if (timeoutId) clearTimeout(timeoutId);
+            timeoutId = setTimeout(() => {
+                console.log('User inactive for 6 hours, logging out...');
+                handleSignOut();
+            }, INACTIVITY_TIMEOUT);
+        };
+
+        // Events to monitor
+        const events = ['mousemove', 'mousedown', 'keypress', 'scroll', 'touchstart'];
+
+        // Add listeners
+        events.forEach(event => {
+            window.addEventListener(event, resetTimer);
+        });
+
+        // Initialize timer
+        resetTimer();
+
+        // Cleanup
+        return () => {
+            if (timeoutId) clearTimeout(timeoutId);
+            events.forEach(event => {
+                window.removeEventListener(event, resetTimer);
+            });
+        };
+    }, [user]);
 
     async function loadUser() {
         try {
