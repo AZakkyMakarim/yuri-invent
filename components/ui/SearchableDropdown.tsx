@@ -16,6 +16,8 @@ type SearchableDropdownProps = {
     placeholder?: string;
     className?: string;
     disabled?: boolean;
+    onAddNew?: () => void; // Optional callback for "Add New" button
+    addNewLabel?: string;  // Custom label for "Add New" button
     multiple?: boolean; // Enable multi-select mode
 };
 
@@ -26,7 +28,9 @@ export default function SearchableDropdown({
     placeholder = 'Select an option...',
     className = '',
     disabled = false,
-    multiple = false
+    multiple = false,
+    onAddNew,
+    addNewLabel = 'Add New'
 }: SearchableDropdownProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
@@ -91,7 +95,7 @@ export default function SearchableDropdown({
     // Display text for the trigger button
     const getDisplayText = () => {
         if (selectedOptions.length === 0) {
-            return <span className="text-[var(--color-text-muted)]">{placeholder}</span>;
+            return <span className="text-(--color-text-muted)">{placeholder}</span>;
         }
 
         if (multiple) {
@@ -111,12 +115,12 @@ export default function SearchableDropdown({
                 type="button"
                 onClick={() => !disabled && setIsOpen(!isOpen)}
                 disabled={disabled}
-                className={`w-full px-3 py-2 rounded-lg border-2 bg-[var(--color-bg-tertiary)] text-left flex items-center justify-between gap-2 transition-all outline-none
+                className={`w-full px-3 py-2 rounded-lg border-2 bg-(--color-bg-tertiary) text-left flex items-center justify-between gap-2 transition-all outline-none
                     ${disabled
-                        ? 'opacity-50 cursor-not-allowed border-[var(--color-border)]'
+                        ? 'opacity-50 cursor-not-allowed border-(--color-border)'
                         : isOpen
-                            ? 'border-amber-500 dark:border-amber-500 ring-2 ring-amber-200 dark:ring-amber-900/30'
-                            : 'border-[var(--color-border)] hover:border-amber-300 dark:hover:border-amber-700'
+                            ? 'border-indigo-500 dark:border-indigo-500 ring-2 ring-indigo-200 dark:ring-indigo-900/30'
+                            : 'border-(--color-border) hover:border-indigo-300 dark:hover:border-indigo-700'
                     }
                 `}
             >
@@ -127,31 +131,31 @@ export default function SearchableDropdown({
                     {selectedValues.length > 0 && !disabled && (
                         <X
                             size={16}
-                            className="text-[var(--color-text-muted)] hover:text-red-500 transition-colors"
+                            className="text-(--color-text-muted) hover:text-red-500 transition-colors"
                             onClick={handleClear}
                         />
                     )}
                     <ChevronDown
                         size={18}
-                        className={`text-[var(--color-text-secondary)] transition-transform ${isOpen ? 'rotate-180' : ''}`}
+                        className={`text-(--color-text-secondary) transition-transform ${isOpen ? 'rotate-180' : ''}`}
                     />
                 </div>
             </button>
 
             {/* Dropdown Menu */}
             {isOpen && (
-                <div className="absolute z-50 w-full mt-2 bg-[var(--color-bg-card)] border-2 border-amber-300 dark:border-amber-700 rounded-lg shadow-2xl overflow-hidden animate-fadeIn">
+                <div className="absolute z-50 w-full mt-2 bg-(--color-bg-card) border-2 border-indigo-300 dark:border-indigo-700 rounded-lg shadow-2xl overflow-hidden animate-fadeIn">
                     {/* Search Input */}
-                    <div className="p-2 border-b border-[var(--color-border)] bg-gradient-to-r from-amber-50 to-yellow-50 dark:from-amber-950/30 dark:to-yellow-950/30">
+                    <div className="p-2 border-b border-(--color-border) bg-linear-to-r from-indigo-50 to-blue-50 dark:from-indigo-950/30 dark:to-blue-950/30">
                         <div className="relative">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)]" size={16} />
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-(--color-text-muted)" size={16} />
                             <input
                                 ref={searchInputRef}
                                 type="text"
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                                 placeholder="Search..."
-                                className="w-full pl-9 pr-3 py-2 rounded-md border border-[var(--color-border)] bg-white dark:bg-[var(--color-bg-tertiary)] focus:border-amber-500 dark:focus:border-amber-500 focus:ring-2 focus:ring-amber-200 dark:focus:ring-amber-900/30 outline-none text-sm"
+                                className="w-full pl-9 pr-3 py-2 rounded-md border border-(--color-border) bg-white dark:bg-(--color-bg-tertiary) focus:border-indigo-500 dark:focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 dark:focus:ring-indigo-900/30 outline-none text-sm"
                             />
                         </div>
                     </div>
@@ -159,7 +163,7 @@ export default function SearchableDropdown({
                     {/* Options List */}
                     <div className="max-h-60 overflow-y-auto">
                         {filteredOptions.length === 0 ? (
-                            <div className="px-4 py-8 text-center text-[var(--color-text-muted)] text-sm">
+                            <div className="px-4 py-8 text-center text-(--color-text-muted) text-sm">
                                 No options found
                             </div>
                         ) : (
@@ -170,15 +174,15 @@ export default function SearchableDropdown({
                                         key={option.value}
                                         type="button"
                                         onClick={() => handleSelect(option.value)}
-                                        className={`w-full px-4 py-2.5 text-left hover:bg-gradient-to-r hover:from-amber-50/50 hover:to-transparent dark:hover:from-amber-950/20 transition-colors border-b border-[var(--color-border)] last:border-b-0 flex items-center gap-3
-                                            ${selected ? 'bg-amber-100 dark:bg-amber-900/30' : ''}
+                                        className={`w-full px-4 py-2.5 text-left hover:bg-linear-to-r hover:from-indigo-50/50 hover:to-transparent dark:hover:from-indigo-950/20 transition-colors border-b border-(--color-border) last:border-b-0 flex items-center gap-3
+                                            ${selected ? 'bg-indigo-100 dark:bg-indigo-900/30' : ''}
                                         `}
                                     >
                                         {multiple && (
-                                            <div className={`flex-shrink-0 w-4 h-4 rounded border-2 flex items-center justify-center transition-colors
+                                            <div className={`shrink-0 w-4 h-4 rounded border-2 flex items-center justify-center transition-colors
                                                 ${selected
-                                                    ? 'bg-amber-500 border-amber-500'
-                                                    : 'border-[var(--color-border)]'
+                                                    ? 'bg-indigo-500 border-indigo-500'
+                                                    : 'border-(--color-border)'
                                                 }`}
                                             >
                                                 {selected && <Check size={12} className="text-white" />}
@@ -187,11 +191,11 @@ export default function SearchableDropdown({
                                         <div className="flex-1 flex flex-col min-w-0">
                                             <span className="font-medium truncate">{option.label}</span>
                                             {option.subtitle && (
-                                                <span className="text-xs text-[var(--color-text-muted)] mt-0.5 truncate">{option.subtitle}</span>
+                                                <span className="text-xs text-(--color-text-muted) mt-0.5 truncate">{option.subtitle}</span>
                                             )}
                                         </div>
                                         {!multiple && selected && (
-                                            <Check size={18} className="text-amber-600 dark:text-amber-400 flex-shrink-0" />
+                                            <Check size={18} className="text-indigo-600 dark:text-indigo-400 shrink-0" />
                                         )}
                                     </button>
                                 );
@@ -199,16 +203,55 @@ export default function SearchableDropdown({
                         )}
                     </div>
 
-                    {/* Multi-select footer */}
-                    {multiple && selectedValues.length > 0 && (
-                        <div className="p-2 border-t border-[var(--color-border)] bg-gradient-to-r from-amber-50 to-yellow-50 dark:from-amber-950/30 dark:to-yellow-950/30">
-                            <div className="text-xs text-[var(--color-text-secondary)] font-medium">
-                                {selectedValues.length} item{selectedValues.length !== 1 ? 's' : ''} selected
-                            </div>
+                    {/* Footer Actions */}
+                    {(onAddNew || (multiple && selectedValues.length > 0)) && (
+                        <div className="flex flex-col border-t border-(--color-border)">
+                            {onAddNew && (
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        setIsOpen(false);
+                                        onAddNew();
+                                    }}
+                                    className="w-full px-4 py-3 text-left bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-900/20 dark:hover:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 text-sm font-medium transition-colors flex items-center justify-center gap-2 border-b border-(--color-border) last:border-b-0"
+                                >
+                                    <PlusIcon size={16} />
+                                    {addNewLabel}
+                                </button>
+                            )}
+
+                            {multiple && selectedValues.length > 0 && (
+                                <div className="p-2 bg-linear-to-r from-indigo-50 to-blue-50 dark:from-indigo-950/30 dark:to-blue-950/30">
+                                    <div className="text-xs text-(--color-text-secondary) font-medium text-center">
+                                        {selectedValues.length} item{selectedValues.length !== 1 ? 's' : ''} selected
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     )}
                 </div>
             )}
         </div>
+    );
+}
+
+// Helper icon
+function PlusIcon({ size = 16, className = '' }: { size?: number, className?: string }) {
+    return (
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width={size}
+            height={size}
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className={className}
+        >
+            <path d="M5 12h14" />
+            <path d="M12 5v14" />
+        </svg>
     );
 }

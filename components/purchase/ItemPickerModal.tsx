@@ -6,6 +6,8 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Modal } from '@/components/ui/Modal';
 import { getItemsForPicker } from '@/app/actions/items';
+import { useTranslations } from 'next-intl';
+import QuickItemModal from './QuickItemModal';
 
 interface ItemOption {
     itemId: string;
@@ -16,7 +18,13 @@ interface ItemOption {
     fromRabLineId?: string;
     rabQty?: number;
     isSuppliedByVendor: boolean;
+    imagePath?: string | null;
+    brand?: string | null;
+    type?: string | null;
+    movementType?: string | null;
 }
+
+// ... (props interface remains same)
 
 interface ItemPickerModalProps {
     isOpen: boolean;
@@ -37,17 +45,13 @@ export default function ItemPickerModal({
     rabId,
     rab
 }: ItemPickerModalProps) {
+    // ... (state lines 41-66 remain same)
+    const t = useTranslations('purchase.itemPicker');
     const [searchQuery, setSearchQuery] = useState('');
     const [sourceFilter, setSourceFilter] = useState<'all' | 'rab' | 'catalog'>('all');
     const [catalogItems, setCatalogItems] = useState<any[]>([]);
     const [isLoadingCatalog, setIsLoadingCatalog] = useState(false);
-    const [showQuickAdd, setShowQuickAdd] = useState(false);
-
-    // Quick add form state
-    const [newItemCode, setNewItemCode] = useState('');
-    const [newItemName, setNewItemName] = useState('');
-    const [newItemUom, setNewItemUom] = useState('pcs');
-    const [newItemPrice, setNewItemPrice] = useState('');
+    const [isQuickItemOpen, setIsQuickItemOpen] = useState(false);
 
     // Fetch catalog items when modal opens
     useEffect(() => {
@@ -79,7 +83,8 @@ export default function ItemPickerModal({
                         unitPrice: Number(line.unitPrice),
                         fromRabLineId: line.id,
                         rabQty: line.replenishQty,
-                        isSuppliedByVendor: isSupplied
+                        isSuppliedByVendor: isSupplied,
+                        imagePath: line.item.imagePath
                     });
                 }
             });
@@ -101,13 +106,17 @@ export default function ItemPickerModal({
 
             items.push({
                 itemId: catalogItem.id,
-                code: catalogItem.sku,
+                code: catalogItem.code || catalogItem.sku,
                 name: catalogItem.name,
                 uom: catalogItem.uom?.symbol || 'pcs',
                 unitPrice: price,
                 fromRabLineId: undefined,
                 rabQty: undefined,
-                isSuppliedByVendor: isSupplied
+                isSuppliedByVendor: isSupplied,
+                imagePath: catalogItem.imagePath,
+                brand: catalogItem.brand,
+                type: catalogItem.type,
+                movementType: catalogItem.movementType
             });
         });
 
@@ -116,283 +125,204 @@ export default function ItemPickerModal({
 
     // Filter items based on search and source filter
     const filteredItems = useMemo(() => {
-        let filtered = availableItems;
+        return availableItems.filter(item => {
+            const matchesSearch =
+                item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                item.code.toLowerCase().includes(searchQuery.toLowerCase());
 
-        // Apply source filter
-        if (sourceFilter === 'rab') {
-            filtered = filtered.filter(item => item.fromRabLineId);
-        } else if (sourceFilter === 'catalog') {
-            filtered = filtered.filter(item => !item.fromRabLineId);
-        }
+            const matchesSource =
+                sourceFilter === 'all' ||
+                (sourceFilter === 'rab' && item.fromRabLineId) ||
+                (sourceFilter === 'catalog' && !item.fromRabLineId);
 
-        // Apply search filter
-        if (searchQuery.trim()) {
-            const query = searchQuery.toLowerCase();
-            filtered = filtered.filter(item =>
-                item.code.toLowerCase().includes(query) ||
-                item.name.toLowerCase().includes(query)
-            );
-        }
-
-        return filtered;
+            return matchesSearch && matchesSource;
+        });
     }, [availableItems, searchQuery, sourceFilter]);
 
-    const handleAddItem = (item: ItemOption) => {
-        onAddItem(item);
-        onClose();
-    };
-
-    const handleQuickAdd = () => {
-        if (!newItemCode || !newItemName) {
-            alert('Please enter item code and name');
-            return;
-        }
-
-        // Create a temporary item (not saved to master catalog)
-        const quickItem: ItemOption = {
-            itemId: `temp_${Date.now()}`, // Temporary ID
-            code: newItemCode,
-            name: newItemName,
-            uom: newItemUom,
-            unitPrice: Number(newItemPrice) || 0,
-            fromRabLineId: undefined,
-            rabQty: undefined,
-            isSuppliedByVendor: false // Quick-added items are not in vendor list
-        };
-
-        onAddItem(quickItem);
-
-        // Reset form
-        setNewItemCode('');
-        setNewItemName('');
-        setNewItemUom('pcs');
-        setNewItemPrice('');
-        setShowQuickAdd(false);
-
-        onClose();
-    };
+    // --- QUICK ADD LOGIC IS REMOVED/DISABLED BY DESIGN CHOICE IN FAVOR OF CATALOG ---
+    // But kept conditional render false for now to avoid breaking changes if structure needed later
 
     return (
-        <Modal isOpen={isOpen} onClose={onClose} title="Add Item to Purchase Request">
-            <div className="space-y-4">
-                {/* Search and Filter Controls */}
-                <div className="space-y-3">
-                    <div className="relative">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-(--color-text-muted)" size={18} />
-                        <Input
-                            type="text"
-                            placeholder="Search by code or name..."
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            className="pl-10 bg-(--color-bg-secondary) border-(--color-border)"
-                        />
-                    </div>
-
-                    {/* Source Filter Tabs */}
-                    <div className="flex gap-2">
-                        <button
-                            onClick={() => setSourceFilter('all')}
-                            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${sourceFilter === 'all'
-                                ? 'bg-(--color-primary) text-white'
-                                : 'bg-(--color-bg-secondary) text-(--color-text-secondary) hover:bg-(--color-bg-hover)'
-                                }`}
-                        >
-                            All Items ({availableItems.length})
-                        </button>
-                        {rabId && (
+        <>
+            <Modal
+                isOpen={isOpen}
+                onClose={onClose}
+                title={t('title')}
+                size="3xl"
+            >
+                <div className="flex flex-col h-[500px]">
+                    {/* Filters */}
+                    <div className="flex gap-4 mb-4 items-start">
+                        <div className="relative flex-1">
+                            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-(--color-text-muted)" />
+                            <Input
+                                placeholder={t('searchPlaceholder')}
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                className="pl-9 bg-(--color-bg-secondary)"
+                            />
+                        </div>
+                        <div className="flex bg-(--color-bg-secondary) rounded-md p-1 border border-(--color-border)">
                             <button
-                                onClick={() => setSourceFilter('rab')}
-                                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${sourceFilter === 'rab'
-                                    ? 'bg-(--color-primary) text-white'
-                                    : 'bg-(--color-bg-secondary) text-(--color-text-secondary) hover:bg-(--color-bg-hover)'
+                                onClick={() => setSourceFilter('all')}
+                                className={`px-3 py-1.5 text-sm font-medium rounded-sm transition-all ${sourceFilter === 'all'
+                                    ? 'bg-(--color-bg-primary) text-(--color-primary) shadow-sm'
+                                    : 'text-(--color-text-secondary) hover:text-(--color-text-primary)'
                                     }`}
                             >
-                                From RAB ({availableItems.filter(i => i.fromRabLineId).length})
+                                {t('filters.all')}
                             </button>
-                        )}
-                        <button
-                            onClick={() => setSourceFilter('catalog')}
-                            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${sourceFilter === 'catalog'
-                                ? 'bg-(--color-primary) text-white'
-                                : 'bg-(--color-bg-secondary) text-(--color-text-secondary) hover:bg-(--color-bg-hover)'
-                                }`}
-                        >
-                            Catalog ({availableItems.filter(i => !i.fromRabLineId).length})
-                        </button>
-                    </div>
-                </div>
-
-                {/* Quick Add Item Form */}
-                {!showQuickAdd ? (
-                    <div className="flex justify-end">
+                            <button
+                                onClick={() => setSourceFilter('rab')}
+                                className={`px-3 py-1.5 text-sm font-medium rounded-sm transition-all ${sourceFilter === 'rab'
+                                    ? 'bg-(--color-bg-primary) text-(--color-primary) shadow-sm'
+                                    : 'text-(--color-text-secondary) hover:text-(--color-text-primary)'
+                                    }`}
+                            >
+                                {t('filters.rab')}
+                            </button>
+                            <button
+                                onClick={() => setSourceFilter('catalog')}
+                                className={`px-3 py-1.5 text-sm font-medium rounded-sm transition-all ${sourceFilter === 'catalog'
+                                    ? 'bg-(--color-bg-primary) text-(--color-primary) shadow-sm'
+                                    : 'text-(--color-text-secondary) hover:text-(--color-text-primary)'
+                                    }`}
+                            >
+                                {t('filters.catalog')}
+                            </button>
+                        </div>
                         <Button
                             variant="secondary"
-                            onClick={() => setShowQuickAdd(true)}
-                            className="text-sm border-(--color-border)"
+                            onClick={() => setIsQuickItemOpen(true)}
+                            className="border-(--color-primary) text-(--color-primary) hover:bg-(--color-primary)/10 text-sm h-auto py-1.5"
                         >
-                            + Item not in catalog? Quick Add
+                            + New Item
                         </Button>
                     </div>
-                ) : (
-                    <div className="p-4 bg-(--color-bg-secondary) border border-(--color-border) rounded-lg space-y-3">
-                        <div className="flex items-center justify-between">
-                            <h4 className="font-medium text-(--color-text-primary)">Quick Add New Item</h4>
-                            <button
-                                onClick={() => setShowQuickAdd(false)}
-                                className="text-(--color-text-muted) hover:text-(--color-text-primary)"
-                            >
-                                <X size={18} />
-                            </button>
-                        </div>
-                        <div className="grid grid-cols-2 gap-3">
-                            <div>
-                                <label className="text-xs text-(--color-text-secondary) block mb-1">Item Code*</label>
-                                <Input
-                                    type="text"
-                                    value={newItemCode}
-                                    onChange={(e) => setNewItemCode(e.target.value)}
-                                    placeholder="e.g., ITM-001"
-                                    className="h-9 bg-(--color-bg-primary) border-(--color-border)"
-                                />
-                            </div>
-                            <div>
-                                <label className="text-xs text-(--color-text-secondary) block mb-1">UOM</label>
-                                <Input
-                                    type="text"
-                                    value={newItemUom}
-                                    onChange={(e) => setNewItemUom(e.target.value)}
-                                    placeholder="e.g., pcs"
-                                    className="h-9 bg-(--color-bg-primary) border-(--color-border)"
-                                />
-                            </div>
-                        </div>
-                        <div>
-                            <label className="text-xs text-(--color-text-secondary) block mb-1">Item Name*</label>
-                            <Input
-                                type="text"
-                                value={newItemName}
-                                onChange={(e) => setNewItemName(e.target.value)}
-                                placeholder="e.g., Office Chair"
-                                className="h-9 bg-(--color-bg-primary) border-(--color-border)"
-                            />
-                        </div>
-                        <div>
-                            <label className="text-xs text-(--color-text-secondary) block mb-1">Unit Price (Optional)</label>
-                            <Input
-                                type="number"
-                                step="0.01"
-                                value={newItemPrice}
-                                onChange={(e) => setNewItemPrice(e.target.value)}
-                                placeholder="0.00"
-                                className="h-9 bg-(--color-bg-primary) border-(--color-border)"
-                            />
-                        </div>
-                        <div className="flex justify-end gap-2">
-                            <Button
-                                variant="secondary"
-                                onClick={() => setShowQuickAdd(false)}
-                                size="sm"
-                                className="border-(--color-border)"
-                            >
-                                Cancel
-                            </Button>
-                            <Button
-                                onClick={handleQuickAdd}
-                                size="sm"
-                                className="bg-(--color-primary) hover:bg-(--color-primary)/90 text-white"
-                            >
-                                Add to Request
-                            </Button>
-                        </div>
-                        <p className="text-xs text-amber-600 dark:text-amber-400">
-                            ⚠️ Note: This item will only be added to this purchase request. It won't be saved to your master catalog.
-                        </p>
-                    </div>
-                )}
 
-                {/* Items List */}
-                <div className="max-h-96 overflow-y-auto border border-(--color-border) rounded-lg">
-                    {filteredItems.length === 0 ? (
-                        <div className="py-12 text-center text-(--color-text-muted)">
-                            {searchQuery ? 'No items match your search' : rabId ? 'No items available in RAB' : 'Select a RAB to see items'}
-                        </div>
-                    ) : (
-                        <div className="divide-y divide-(--color-border)">
-                            {filteredItems.map((item) => (
-                                <div
-                                    key={item.itemId}
-                                    className="p-4 hover:bg-(--color-bg-hover) transition-colors"
-                                >
-                                    <div className="flex items-start justify-between gap-4">
-                                        <div className="flex-1 space-y-1">
-                                            <div className="flex items-center gap-2">
-                                                <span className="font-medium text-(--color-text-primary)">
+                    {/* Items List */}
+                    <div className="flex-1 overflow-y-auto border border-(--color-border) rounded-md bg-(--color-bg-secondary)/30">
+                        {isLoadingCatalog && availableItems.length === 0 ? (
+                            <div className="flex flex-col items-center justify-center h-full p-8 text-(--color-text-secondary)">
+                                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-(--color-primary) mb-4"></div>
+                                <p>{t('loading')}</p>
+                            </div>
+                        ) : filteredItems.length === 0 ? (
+                            <div className="flex flex-col items-center justify-center h-full p-8 text-(--color-text-muted)">
+                                <Search className="h-12 w-12 mb-4 opacity-20" />
+                                <p className="text-lg font-medium">{t('noItemsFound')}</p>
+                                <p className="text-sm mt-1">{t('tryAdjustingSearch')}</p>
+                            </div>
+                        ) : (
+                            <div className="grid grid-cols-1 gap-1 p-2">
+                                {filteredItems.map((item) => (
+                                    <div
+                                        key={item.itemId}
+                                        className="flex items-center justify-between p-3 rounded-lg bg-(--color-bg-primary) border border-(--color-border) hover:border-(--color-primary)/50 hover:shadow-sm transition-all group"
+                                    >
+                                        <div className="flex-1 min-w-0 pr-4">
+                                            <div className="flex items-center gap-2 mb-1">
+                                                <span className="font-mono text-xs text-(--color-text-muted) bg-(--color-bg-secondary) px-1.5 py-0.5 rounded-sm">
                                                     {item.code}
                                                 </span>
-                                                {/* Show RAB and Vendor Supply Status */}
-                                                <div className="flex items-center gap-2">
-                                                    {/* RAB Badge */}
-                                                    {item.fromRabLineId && (
-                                                        <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300">
-                                                            RAB
-                                                        </span>
-                                                    )}
-
-                                                    {/* Vendor Supply Status */}
-                                                    {item.isSuppliedByVendor ? (
-                                                        <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300 inline-flex items-center gap-1">
-                                                            <Check size={10} /> Supplied
-                                                        </span>
-                                                    ) : (
-                                                        <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300 inline-flex items-center gap-1">
-                                                            <span className="text-[10px]">✕</span> Unsupplied
-                                                        </span>
-                                                    )}
-                                                </div>
-                                            </div>
-                                            <p className="text-sm text-(--color-text-secondary)">
-                                                {item.name}
-                                            </p>
-                                            {!item.isSuppliedByVendor && (
-                                                <p className="text-xs text-amber-600 dark:text-amber-400 flex items-center gap-1">
-                                                    <AlertTriangle size={12} />
-                                                    {item.unitPrice > 0
-                                                        ? 'Price may need verification - vendor doesn\'t typically supply this'
-                                                        : 'No vendor pricing available - price must be entered manually'}
-                                                </p>
-                                            )}
-                                            <div className="flex items-center gap-4 text-xs text-(--color-text-muted)">
-                                                {item.rabQty && (
-                                                    <span>RAB Qty: {item.rabQty} {item.uom}</span>
+                                                {item.fromRabLineId ? (
+                                                    <span className="text-[10px] uppercase font-bold text-blue-600 bg-blue-100 dark:bg-blue-900/30 dark:text-blue-400 px-1.5 py-0.5 rounded-full">
+                                                        {t('badges.rab')}
+                                                    </span>
+                                                ) : (
+                                                    <span className="text-[10px] uppercase font-bold text-slate-500 bg-slate-100 dark:bg-slate-800 dark:text-slate-400 px-1.5 py-0.5 rounded-full">
+                                                        {t('badges.catalog')}
+                                                    </span>
                                                 )}
-                                                <span>Est. Price: Rp {item.unitPrice.toLocaleString('id-ID')}/{item.uom}</span>
+                                            </div>
+                                            <h4 className="font-medium text-(--color-text-primary) truncate">
+                                                {item.name}
+                                            </h4>
+                                            <div className="flex flex-wrap gap-x-3 gap-y-1 mt-0.5 mb-1.5">
+                                                {item.brand && (
+                                                    <span className="text-[10px] text-(--color-text-secondary)">
+                                                        <span className="text-(--color-text-muted)">B:</span> {item.brand}
+                                                    </span>
+                                                )}
+                                                {item.type && (
+                                                    <span className="text-[10px] text-(--color-text-secondary)">
+                                                        <span className="text-(--color-text-muted)">T:</span> {item.type}
+                                                    </span>
+                                                )}
+                                                {item.movementType && (
+                                                    <span className="text-[10px] text-(--color-text-secondary)">
+                                                        <span className="text-(--color-text-muted)">M:</span> {item.movementType}
+                                                    </span>
+                                                )}
+                                            </div>
+                                            <div className="flex items-center gap-4 mt-1 text-xs text-(--color-text-secondary)">
+                                                <span>
+                                                    {t('uom')}: <span className="font-medium text-(--color-text-primary)">{item.uom}</span>
+                                                </span>
+                                                {item.rabQty && (
+                                                    <span>
+                                                        {t('rabQty')}: <span className="font-medium text-blue-600 dark:text-blue-400">{item.rabQty}</span>
+                                                    </span>
+                                                )}
+                                                {!item.isSuppliedByVendor && (
+                                                    <span className="flex items-center text-orange-600 dark:text-orange-400">
+                                                        <AlertTriangle size={12} className="mr-1" />
+                                                        {t('notSupplied')}
+                                                    </span>
+                                                )}
                                             </div>
                                         </div>
-                                        <Button
-                                            size="sm"
-                                            onClick={() => handleAddItem(item)}
-                                            className="bg-(--color-primary) hover:bg-(--color-primary)/90 text-white"
-                                        >
-                                            Add
-                                        </Button>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    )}
-                </div>
 
-                {/* Footer */}
-                <div className="flex justify-end gap-3 pt-4 border-t border-(--color-border)">
-                    <Button
-                        variant="secondary"
-                        onClick={onClose}
-                        className="border-(--color-border)"
-                    >
-                        Cancel
-                    </Button>
+                                        <div className="flex items-center gap-4">
+                                            {/* Price display if available */}
+                                            {item.unitPrice > 0 && (
+                                                <div className="text-right hidden sm:block">
+                                                    <div className="text-xs text-(--color-text-muted)">{t('estPrice')}</div>
+                                                    <div className="font-medium">
+                                                        {new Intl.NumberFormat('id-ID', {
+                                                            style: 'currency',
+                                                            currency: 'IDR',
+                                                            maximumFractionDigits: 0
+                                                        }).format(item.unitPrice)}
+                                                    </div>
+                                                </div>
+                                            )}
+
+                                            <Button
+                                                size="sm"
+                                                onClick={() => {
+                                                    onAddItem(item);
+                                                    onClose(); // Optional: close on add, or keep open for multiple
+                                                }}
+                                                className="whitespace-nowrap bg-(--color-primary) hover:bg-(--color-primary)/90 text-white"
+                                            >
+                                                {t('add')}
+                                            </Button>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="mt-4 flex justify-between items-center text-xs text-(--color-text-muted)">
+                        <p>
+                            {t('showing')} <span className="font-medium text-(--color-text-primary)">{filteredItems.length}</span> {t('items')}
+                        </p>
+                    </div>
                 </div>
-            </div>
-        </Modal>
+            </Modal>
+
+            <QuickItemModal
+                isOpen={isQuickItemOpen}
+                onClose={() => setIsQuickItemOpen(false)}
+                vendorId={vendorId}
+                onSuccess={(newItem) => {
+                    // Update catalog items with new item
+                    setCatalogItems([newItem, ...catalogItems]);
+                    if (searchQuery) setSearchQuery('');
+                }}
+            />
+        </>
     );
 }

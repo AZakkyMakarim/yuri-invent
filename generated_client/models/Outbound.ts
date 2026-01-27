@@ -27,7 +27,8 @@ export type AggregateOutbound = {
 export type OutboundMinAggregateOutputType = {
   id: string | null
   outboundCode: string | null
-  mitraId: string | null
+  warehouseId: string | null
+  partnerId: string | null
   requestDate: Date | null
   releaseDate: Date | null
   status: $Enums.OutboundStatus | null
@@ -44,7 +45,8 @@ export type OutboundMinAggregateOutputType = {
 export type OutboundMaxAggregateOutputType = {
   id: string | null
   outboundCode: string | null
-  mitraId: string | null
+  warehouseId: string | null
+  partnerId: string | null
   requestDate: Date | null
   releaseDate: Date | null
   status: $Enums.OutboundStatus | null
@@ -61,7 +63,8 @@ export type OutboundMaxAggregateOutputType = {
 export type OutboundCountAggregateOutputType = {
   id: number
   outboundCode: number
-  mitraId: number
+  warehouseId: number
+  partnerId: number
   requestDate: number
   releaseDate: number
   status: number
@@ -80,7 +83,8 @@ export type OutboundCountAggregateOutputType = {
 export type OutboundMinAggregateInputType = {
   id?: true
   outboundCode?: true
-  mitraId?: true
+  warehouseId?: true
+  partnerId?: true
   requestDate?: true
   releaseDate?: true
   status?: true
@@ -97,7 +101,8 @@ export type OutboundMinAggregateInputType = {
 export type OutboundMaxAggregateInputType = {
   id?: true
   outboundCode?: true
-  mitraId?: true
+  warehouseId?: true
+  partnerId?: true
   requestDate?: true
   releaseDate?: true
   status?: true
@@ -114,7 +119,8 @@ export type OutboundMaxAggregateInputType = {
 export type OutboundCountAggregateInputType = {
   id?: true
   outboundCode?: true
-  mitraId?: true
+  warehouseId?: true
+  partnerId?: true
   requestDate?: true
   releaseDate?: true
   status?: true
@@ -204,7 +210,8 @@ export type OutboundGroupByArgs<ExtArgs extends runtime.Types.Extensions.Interna
 export type OutboundGroupByOutputType = {
   id: string
   outboundCode: string
-  mitraId: string | null
+  warehouseId: string | null
+  partnerId: string | null
   requestDate: Date
   releaseDate: Date | null
   status: $Enums.OutboundStatus
@@ -242,7 +249,8 @@ export type OutboundWhereInput = {
   NOT?: Prisma.OutboundWhereInput | Prisma.OutboundWhereInput[]
   id?: Prisma.StringFilter<"Outbound"> | string
   outboundCode?: Prisma.StringFilter<"Outbound"> | string
-  mitraId?: Prisma.StringNullableFilter<"Outbound"> | string | null
+  warehouseId?: Prisma.StringNullableFilter<"Outbound"> | string | null
+  partnerId?: Prisma.StringNullableFilter<"Outbound"> | string | null
   requestDate?: Prisma.DateTimeFilter<"Outbound"> | Date | string
   releaseDate?: Prisma.DateTimeNullableFilter<"Outbound"> | Date | string | null
   status?: Prisma.EnumOutboundStatusFilter<"Outbound"> | $Enums.OutboundStatus
@@ -254,7 +262,8 @@ export type OutboundWhereInput = {
   approvalNotes?: Prisma.StringNullableFilter<"Outbound"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Outbound"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Outbound"> | Date | string
-  mitra?: Prisma.XOR<Prisma.MitraNullableScalarRelationFilter, Prisma.MitraWhereInput> | null
+  warehouse?: Prisma.XOR<Prisma.WarehouseNullableScalarRelationFilter, Prisma.WarehouseWhereInput> | null
+  partner?: Prisma.XOR<Prisma.PartnerNullableScalarRelationFilter, Prisma.PartnerWhereInput> | null
   createdBy?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   approvedBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   items?: Prisma.OutboundItemListRelationFilter
@@ -264,7 +273,8 @@ export type OutboundWhereInput = {
 export type OutboundOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   outboundCode?: Prisma.SortOrder
-  mitraId?: Prisma.SortOrderInput | Prisma.SortOrder
+  warehouseId?: Prisma.SortOrderInput | Prisma.SortOrder
+  partnerId?: Prisma.SortOrderInput | Prisma.SortOrder
   requestDate?: Prisma.SortOrder
   releaseDate?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -276,7 +286,8 @@ export type OutboundOrderByWithRelationInput = {
   approvalNotes?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  mitra?: Prisma.MitraOrderByWithRelationInput
+  warehouse?: Prisma.WarehouseOrderByWithRelationInput
+  partner?: Prisma.PartnerOrderByWithRelationInput
   createdBy?: Prisma.UserOrderByWithRelationInput
   approvedBy?: Prisma.UserOrderByWithRelationInput
   items?: Prisma.OutboundItemOrderByRelationAggregateInput
@@ -289,7 +300,8 @@ export type OutboundWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.OutboundWhereInput | Prisma.OutboundWhereInput[]
   OR?: Prisma.OutboundWhereInput[]
   NOT?: Prisma.OutboundWhereInput | Prisma.OutboundWhereInput[]
-  mitraId?: Prisma.StringNullableFilter<"Outbound"> | string | null
+  warehouseId?: Prisma.StringNullableFilter<"Outbound"> | string | null
+  partnerId?: Prisma.StringNullableFilter<"Outbound"> | string | null
   requestDate?: Prisma.DateTimeFilter<"Outbound"> | Date | string
   releaseDate?: Prisma.DateTimeNullableFilter<"Outbound"> | Date | string | null
   status?: Prisma.EnumOutboundStatusFilter<"Outbound"> | $Enums.OutboundStatus
@@ -301,7 +313,8 @@ export type OutboundWhereUniqueInput = Prisma.AtLeast<{
   approvalNotes?: Prisma.StringNullableFilter<"Outbound"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Outbound"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Outbound"> | Date | string
-  mitra?: Prisma.XOR<Prisma.MitraNullableScalarRelationFilter, Prisma.MitraWhereInput> | null
+  warehouse?: Prisma.XOR<Prisma.WarehouseNullableScalarRelationFilter, Prisma.WarehouseWhereInput> | null
+  partner?: Prisma.XOR<Prisma.PartnerNullableScalarRelationFilter, Prisma.PartnerWhereInput> | null
   createdBy?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   approvedBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   items?: Prisma.OutboundItemListRelationFilter
@@ -311,7 +324,8 @@ export type OutboundWhereUniqueInput = Prisma.AtLeast<{
 export type OutboundOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   outboundCode?: Prisma.SortOrder
-  mitraId?: Prisma.SortOrderInput | Prisma.SortOrder
+  warehouseId?: Prisma.SortOrderInput | Prisma.SortOrder
+  partnerId?: Prisma.SortOrderInput | Prisma.SortOrder
   requestDate?: Prisma.SortOrder
   releaseDate?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -334,7 +348,8 @@ export type OutboundScalarWhereWithAggregatesInput = {
   NOT?: Prisma.OutboundScalarWhereWithAggregatesInput | Prisma.OutboundScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Outbound"> | string
   outboundCode?: Prisma.StringWithAggregatesFilter<"Outbound"> | string
-  mitraId?: Prisma.StringNullableWithAggregatesFilter<"Outbound"> | string | null
+  warehouseId?: Prisma.StringNullableWithAggregatesFilter<"Outbound"> | string | null
+  partnerId?: Prisma.StringNullableWithAggregatesFilter<"Outbound"> | string | null
   requestDate?: Prisma.DateTimeWithAggregatesFilter<"Outbound"> | Date | string
   releaseDate?: Prisma.DateTimeNullableWithAggregatesFilter<"Outbound"> | Date | string | null
   status?: Prisma.EnumOutboundStatusWithAggregatesFilter<"Outbound"> | $Enums.OutboundStatus
@@ -360,7 +375,8 @@ export type OutboundCreateInput = {
   approvalNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  mitra?: Prisma.MitraCreateNestedOneWithoutOutboundsInput
+  warehouse?: Prisma.WarehouseCreateNestedOneWithoutOutboundsInput
+  partner?: Prisma.PartnerCreateNestedOneWithoutOutboundsInput
   createdBy: Prisma.UserCreateNestedOneWithoutCreatedOutboundsInput
   approvedBy?: Prisma.UserCreateNestedOneWithoutApprovedOutboundsInput
   items?: Prisma.OutboundItemCreateNestedManyWithoutOutboundInput
@@ -370,7 +386,8 @@ export type OutboundCreateInput = {
 export type OutboundUncheckedCreateInput = {
   id?: string
   outboundCode: string
-  mitraId?: string | null
+  warehouseId?: string | null
+  partnerId?: string | null
   requestDate?: Date | string
   releaseDate?: Date | string | null
   status?: $Enums.OutboundStatus
@@ -398,7 +415,8 @@ export type OutboundUpdateInput = {
   approvalNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  mitra?: Prisma.MitraUpdateOneWithoutOutboundsNestedInput
+  warehouse?: Prisma.WarehouseUpdateOneWithoutOutboundsNestedInput
+  partner?: Prisma.PartnerUpdateOneWithoutOutboundsNestedInput
   createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedOutboundsNestedInput
   approvedBy?: Prisma.UserUpdateOneWithoutApprovedOutboundsNestedInput
   items?: Prisma.OutboundItemUpdateManyWithoutOutboundNestedInput
@@ -408,7 +426,8 @@ export type OutboundUpdateInput = {
 export type OutboundUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   outboundCode?: Prisma.StringFieldUpdateOperationsInput | string
-  mitraId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  warehouseId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  partnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requestDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   releaseDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumOutboundStatusFieldUpdateOperationsInput | $Enums.OutboundStatus
@@ -427,7 +446,8 @@ export type OutboundUncheckedUpdateInput = {
 export type OutboundCreateManyInput = {
   id?: string
   outboundCode: string
-  mitraId?: string | null
+  warehouseId?: string | null
+  partnerId?: string | null
   requestDate?: Date | string
   releaseDate?: Date | string | null
   status?: $Enums.OutboundStatus
@@ -458,7 +478,8 @@ export type OutboundUpdateManyMutationInput = {
 export type OutboundUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   outboundCode?: Prisma.StringFieldUpdateOperationsInput | string
-  mitraId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  warehouseId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  partnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requestDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   releaseDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumOutboundStatusFieldUpdateOperationsInput | $Enums.OutboundStatus
@@ -485,7 +506,8 @@ export type OutboundOrderByRelationAggregateInput = {
 export type OutboundCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   outboundCode?: Prisma.SortOrder
-  mitraId?: Prisma.SortOrder
+  warehouseId?: Prisma.SortOrder
+  partnerId?: Prisma.SortOrder
   requestDate?: Prisma.SortOrder
   releaseDate?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -502,7 +524,8 @@ export type OutboundCountOrderByAggregateInput = {
 export type OutboundMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   outboundCode?: Prisma.SortOrder
-  mitraId?: Prisma.SortOrder
+  warehouseId?: Prisma.SortOrder
+  partnerId?: Prisma.SortOrder
   requestDate?: Prisma.SortOrder
   releaseDate?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -519,7 +542,8 @@ export type OutboundMaxOrderByAggregateInput = {
 export type OutboundMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   outboundCode?: Prisma.SortOrder
-  mitraId?: Prisma.SortOrder
+  warehouseId?: Prisma.SortOrder
+  partnerId?: Prisma.SortOrder
   requestDate?: Prisma.SortOrder
   releaseDate?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -627,45 +651,45 @@ export type OutboundUncheckedUpdateManyWithoutApprovedByNestedInput = {
   deleteMany?: Prisma.OutboundScalarWhereInput | Prisma.OutboundScalarWhereInput[]
 }
 
-export type OutboundCreateNestedManyWithoutMitraInput = {
-  create?: Prisma.XOR<Prisma.OutboundCreateWithoutMitraInput, Prisma.OutboundUncheckedCreateWithoutMitraInput> | Prisma.OutboundCreateWithoutMitraInput[] | Prisma.OutboundUncheckedCreateWithoutMitraInput[]
-  connectOrCreate?: Prisma.OutboundCreateOrConnectWithoutMitraInput | Prisma.OutboundCreateOrConnectWithoutMitraInput[]
-  createMany?: Prisma.OutboundCreateManyMitraInputEnvelope
+export type OutboundCreateNestedManyWithoutWarehouseInput = {
+  create?: Prisma.XOR<Prisma.OutboundCreateWithoutWarehouseInput, Prisma.OutboundUncheckedCreateWithoutWarehouseInput> | Prisma.OutboundCreateWithoutWarehouseInput[] | Prisma.OutboundUncheckedCreateWithoutWarehouseInput[]
+  connectOrCreate?: Prisma.OutboundCreateOrConnectWithoutWarehouseInput | Prisma.OutboundCreateOrConnectWithoutWarehouseInput[]
+  createMany?: Prisma.OutboundCreateManyWarehouseInputEnvelope
   connect?: Prisma.OutboundWhereUniqueInput | Prisma.OutboundWhereUniqueInput[]
 }
 
-export type OutboundUncheckedCreateNestedManyWithoutMitraInput = {
-  create?: Prisma.XOR<Prisma.OutboundCreateWithoutMitraInput, Prisma.OutboundUncheckedCreateWithoutMitraInput> | Prisma.OutboundCreateWithoutMitraInput[] | Prisma.OutboundUncheckedCreateWithoutMitraInput[]
-  connectOrCreate?: Prisma.OutboundCreateOrConnectWithoutMitraInput | Prisma.OutboundCreateOrConnectWithoutMitraInput[]
-  createMany?: Prisma.OutboundCreateManyMitraInputEnvelope
+export type OutboundUncheckedCreateNestedManyWithoutWarehouseInput = {
+  create?: Prisma.XOR<Prisma.OutboundCreateWithoutWarehouseInput, Prisma.OutboundUncheckedCreateWithoutWarehouseInput> | Prisma.OutboundCreateWithoutWarehouseInput[] | Prisma.OutboundUncheckedCreateWithoutWarehouseInput[]
+  connectOrCreate?: Prisma.OutboundCreateOrConnectWithoutWarehouseInput | Prisma.OutboundCreateOrConnectWithoutWarehouseInput[]
+  createMany?: Prisma.OutboundCreateManyWarehouseInputEnvelope
   connect?: Prisma.OutboundWhereUniqueInput | Prisma.OutboundWhereUniqueInput[]
 }
 
-export type OutboundUpdateManyWithoutMitraNestedInput = {
-  create?: Prisma.XOR<Prisma.OutboundCreateWithoutMitraInput, Prisma.OutboundUncheckedCreateWithoutMitraInput> | Prisma.OutboundCreateWithoutMitraInput[] | Prisma.OutboundUncheckedCreateWithoutMitraInput[]
-  connectOrCreate?: Prisma.OutboundCreateOrConnectWithoutMitraInput | Prisma.OutboundCreateOrConnectWithoutMitraInput[]
-  upsert?: Prisma.OutboundUpsertWithWhereUniqueWithoutMitraInput | Prisma.OutboundUpsertWithWhereUniqueWithoutMitraInput[]
-  createMany?: Prisma.OutboundCreateManyMitraInputEnvelope
+export type OutboundUpdateManyWithoutWarehouseNestedInput = {
+  create?: Prisma.XOR<Prisma.OutboundCreateWithoutWarehouseInput, Prisma.OutboundUncheckedCreateWithoutWarehouseInput> | Prisma.OutboundCreateWithoutWarehouseInput[] | Prisma.OutboundUncheckedCreateWithoutWarehouseInput[]
+  connectOrCreate?: Prisma.OutboundCreateOrConnectWithoutWarehouseInput | Prisma.OutboundCreateOrConnectWithoutWarehouseInput[]
+  upsert?: Prisma.OutboundUpsertWithWhereUniqueWithoutWarehouseInput | Prisma.OutboundUpsertWithWhereUniqueWithoutWarehouseInput[]
+  createMany?: Prisma.OutboundCreateManyWarehouseInputEnvelope
   set?: Prisma.OutboundWhereUniqueInput | Prisma.OutboundWhereUniqueInput[]
   disconnect?: Prisma.OutboundWhereUniqueInput | Prisma.OutboundWhereUniqueInput[]
   delete?: Prisma.OutboundWhereUniqueInput | Prisma.OutboundWhereUniqueInput[]
   connect?: Prisma.OutboundWhereUniqueInput | Prisma.OutboundWhereUniqueInput[]
-  update?: Prisma.OutboundUpdateWithWhereUniqueWithoutMitraInput | Prisma.OutboundUpdateWithWhereUniqueWithoutMitraInput[]
-  updateMany?: Prisma.OutboundUpdateManyWithWhereWithoutMitraInput | Prisma.OutboundUpdateManyWithWhereWithoutMitraInput[]
+  update?: Prisma.OutboundUpdateWithWhereUniqueWithoutWarehouseInput | Prisma.OutboundUpdateWithWhereUniqueWithoutWarehouseInput[]
+  updateMany?: Prisma.OutboundUpdateManyWithWhereWithoutWarehouseInput | Prisma.OutboundUpdateManyWithWhereWithoutWarehouseInput[]
   deleteMany?: Prisma.OutboundScalarWhereInput | Prisma.OutboundScalarWhereInput[]
 }
 
-export type OutboundUncheckedUpdateManyWithoutMitraNestedInput = {
-  create?: Prisma.XOR<Prisma.OutboundCreateWithoutMitraInput, Prisma.OutboundUncheckedCreateWithoutMitraInput> | Prisma.OutboundCreateWithoutMitraInput[] | Prisma.OutboundUncheckedCreateWithoutMitraInput[]
-  connectOrCreate?: Prisma.OutboundCreateOrConnectWithoutMitraInput | Prisma.OutboundCreateOrConnectWithoutMitraInput[]
-  upsert?: Prisma.OutboundUpsertWithWhereUniqueWithoutMitraInput | Prisma.OutboundUpsertWithWhereUniqueWithoutMitraInput[]
-  createMany?: Prisma.OutboundCreateManyMitraInputEnvelope
+export type OutboundUncheckedUpdateManyWithoutWarehouseNestedInput = {
+  create?: Prisma.XOR<Prisma.OutboundCreateWithoutWarehouseInput, Prisma.OutboundUncheckedCreateWithoutWarehouseInput> | Prisma.OutboundCreateWithoutWarehouseInput[] | Prisma.OutboundUncheckedCreateWithoutWarehouseInput[]
+  connectOrCreate?: Prisma.OutboundCreateOrConnectWithoutWarehouseInput | Prisma.OutboundCreateOrConnectWithoutWarehouseInput[]
+  upsert?: Prisma.OutboundUpsertWithWhereUniqueWithoutWarehouseInput | Prisma.OutboundUpsertWithWhereUniqueWithoutWarehouseInput[]
+  createMany?: Prisma.OutboundCreateManyWarehouseInputEnvelope
   set?: Prisma.OutboundWhereUniqueInput | Prisma.OutboundWhereUniqueInput[]
   disconnect?: Prisma.OutboundWhereUniqueInput | Prisma.OutboundWhereUniqueInput[]
   delete?: Prisma.OutboundWhereUniqueInput | Prisma.OutboundWhereUniqueInput[]
   connect?: Prisma.OutboundWhereUniqueInput | Prisma.OutboundWhereUniqueInput[]
-  update?: Prisma.OutboundUpdateWithWhereUniqueWithoutMitraInput | Prisma.OutboundUpdateWithWhereUniqueWithoutMitraInput[]
-  updateMany?: Prisma.OutboundUpdateManyWithWhereWithoutMitraInput | Prisma.OutboundUpdateManyWithWhereWithoutMitraInput[]
+  update?: Prisma.OutboundUpdateWithWhereUniqueWithoutWarehouseInput | Prisma.OutboundUpdateWithWhereUniqueWithoutWarehouseInput[]
+  updateMany?: Prisma.OutboundUpdateManyWithWhereWithoutWarehouseInput | Prisma.OutboundUpdateManyWithWhereWithoutWarehouseInput[]
   deleteMany?: Prisma.OutboundScalarWhereInput | Prisma.OutboundScalarWhereInput[]
 }
 
@@ -685,6 +709,48 @@ export type OutboundUpdateOneRequiredWithoutItemsNestedInput = {
   upsert?: Prisma.OutboundUpsertWithoutItemsInput
   connect?: Prisma.OutboundWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.OutboundUpdateToOneWithWhereWithoutItemsInput, Prisma.OutboundUpdateWithoutItemsInput>, Prisma.OutboundUncheckedUpdateWithoutItemsInput>
+}
+
+export type OutboundCreateNestedManyWithoutPartnerInput = {
+  create?: Prisma.XOR<Prisma.OutboundCreateWithoutPartnerInput, Prisma.OutboundUncheckedCreateWithoutPartnerInput> | Prisma.OutboundCreateWithoutPartnerInput[] | Prisma.OutboundUncheckedCreateWithoutPartnerInput[]
+  connectOrCreate?: Prisma.OutboundCreateOrConnectWithoutPartnerInput | Prisma.OutboundCreateOrConnectWithoutPartnerInput[]
+  createMany?: Prisma.OutboundCreateManyPartnerInputEnvelope
+  connect?: Prisma.OutboundWhereUniqueInput | Prisma.OutboundWhereUniqueInput[]
+}
+
+export type OutboundUncheckedCreateNestedManyWithoutPartnerInput = {
+  create?: Prisma.XOR<Prisma.OutboundCreateWithoutPartnerInput, Prisma.OutboundUncheckedCreateWithoutPartnerInput> | Prisma.OutboundCreateWithoutPartnerInput[] | Prisma.OutboundUncheckedCreateWithoutPartnerInput[]
+  connectOrCreate?: Prisma.OutboundCreateOrConnectWithoutPartnerInput | Prisma.OutboundCreateOrConnectWithoutPartnerInput[]
+  createMany?: Prisma.OutboundCreateManyPartnerInputEnvelope
+  connect?: Prisma.OutboundWhereUniqueInput | Prisma.OutboundWhereUniqueInput[]
+}
+
+export type OutboundUpdateManyWithoutPartnerNestedInput = {
+  create?: Prisma.XOR<Prisma.OutboundCreateWithoutPartnerInput, Prisma.OutboundUncheckedCreateWithoutPartnerInput> | Prisma.OutboundCreateWithoutPartnerInput[] | Prisma.OutboundUncheckedCreateWithoutPartnerInput[]
+  connectOrCreate?: Prisma.OutboundCreateOrConnectWithoutPartnerInput | Prisma.OutboundCreateOrConnectWithoutPartnerInput[]
+  upsert?: Prisma.OutboundUpsertWithWhereUniqueWithoutPartnerInput | Prisma.OutboundUpsertWithWhereUniqueWithoutPartnerInput[]
+  createMany?: Prisma.OutboundCreateManyPartnerInputEnvelope
+  set?: Prisma.OutboundWhereUniqueInput | Prisma.OutboundWhereUniqueInput[]
+  disconnect?: Prisma.OutboundWhereUniqueInput | Prisma.OutboundWhereUniqueInput[]
+  delete?: Prisma.OutboundWhereUniqueInput | Prisma.OutboundWhereUniqueInput[]
+  connect?: Prisma.OutboundWhereUniqueInput | Prisma.OutboundWhereUniqueInput[]
+  update?: Prisma.OutboundUpdateWithWhereUniqueWithoutPartnerInput | Prisma.OutboundUpdateWithWhereUniqueWithoutPartnerInput[]
+  updateMany?: Prisma.OutboundUpdateManyWithWhereWithoutPartnerInput | Prisma.OutboundUpdateManyWithWhereWithoutPartnerInput[]
+  deleteMany?: Prisma.OutboundScalarWhereInput | Prisma.OutboundScalarWhereInput[]
+}
+
+export type OutboundUncheckedUpdateManyWithoutPartnerNestedInput = {
+  create?: Prisma.XOR<Prisma.OutboundCreateWithoutPartnerInput, Prisma.OutboundUncheckedCreateWithoutPartnerInput> | Prisma.OutboundCreateWithoutPartnerInput[] | Prisma.OutboundUncheckedCreateWithoutPartnerInput[]
+  connectOrCreate?: Prisma.OutboundCreateOrConnectWithoutPartnerInput | Prisma.OutboundCreateOrConnectWithoutPartnerInput[]
+  upsert?: Prisma.OutboundUpsertWithWhereUniqueWithoutPartnerInput | Prisma.OutboundUpsertWithWhereUniqueWithoutPartnerInput[]
+  createMany?: Prisma.OutboundCreateManyPartnerInputEnvelope
+  set?: Prisma.OutboundWhereUniqueInput | Prisma.OutboundWhereUniqueInput[]
+  disconnect?: Prisma.OutboundWhereUniqueInput | Prisma.OutboundWhereUniqueInput[]
+  delete?: Prisma.OutboundWhereUniqueInput | Prisma.OutboundWhereUniqueInput[]
+  connect?: Prisma.OutboundWhereUniqueInput | Prisma.OutboundWhereUniqueInput[]
+  update?: Prisma.OutboundUpdateWithWhereUniqueWithoutPartnerInput | Prisma.OutboundUpdateWithWhereUniqueWithoutPartnerInput[]
+  updateMany?: Prisma.OutboundUpdateManyWithWhereWithoutPartnerInput | Prisma.OutboundUpdateManyWithWhereWithoutPartnerInput[]
+  deleteMany?: Prisma.OutboundScalarWhereInput | Prisma.OutboundScalarWhereInput[]
 }
 
 export type OutboundCreateNestedOneWithoutStockCardsInput = {
@@ -715,7 +781,8 @@ export type OutboundCreateWithoutCreatedByInput = {
   approvalNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  mitra?: Prisma.MitraCreateNestedOneWithoutOutboundsInput
+  warehouse?: Prisma.WarehouseCreateNestedOneWithoutOutboundsInput
+  partner?: Prisma.PartnerCreateNestedOneWithoutOutboundsInput
   approvedBy?: Prisma.UserCreateNestedOneWithoutApprovedOutboundsInput
   items?: Prisma.OutboundItemCreateNestedManyWithoutOutboundInput
   stockCards?: Prisma.StockCardCreateNestedManyWithoutOutboundInput
@@ -724,7 +791,8 @@ export type OutboundCreateWithoutCreatedByInput = {
 export type OutboundUncheckedCreateWithoutCreatedByInput = {
   id?: string
   outboundCode: string
-  mitraId?: string | null
+  warehouseId?: string | null
+  partnerId?: string | null
   requestDate?: Date | string
   releaseDate?: Date | string | null
   status?: $Enums.OutboundStatus
@@ -761,7 +829,8 @@ export type OutboundCreateWithoutApprovedByInput = {
   approvalNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  mitra?: Prisma.MitraCreateNestedOneWithoutOutboundsInput
+  warehouse?: Prisma.WarehouseCreateNestedOneWithoutOutboundsInput
+  partner?: Prisma.PartnerCreateNestedOneWithoutOutboundsInput
   createdBy: Prisma.UserCreateNestedOneWithoutCreatedOutboundsInput
   items?: Prisma.OutboundItemCreateNestedManyWithoutOutboundInput
   stockCards?: Prisma.StockCardCreateNestedManyWithoutOutboundInput
@@ -770,7 +839,8 @@ export type OutboundCreateWithoutApprovedByInput = {
 export type OutboundUncheckedCreateWithoutApprovedByInput = {
   id?: string
   outboundCode: string
-  mitraId?: string | null
+  warehouseId?: string | null
+  partnerId?: string | null
   requestDate?: Date | string
   releaseDate?: Date | string | null
   status?: $Enums.OutboundStatus
@@ -817,7 +887,8 @@ export type OutboundScalarWhereInput = {
   NOT?: Prisma.OutboundScalarWhereInput | Prisma.OutboundScalarWhereInput[]
   id?: Prisma.StringFilter<"Outbound"> | string
   outboundCode?: Prisma.StringFilter<"Outbound"> | string
-  mitraId?: Prisma.StringNullableFilter<"Outbound"> | string | null
+  warehouseId?: Prisma.StringNullableFilter<"Outbound"> | string | null
+  partnerId?: Prisma.StringNullableFilter<"Outbound"> | string | null
   requestDate?: Prisma.DateTimeFilter<"Outbound"> | Date | string
   releaseDate?: Prisma.DateTimeNullableFilter<"Outbound"> | Date | string | null
   status?: Prisma.EnumOutboundStatusFilter<"Outbound"> | $Enums.OutboundStatus
@@ -847,7 +918,7 @@ export type OutboundUpdateManyWithWhereWithoutApprovedByInput = {
   data: Prisma.XOR<Prisma.OutboundUpdateManyMutationInput, Prisma.OutboundUncheckedUpdateManyWithoutApprovedByInput>
 }
 
-export type OutboundCreateWithoutMitraInput = {
+export type OutboundCreateWithoutWarehouseInput = {
   id?: string
   outboundCode: string
   requestDate?: Date | string
@@ -859,15 +930,17 @@ export type OutboundCreateWithoutMitraInput = {
   approvalNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  partner?: Prisma.PartnerCreateNestedOneWithoutOutboundsInput
   createdBy: Prisma.UserCreateNestedOneWithoutCreatedOutboundsInput
   approvedBy?: Prisma.UserCreateNestedOneWithoutApprovedOutboundsInput
   items?: Prisma.OutboundItemCreateNestedManyWithoutOutboundInput
   stockCards?: Prisma.StockCardCreateNestedManyWithoutOutboundInput
 }
 
-export type OutboundUncheckedCreateWithoutMitraInput = {
+export type OutboundUncheckedCreateWithoutWarehouseInput = {
   id?: string
   outboundCode: string
+  partnerId?: string | null
   requestDate?: Date | string
   releaseDate?: Date | string | null
   status?: $Enums.OutboundStatus
@@ -883,30 +956,30 @@ export type OutboundUncheckedCreateWithoutMitraInput = {
   stockCards?: Prisma.StockCardUncheckedCreateNestedManyWithoutOutboundInput
 }
 
-export type OutboundCreateOrConnectWithoutMitraInput = {
+export type OutboundCreateOrConnectWithoutWarehouseInput = {
   where: Prisma.OutboundWhereUniqueInput
-  create: Prisma.XOR<Prisma.OutboundCreateWithoutMitraInput, Prisma.OutboundUncheckedCreateWithoutMitraInput>
+  create: Prisma.XOR<Prisma.OutboundCreateWithoutWarehouseInput, Prisma.OutboundUncheckedCreateWithoutWarehouseInput>
 }
 
-export type OutboundCreateManyMitraInputEnvelope = {
-  data: Prisma.OutboundCreateManyMitraInput | Prisma.OutboundCreateManyMitraInput[]
+export type OutboundCreateManyWarehouseInputEnvelope = {
+  data: Prisma.OutboundCreateManyWarehouseInput | Prisma.OutboundCreateManyWarehouseInput[]
   skipDuplicates?: boolean
 }
 
-export type OutboundUpsertWithWhereUniqueWithoutMitraInput = {
+export type OutboundUpsertWithWhereUniqueWithoutWarehouseInput = {
   where: Prisma.OutboundWhereUniqueInput
-  update: Prisma.XOR<Prisma.OutboundUpdateWithoutMitraInput, Prisma.OutboundUncheckedUpdateWithoutMitraInput>
-  create: Prisma.XOR<Prisma.OutboundCreateWithoutMitraInput, Prisma.OutboundUncheckedCreateWithoutMitraInput>
+  update: Prisma.XOR<Prisma.OutboundUpdateWithoutWarehouseInput, Prisma.OutboundUncheckedUpdateWithoutWarehouseInput>
+  create: Prisma.XOR<Prisma.OutboundCreateWithoutWarehouseInput, Prisma.OutboundUncheckedCreateWithoutWarehouseInput>
 }
 
-export type OutboundUpdateWithWhereUniqueWithoutMitraInput = {
+export type OutboundUpdateWithWhereUniqueWithoutWarehouseInput = {
   where: Prisma.OutboundWhereUniqueInput
-  data: Prisma.XOR<Prisma.OutboundUpdateWithoutMitraInput, Prisma.OutboundUncheckedUpdateWithoutMitraInput>
+  data: Prisma.XOR<Prisma.OutboundUpdateWithoutWarehouseInput, Prisma.OutboundUncheckedUpdateWithoutWarehouseInput>
 }
 
-export type OutboundUpdateManyWithWhereWithoutMitraInput = {
+export type OutboundUpdateManyWithWhereWithoutWarehouseInput = {
   where: Prisma.OutboundScalarWhereInput
-  data: Prisma.XOR<Prisma.OutboundUpdateManyMutationInput, Prisma.OutboundUncheckedUpdateManyWithoutMitraInput>
+  data: Prisma.XOR<Prisma.OutboundUpdateManyMutationInput, Prisma.OutboundUncheckedUpdateManyWithoutWarehouseInput>
 }
 
 export type OutboundCreateWithoutItemsInput = {
@@ -921,7 +994,8 @@ export type OutboundCreateWithoutItemsInput = {
   approvalNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  mitra?: Prisma.MitraCreateNestedOneWithoutOutboundsInput
+  warehouse?: Prisma.WarehouseCreateNestedOneWithoutOutboundsInput
+  partner?: Prisma.PartnerCreateNestedOneWithoutOutboundsInput
   createdBy: Prisma.UserCreateNestedOneWithoutCreatedOutboundsInput
   approvedBy?: Prisma.UserCreateNestedOneWithoutApprovedOutboundsInput
   stockCards?: Prisma.StockCardCreateNestedManyWithoutOutboundInput
@@ -930,7 +1004,8 @@ export type OutboundCreateWithoutItemsInput = {
 export type OutboundUncheckedCreateWithoutItemsInput = {
   id?: string
   outboundCode: string
-  mitraId?: string | null
+  warehouseId?: string | null
+  partnerId?: string | null
   requestDate?: Date | string
   releaseDate?: Date | string | null
   status?: $Enums.OutboundStatus
@@ -973,7 +1048,8 @@ export type OutboundUpdateWithoutItemsInput = {
   approvalNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  mitra?: Prisma.MitraUpdateOneWithoutOutboundsNestedInput
+  warehouse?: Prisma.WarehouseUpdateOneWithoutOutboundsNestedInput
+  partner?: Prisma.PartnerUpdateOneWithoutOutboundsNestedInput
   createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedOutboundsNestedInput
   approvedBy?: Prisma.UserUpdateOneWithoutApprovedOutboundsNestedInput
   stockCards?: Prisma.StockCardUpdateManyWithoutOutboundNestedInput
@@ -982,7 +1058,8 @@ export type OutboundUpdateWithoutItemsInput = {
 export type OutboundUncheckedUpdateWithoutItemsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   outboundCode?: Prisma.StringFieldUpdateOperationsInput | string
-  mitraId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  warehouseId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  partnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requestDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   releaseDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumOutboundStatusFieldUpdateOperationsInput | $Enums.OutboundStatus
@@ -997,6 +1074,70 @@ export type OutboundUncheckedUpdateWithoutItemsInput = {
   stockCards?: Prisma.StockCardUncheckedUpdateManyWithoutOutboundNestedInput
 }
 
+export type OutboundCreateWithoutPartnerInput = {
+  id?: string
+  outboundCode: string
+  requestDate?: Date | string
+  releaseDate?: Date | string | null
+  status?: $Enums.OutboundStatus
+  purpose?: string | null
+  notes?: string | null
+  approvedAt?: Date | string | null
+  approvalNotes?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  warehouse?: Prisma.WarehouseCreateNestedOneWithoutOutboundsInput
+  createdBy: Prisma.UserCreateNestedOneWithoutCreatedOutboundsInput
+  approvedBy?: Prisma.UserCreateNestedOneWithoutApprovedOutboundsInput
+  items?: Prisma.OutboundItemCreateNestedManyWithoutOutboundInput
+  stockCards?: Prisma.StockCardCreateNestedManyWithoutOutboundInput
+}
+
+export type OutboundUncheckedCreateWithoutPartnerInput = {
+  id?: string
+  outboundCode: string
+  warehouseId?: string | null
+  requestDate?: Date | string
+  releaseDate?: Date | string | null
+  status?: $Enums.OutboundStatus
+  purpose?: string | null
+  notes?: string | null
+  createdById: string
+  approvedById?: string | null
+  approvedAt?: Date | string | null
+  approvalNotes?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  items?: Prisma.OutboundItemUncheckedCreateNestedManyWithoutOutboundInput
+  stockCards?: Prisma.StockCardUncheckedCreateNestedManyWithoutOutboundInput
+}
+
+export type OutboundCreateOrConnectWithoutPartnerInput = {
+  where: Prisma.OutboundWhereUniqueInput
+  create: Prisma.XOR<Prisma.OutboundCreateWithoutPartnerInput, Prisma.OutboundUncheckedCreateWithoutPartnerInput>
+}
+
+export type OutboundCreateManyPartnerInputEnvelope = {
+  data: Prisma.OutboundCreateManyPartnerInput | Prisma.OutboundCreateManyPartnerInput[]
+  skipDuplicates?: boolean
+}
+
+export type OutboundUpsertWithWhereUniqueWithoutPartnerInput = {
+  where: Prisma.OutboundWhereUniqueInput
+  update: Prisma.XOR<Prisma.OutboundUpdateWithoutPartnerInput, Prisma.OutboundUncheckedUpdateWithoutPartnerInput>
+  create: Prisma.XOR<Prisma.OutboundCreateWithoutPartnerInput, Prisma.OutboundUncheckedCreateWithoutPartnerInput>
+}
+
+export type OutboundUpdateWithWhereUniqueWithoutPartnerInput = {
+  where: Prisma.OutboundWhereUniqueInput
+  data: Prisma.XOR<Prisma.OutboundUpdateWithoutPartnerInput, Prisma.OutboundUncheckedUpdateWithoutPartnerInput>
+}
+
+export type OutboundUpdateManyWithWhereWithoutPartnerInput = {
+  where: Prisma.OutboundScalarWhereInput
+  data: Prisma.XOR<Prisma.OutboundUpdateManyMutationInput, Prisma.OutboundUncheckedUpdateManyWithoutPartnerInput>
+}
+
 export type OutboundCreateWithoutStockCardsInput = {
   id?: string
   outboundCode: string
@@ -1009,7 +1150,8 @@ export type OutboundCreateWithoutStockCardsInput = {
   approvalNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  mitra?: Prisma.MitraCreateNestedOneWithoutOutboundsInput
+  warehouse?: Prisma.WarehouseCreateNestedOneWithoutOutboundsInput
+  partner?: Prisma.PartnerCreateNestedOneWithoutOutboundsInput
   createdBy: Prisma.UserCreateNestedOneWithoutCreatedOutboundsInput
   approvedBy?: Prisma.UserCreateNestedOneWithoutApprovedOutboundsInput
   items?: Prisma.OutboundItemCreateNestedManyWithoutOutboundInput
@@ -1018,7 +1160,8 @@ export type OutboundCreateWithoutStockCardsInput = {
 export type OutboundUncheckedCreateWithoutStockCardsInput = {
   id?: string
   outboundCode: string
-  mitraId?: string | null
+  warehouseId?: string | null
+  partnerId?: string | null
   requestDate?: Date | string
   releaseDate?: Date | string | null
   status?: $Enums.OutboundStatus
@@ -1061,7 +1204,8 @@ export type OutboundUpdateWithoutStockCardsInput = {
   approvalNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  mitra?: Prisma.MitraUpdateOneWithoutOutboundsNestedInput
+  warehouse?: Prisma.WarehouseUpdateOneWithoutOutboundsNestedInput
+  partner?: Prisma.PartnerUpdateOneWithoutOutboundsNestedInput
   createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedOutboundsNestedInput
   approvedBy?: Prisma.UserUpdateOneWithoutApprovedOutboundsNestedInput
   items?: Prisma.OutboundItemUpdateManyWithoutOutboundNestedInput
@@ -1070,7 +1214,8 @@ export type OutboundUpdateWithoutStockCardsInput = {
 export type OutboundUncheckedUpdateWithoutStockCardsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   outboundCode?: Prisma.StringFieldUpdateOperationsInput | string
-  mitraId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  warehouseId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  partnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requestDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   releaseDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumOutboundStatusFieldUpdateOperationsInput | $Enums.OutboundStatus
@@ -1088,7 +1233,8 @@ export type OutboundUncheckedUpdateWithoutStockCardsInput = {
 export type OutboundCreateManyCreatedByInput = {
   id?: string
   outboundCode: string
-  mitraId?: string | null
+  warehouseId?: string | null
+  partnerId?: string | null
   requestDate?: Date | string
   releaseDate?: Date | string | null
   status?: $Enums.OutboundStatus
@@ -1104,7 +1250,8 @@ export type OutboundCreateManyCreatedByInput = {
 export type OutboundCreateManyApprovedByInput = {
   id?: string
   outboundCode: string
-  mitraId?: string | null
+  warehouseId?: string | null
+  partnerId?: string | null
   requestDate?: Date | string
   releaseDate?: Date | string | null
   status?: $Enums.OutboundStatus
@@ -1129,7 +1276,8 @@ export type OutboundUpdateWithoutCreatedByInput = {
   approvalNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  mitra?: Prisma.MitraUpdateOneWithoutOutboundsNestedInput
+  warehouse?: Prisma.WarehouseUpdateOneWithoutOutboundsNestedInput
+  partner?: Prisma.PartnerUpdateOneWithoutOutboundsNestedInput
   approvedBy?: Prisma.UserUpdateOneWithoutApprovedOutboundsNestedInput
   items?: Prisma.OutboundItemUpdateManyWithoutOutboundNestedInput
   stockCards?: Prisma.StockCardUpdateManyWithoutOutboundNestedInput
@@ -1138,7 +1286,8 @@ export type OutboundUpdateWithoutCreatedByInput = {
 export type OutboundUncheckedUpdateWithoutCreatedByInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   outboundCode?: Prisma.StringFieldUpdateOperationsInput | string
-  mitraId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  warehouseId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  partnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requestDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   releaseDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumOutboundStatusFieldUpdateOperationsInput | $Enums.OutboundStatus
@@ -1156,7 +1305,8 @@ export type OutboundUncheckedUpdateWithoutCreatedByInput = {
 export type OutboundUncheckedUpdateManyWithoutCreatedByInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   outboundCode?: Prisma.StringFieldUpdateOperationsInput | string
-  mitraId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  warehouseId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  partnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requestDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   releaseDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumOutboundStatusFieldUpdateOperationsInput | $Enums.OutboundStatus
@@ -1181,7 +1331,8 @@ export type OutboundUpdateWithoutApprovedByInput = {
   approvalNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  mitra?: Prisma.MitraUpdateOneWithoutOutboundsNestedInput
+  warehouse?: Prisma.WarehouseUpdateOneWithoutOutboundsNestedInput
+  partner?: Prisma.PartnerUpdateOneWithoutOutboundsNestedInput
   createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedOutboundsNestedInput
   items?: Prisma.OutboundItemUpdateManyWithoutOutboundNestedInput
   stockCards?: Prisma.StockCardUpdateManyWithoutOutboundNestedInput
@@ -1190,7 +1341,8 @@ export type OutboundUpdateWithoutApprovedByInput = {
 export type OutboundUncheckedUpdateWithoutApprovedByInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   outboundCode?: Prisma.StringFieldUpdateOperationsInput | string
-  mitraId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  warehouseId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  partnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requestDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   releaseDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumOutboundStatusFieldUpdateOperationsInput | $Enums.OutboundStatus
@@ -1208,7 +1360,8 @@ export type OutboundUncheckedUpdateWithoutApprovedByInput = {
 export type OutboundUncheckedUpdateManyWithoutApprovedByInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   outboundCode?: Prisma.StringFieldUpdateOperationsInput | string
-  mitraId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  warehouseId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  partnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requestDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   releaseDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumOutboundStatusFieldUpdateOperationsInput | $Enums.OutboundStatus
@@ -1221,9 +1374,10 @@ export type OutboundUncheckedUpdateManyWithoutApprovedByInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
-export type OutboundCreateManyMitraInput = {
+export type OutboundCreateManyWarehouseInput = {
   id?: string
   outboundCode: string
+  partnerId?: string | null
   requestDate?: Date | string
   releaseDate?: Date | string | null
   status?: $Enums.OutboundStatus
@@ -1237,7 +1391,7 @@ export type OutboundCreateManyMitraInput = {
   updatedAt?: Date | string
 }
 
-export type OutboundUpdateWithoutMitraInput = {
+export type OutboundUpdateWithoutWarehouseInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   outboundCode?: Prisma.StringFieldUpdateOperationsInput | string
   requestDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1249,15 +1403,17 @@ export type OutboundUpdateWithoutMitraInput = {
   approvalNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  partner?: Prisma.PartnerUpdateOneWithoutOutboundsNestedInput
   createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedOutboundsNestedInput
   approvedBy?: Prisma.UserUpdateOneWithoutApprovedOutboundsNestedInput
   items?: Prisma.OutboundItemUpdateManyWithoutOutboundNestedInput
   stockCards?: Prisma.StockCardUpdateManyWithoutOutboundNestedInput
 }
 
-export type OutboundUncheckedUpdateWithoutMitraInput = {
+export type OutboundUncheckedUpdateWithoutWarehouseInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   outboundCode?: Prisma.StringFieldUpdateOperationsInput | string
+  partnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requestDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   releaseDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumOutboundStatusFieldUpdateOperationsInput | $Enums.OutboundStatus
@@ -1273,9 +1429,82 @@ export type OutboundUncheckedUpdateWithoutMitraInput = {
   stockCards?: Prisma.StockCardUncheckedUpdateManyWithoutOutboundNestedInput
 }
 
-export type OutboundUncheckedUpdateManyWithoutMitraInput = {
+export type OutboundUncheckedUpdateManyWithoutWarehouseInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   outboundCode?: Prisma.StringFieldUpdateOperationsInput | string
+  partnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  requestDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  releaseDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.EnumOutboundStatusFieldUpdateOperationsInput | $Enums.OutboundStatus
+  purpose?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.StringFieldUpdateOperationsInput | string
+  approvedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  approvalNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type OutboundCreateManyPartnerInput = {
+  id?: string
+  outboundCode: string
+  warehouseId?: string | null
+  requestDate?: Date | string
+  releaseDate?: Date | string | null
+  status?: $Enums.OutboundStatus
+  purpose?: string | null
+  notes?: string | null
+  createdById: string
+  approvedById?: string | null
+  approvedAt?: Date | string | null
+  approvalNotes?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type OutboundUpdateWithoutPartnerInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  outboundCode?: Prisma.StringFieldUpdateOperationsInput | string
+  requestDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  releaseDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.EnumOutboundStatusFieldUpdateOperationsInput | $Enums.OutboundStatus
+  purpose?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  approvalNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  warehouse?: Prisma.WarehouseUpdateOneWithoutOutboundsNestedInput
+  createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedOutboundsNestedInput
+  approvedBy?: Prisma.UserUpdateOneWithoutApprovedOutboundsNestedInput
+  items?: Prisma.OutboundItemUpdateManyWithoutOutboundNestedInput
+  stockCards?: Prisma.StockCardUpdateManyWithoutOutboundNestedInput
+}
+
+export type OutboundUncheckedUpdateWithoutPartnerInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  outboundCode?: Prisma.StringFieldUpdateOperationsInput | string
+  warehouseId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  requestDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  releaseDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.EnumOutboundStatusFieldUpdateOperationsInput | $Enums.OutboundStatus
+  purpose?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.StringFieldUpdateOperationsInput | string
+  approvedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  approvalNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  items?: Prisma.OutboundItemUncheckedUpdateManyWithoutOutboundNestedInput
+  stockCards?: Prisma.StockCardUncheckedUpdateManyWithoutOutboundNestedInput
+}
+
+export type OutboundUncheckedUpdateManyWithoutPartnerInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  outboundCode?: Prisma.StringFieldUpdateOperationsInput | string
+  warehouseId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requestDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   releaseDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumOutboundStatusFieldUpdateOperationsInput | $Enums.OutboundStatus
@@ -1332,7 +1561,8 @@ export type OutboundCountOutputTypeCountStockCardsArgs<ExtArgs extends runtime.T
 export type OutboundSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   outboundCode?: boolean
-  mitraId?: boolean
+  warehouseId?: boolean
+  partnerId?: boolean
   requestDate?: boolean
   releaseDate?: boolean
   status?: boolean
@@ -1344,7 +1574,8 @@ export type OutboundSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   approvalNotes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  mitra?: boolean | Prisma.Outbound$mitraArgs<ExtArgs>
+  warehouse?: boolean | Prisma.Outbound$warehouseArgs<ExtArgs>
+  partner?: boolean | Prisma.Outbound$partnerArgs<ExtArgs>
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   approvedBy?: boolean | Prisma.Outbound$approvedByArgs<ExtArgs>
   items?: boolean | Prisma.Outbound$itemsArgs<ExtArgs>
@@ -1355,7 +1586,8 @@ export type OutboundSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
 export type OutboundSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   outboundCode?: boolean
-  mitraId?: boolean
+  warehouseId?: boolean
+  partnerId?: boolean
   requestDate?: boolean
   releaseDate?: boolean
   status?: boolean
@@ -1367,7 +1599,8 @@ export type OutboundSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   approvalNotes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  mitra?: boolean | Prisma.Outbound$mitraArgs<ExtArgs>
+  warehouse?: boolean | Prisma.Outbound$warehouseArgs<ExtArgs>
+  partner?: boolean | Prisma.Outbound$partnerArgs<ExtArgs>
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   approvedBy?: boolean | Prisma.Outbound$approvedByArgs<ExtArgs>
 }, ExtArgs["result"]["outbound"]>
@@ -1375,7 +1608,8 @@ export type OutboundSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
 export type OutboundSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   outboundCode?: boolean
-  mitraId?: boolean
+  warehouseId?: boolean
+  partnerId?: boolean
   requestDate?: boolean
   releaseDate?: boolean
   status?: boolean
@@ -1387,7 +1621,8 @@ export type OutboundSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   approvalNotes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  mitra?: boolean | Prisma.Outbound$mitraArgs<ExtArgs>
+  warehouse?: boolean | Prisma.Outbound$warehouseArgs<ExtArgs>
+  partner?: boolean | Prisma.Outbound$partnerArgs<ExtArgs>
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   approvedBy?: boolean | Prisma.Outbound$approvedByArgs<ExtArgs>
 }, ExtArgs["result"]["outbound"]>
@@ -1395,7 +1630,8 @@ export type OutboundSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
 export type OutboundSelectScalar = {
   id?: boolean
   outboundCode?: boolean
-  mitraId?: boolean
+  warehouseId?: boolean
+  partnerId?: boolean
   requestDate?: boolean
   releaseDate?: boolean
   status?: boolean
@@ -1409,9 +1645,10 @@ export type OutboundSelectScalar = {
   updatedAt?: boolean
 }
 
-export type OutboundOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "outboundCode" | "mitraId" | "requestDate" | "releaseDate" | "status" | "purpose" | "notes" | "createdById" | "approvedById" | "approvedAt" | "approvalNotes" | "createdAt" | "updatedAt", ExtArgs["result"]["outbound"]>
+export type OutboundOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "outboundCode" | "warehouseId" | "partnerId" | "requestDate" | "releaseDate" | "status" | "purpose" | "notes" | "createdById" | "approvedById" | "approvedAt" | "approvalNotes" | "createdAt" | "updatedAt", ExtArgs["result"]["outbound"]>
 export type OutboundInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  mitra?: boolean | Prisma.Outbound$mitraArgs<ExtArgs>
+  warehouse?: boolean | Prisma.Outbound$warehouseArgs<ExtArgs>
+  partner?: boolean | Prisma.Outbound$partnerArgs<ExtArgs>
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   approvedBy?: boolean | Prisma.Outbound$approvedByArgs<ExtArgs>
   items?: boolean | Prisma.Outbound$itemsArgs<ExtArgs>
@@ -1419,12 +1656,14 @@ export type OutboundInclude<ExtArgs extends runtime.Types.Extensions.InternalArg
   _count?: boolean | Prisma.OutboundCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type OutboundIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  mitra?: boolean | Prisma.Outbound$mitraArgs<ExtArgs>
+  warehouse?: boolean | Prisma.Outbound$warehouseArgs<ExtArgs>
+  partner?: boolean | Prisma.Outbound$partnerArgs<ExtArgs>
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   approvedBy?: boolean | Prisma.Outbound$approvedByArgs<ExtArgs>
 }
 export type OutboundIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  mitra?: boolean | Prisma.Outbound$mitraArgs<ExtArgs>
+  warehouse?: boolean | Prisma.Outbound$warehouseArgs<ExtArgs>
+  partner?: boolean | Prisma.Outbound$partnerArgs<ExtArgs>
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   approvedBy?: boolean | Prisma.Outbound$approvedByArgs<ExtArgs>
 }
@@ -1432,7 +1671,8 @@ export type OutboundIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
 export type $OutboundPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Outbound"
   objects: {
-    mitra: Prisma.$MitraPayload<ExtArgs> | null
+    warehouse: Prisma.$WarehousePayload<ExtArgs> | null
+    partner: Prisma.$PartnerPayload<ExtArgs> | null
     createdBy: Prisma.$UserPayload<ExtArgs>
     approvedBy: Prisma.$UserPayload<ExtArgs> | null
     items: Prisma.$OutboundItemPayload<ExtArgs>[]
@@ -1441,7 +1681,8 @@ export type $OutboundPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     outboundCode: string
-    mitraId: string | null
+    warehouseId: string | null
+    partnerId: string | null
     requestDate: Date
     releaseDate: Date | null
     status: $Enums.OutboundStatus
@@ -1847,7 +2088,8 @@ readonly fields: OutboundFieldRefs;
  */
 export interface Prisma__OutboundClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  mitra<T extends Prisma.Outbound$mitraArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Outbound$mitraArgs<ExtArgs>>): Prisma.Prisma__MitraClient<runtime.Types.Result.GetResult<Prisma.$MitraPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  warehouse<T extends Prisma.Outbound$warehouseArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Outbound$warehouseArgs<ExtArgs>>): Prisma.Prisma__WarehouseClient<runtime.Types.Result.GetResult<Prisma.$WarehousePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  partner<T extends Prisma.Outbound$partnerArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Outbound$partnerArgs<ExtArgs>>): Prisma.Prisma__PartnerClient<runtime.Types.Result.GetResult<Prisma.$PartnerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   createdBy<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   approvedBy<T extends Prisma.Outbound$approvedByArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Outbound$approvedByArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   items<T extends Prisma.Outbound$itemsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Outbound$itemsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OutboundItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -1883,7 +2125,8 @@ export interface Prisma__OutboundClient<T, Null = never, ExtArgs extends runtime
 export interface OutboundFieldRefs {
   readonly id: Prisma.FieldRef<"Outbound", 'String'>
   readonly outboundCode: Prisma.FieldRef<"Outbound", 'String'>
-  readonly mitraId: Prisma.FieldRef<"Outbound", 'String'>
+  readonly warehouseId: Prisma.FieldRef<"Outbound", 'String'>
+  readonly partnerId: Prisma.FieldRef<"Outbound", 'String'>
   readonly requestDate: Prisma.FieldRef<"Outbound", 'DateTime'>
   readonly releaseDate: Prisma.FieldRef<"Outbound", 'DateTime'>
   readonly status: Prisma.FieldRef<"Outbound", 'OutboundStatus'>
@@ -2291,22 +2534,41 @@ export type OutboundDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inte
 }
 
 /**
- * Outbound.mitra
+ * Outbound.warehouse
  */
-export type Outbound$mitraArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type Outbound$warehouseArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the Mitra
+   * Select specific fields to fetch from the Warehouse
    */
-  select?: Prisma.MitraSelect<ExtArgs> | null
+  select?: Prisma.WarehouseSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the Mitra
+   * Omit specific fields from the Warehouse
    */
-  omit?: Prisma.MitraOmit<ExtArgs> | null
+  omit?: Prisma.WarehouseOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.MitraInclude<ExtArgs> | null
-  where?: Prisma.MitraWhereInput
+  include?: Prisma.WarehouseInclude<ExtArgs> | null
+  where?: Prisma.WarehouseWhereInput
+}
+
+/**
+ * Outbound.partner
+ */
+export type Outbound$partnerArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Partner
+   */
+  select?: Prisma.PartnerSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Partner
+   */
+  omit?: Prisma.PartnerOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PartnerInclude<ExtArgs> | null
+  where?: Prisma.PartnerWhereInput
 }
 
 /**

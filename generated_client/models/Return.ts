@@ -28,6 +28,7 @@ export type ReturnMinAggregateOutputType = {
   id: string | null
   returnCode: string | null
   purchaseRequestId: string | null
+  inboundId: string | null
   vendorId: string | null
   returnDate: Date | null
   reason: $Enums.ReturnReason | null
@@ -47,6 +48,7 @@ export type ReturnMaxAggregateOutputType = {
   id: string | null
   returnCode: string | null
   purchaseRequestId: string | null
+  inboundId: string | null
   vendorId: string | null
   returnDate: Date | null
   reason: $Enums.ReturnReason | null
@@ -66,6 +68,7 @@ export type ReturnCountAggregateOutputType = {
   id: number
   returnCode: number
   purchaseRequestId: number
+  inboundId: number
   vendorId: number
   returnDate: number
   reason: number
@@ -87,6 +90,7 @@ export type ReturnMinAggregateInputType = {
   id?: true
   returnCode?: true
   purchaseRequestId?: true
+  inboundId?: true
   vendorId?: true
   returnDate?: true
   reason?: true
@@ -106,6 +110,7 @@ export type ReturnMaxAggregateInputType = {
   id?: true
   returnCode?: true
   purchaseRequestId?: true
+  inboundId?: true
   vendorId?: true
   returnDate?: true
   reason?: true
@@ -125,6 +130,7 @@ export type ReturnCountAggregateInputType = {
   id?: true
   returnCode?: true
   purchaseRequestId?: true
+  inboundId?: true
   vendorId?: true
   returnDate?: true
   reason?: true
@@ -217,6 +223,7 @@ export type ReturnGroupByOutputType = {
   id: string
   returnCode: string
   purchaseRequestId: string
+  inboundId: string | null
   vendorId: string
   returnDate: Date
   reason: $Enums.ReturnReason
@@ -257,6 +264,7 @@ export type ReturnWhereInput = {
   id?: Prisma.StringFilter<"Return"> | string
   returnCode?: Prisma.StringFilter<"Return"> | string
   purchaseRequestId?: Prisma.StringFilter<"Return"> | string
+  inboundId?: Prisma.StringNullableFilter<"Return"> | string | null
   vendorId?: Prisma.StringFilter<"Return"> | string
   returnDate?: Prisma.DateTimeFilter<"Return"> | Date | string
   reason?: Prisma.EnumReturnReasonFilter<"Return"> | $Enums.ReturnReason
@@ -271,6 +279,7 @@ export type ReturnWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"Return"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Return"> | Date | string
   purchaseRequest?: Prisma.XOR<Prisma.PurchaseRequestScalarRelationFilter, Prisma.PurchaseRequestWhereInput>
+  inbound?: Prisma.XOR<Prisma.InboundNullableScalarRelationFilter, Prisma.InboundWhereInput> | null
   vendor?: Prisma.XOR<Prisma.VendorScalarRelationFilter, Prisma.VendorWhereInput>
   createdBy?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   approvedBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
@@ -282,6 +291,7 @@ export type ReturnOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   returnCode?: Prisma.SortOrder
   purchaseRequestId?: Prisma.SortOrder
+  inboundId?: Prisma.SortOrderInput | Prisma.SortOrder
   vendorId?: Prisma.SortOrder
   returnDate?: Prisma.SortOrder
   reason?: Prisma.SortOrder
@@ -296,6 +306,7 @@ export type ReturnOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   purchaseRequest?: Prisma.PurchaseRequestOrderByWithRelationInput
+  inbound?: Prisma.InboundOrderByWithRelationInput
   vendor?: Prisma.VendorOrderByWithRelationInput
   createdBy?: Prisma.UserOrderByWithRelationInput
   approvedBy?: Prisma.UserOrderByWithRelationInput
@@ -310,6 +321,7 @@ export type ReturnWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.ReturnWhereInput[]
   NOT?: Prisma.ReturnWhereInput | Prisma.ReturnWhereInput[]
   purchaseRequestId?: Prisma.StringFilter<"Return"> | string
+  inboundId?: Prisma.StringNullableFilter<"Return"> | string | null
   vendorId?: Prisma.StringFilter<"Return"> | string
   returnDate?: Prisma.DateTimeFilter<"Return"> | Date | string
   reason?: Prisma.EnumReturnReasonFilter<"Return"> | $Enums.ReturnReason
@@ -324,6 +336,7 @@ export type ReturnWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"Return"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Return"> | Date | string
   purchaseRequest?: Prisma.XOR<Prisma.PurchaseRequestScalarRelationFilter, Prisma.PurchaseRequestWhereInput>
+  inbound?: Prisma.XOR<Prisma.InboundNullableScalarRelationFilter, Prisma.InboundWhereInput> | null
   vendor?: Prisma.XOR<Prisma.VendorScalarRelationFilter, Prisma.VendorWhereInput>
   createdBy?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   approvedBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
@@ -335,6 +348,7 @@ export type ReturnOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   returnCode?: Prisma.SortOrder
   purchaseRequestId?: Prisma.SortOrder
+  inboundId?: Prisma.SortOrderInput | Prisma.SortOrder
   vendorId?: Prisma.SortOrder
   returnDate?: Prisma.SortOrder
   reason?: Prisma.SortOrder
@@ -360,6 +374,7 @@ export type ReturnScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"Return"> | string
   returnCode?: Prisma.StringWithAggregatesFilter<"Return"> | string
   purchaseRequestId?: Prisma.StringWithAggregatesFilter<"Return"> | string
+  inboundId?: Prisma.StringNullableWithAggregatesFilter<"Return"> | string | null
   vendorId?: Prisma.StringWithAggregatesFilter<"Return"> | string
   returnDate?: Prisma.DateTimeWithAggregatesFilter<"Return"> | Date | string
   reason?: Prisma.EnumReturnReasonWithAggregatesFilter<"Return"> | $Enums.ReturnReason
@@ -389,6 +404,7 @@ export type ReturnCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   purchaseRequest: Prisma.PurchaseRequestCreateNestedOneWithoutReturnsInput
+  inbound?: Prisma.InboundCreateNestedOneWithoutReturnsInput
   vendor: Prisma.VendorCreateNestedOneWithoutReturnsInput
   createdBy: Prisma.UserCreateNestedOneWithoutCreatedReturnsInput
   approvedBy?: Prisma.UserCreateNestedOneWithoutApprovedReturnsInput
@@ -400,6 +416,7 @@ export type ReturnUncheckedCreateInput = {
   id?: string
   returnCode: string
   purchaseRequestId: string
+  inboundId?: string | null
   vendorId: string
   returnDate?: Date | string
   reason: $Enums.ReturnReason
@@ -431,6 +448,7 @@ export type ReturnUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   purchaseRequest?: Prisma.PurchaseRequestUpdateOneRequiredWithoutReturnsNestedInput
+  inbound?: Prisma.InboundUpdateOneWithoutReturnsNestedInput
   vendor?: Prisma.VendorUpdateOneRequiredWithoutReturnsNestedInput
   createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedReturnsNestedInput
   approvedBy?: Prisma.UserUpdateOneWithoutApprovedReturnsNestedInput
@@ -442,6 +460,7 @@ export type ReturnUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   returnCode?: Prisma.StringFieldUpdateOperationsInput | string
   purchaseRequestId?: Prisma.StringFieldUpdateOperationsInput | string
+  inboundId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vendorId?: Prisma.StringFieldUpdateOperationsInput | string
   returnDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reason?: Prisma.EnumReturnReasonFieldUpdateOperationsInput | $Enums.ReturnReason
@@ -463,6 +482,7 @@ export type ReturnCreateManyInput = {
   id?: string
   returnCode: string
   purchaseRequestId: string
+  inboundId?: string | null
   vendorId: string
   returnDate?: Date | string
   reason: $Enums.ReturnReason
@@ -497,6 +517,7 @@ export type ReturnUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   returnCode?: Prisma.StringFieldUpdateOperationsInput | string
   purchaseRequestId?: Prisma.StringFieldUpdateOperationsInput | string
+  inboundId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vendorId?: Prisma.StringFieldUpdateOperationsInput | string
   returnDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reason?: Prisma.EnumReturnReasonFieldUpdateOperationsInput | $Enums.ReturnReason
@@ -531,6 +552,7 @@ export type ReturnCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   returnCode?: Prisma.SortOrder
   purchaseRequestId?: Prisma.SortOrder
+  inboundId?: Prisma.SortOrder
   vendorId?: Prisma.SortOrder
   returnDate?: Prisma.SortOrder
   reason?: Prisma.SortOrder
@@ -550,6 +572,7 @@ export type ReturnMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   returnCode?: Prisma.SortOrder
   purchaseRequestId?: Prisma.SortOrder
+  inboundId?: Prisma.SortOrder
   vendorId?: Prisma.SortOrder
   returnDate?: Prisma.SortOrder
   reason?: Prisma.SortOrder
@@ -569,6 +592,7 @@ export type ReturnMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   returnCode?: Prisma.SortOrder
   purchaseRequestId?: Prisma.SortOrder
+  inboundId?: Prisma.SortOrder
   vendorId?: Prisma.SortOrder
   returnDate?: Prisma.SortOrder
   reason?: Prisma.SortOrder
@@ -757,6 +781,48 @@ export type ReturnUncheckedUpdateManyWithoutPurchaseRequestNestedInput = {
   deleteMany?: Prisma.ReturnScalarWhereInput | Prisma.ReturnScalarWhereInput[]
 }
 
+export type ReturnCreateNestedManyWithoutInboundInput = {
+  create?: Prisma.XOR<Prisma.ReturnCreateWithoutInboundInput, Prisma.ReturnUncheckedCreateWithoutInboundInput> | Prisma.ReturnCreateWithoutInboundInput[] | Prisma.ReturnUncheckedCreateWithoutInboundInput[]
+  connectOrCreate?: Prisma.ReturnCreateOrConnectWithoutInboundInput | Prisma.ReturnCreateOrConnectWithoutInboundInput[]
+  createMany?: Prisma.ReturnCreateManyInboundInputEnvelope
+  connect?: Prisma.ReturnWhereUniqueInput | Prisma.ReturnWhereUniqueInput[]
+}
+
+export type ReturnUncheckedCreateNestedManyWithoutInboundInput = {
+  create?: Prisma.XOR<Prisma.ReturnCreateWithoutInboundInput, Prisma.ReturnUncheckedCreateWithoutInboundInput> | Prisma.ReturnCreateWithoutInboundInput[] | Prisma.ReturnUncheckedCreateWithoutInboundInput[]
+  connectOrCreate?: Prisma.ReturnCreateOrConnectWithoutInboundInput | Prisma.ReturnCreateOrConnectWithoutInboundInput[]
+  createMany?: Prisma.ReturnCreateManyInboundInputEnvelope
+  connect?: Prisma.ReturnWhereUniqueInput | Prisma.ReturnWhereUniqueInput[]
+}
+
+export type ReturnUpdateManyWithoutInboundNestedInput = {
+  create?: Prisma.XOR<Prisma.ReturnCreateWithoutInboundInput, Prisma.ReturnUncheckedCreateWithoutInboundInput> | Prisma.ReturnCreateWithoutInboundInput[] | Prisma.ReturnUncheckedCreateWithoutInboundInput[]
+  connectOrCreate?: Prisma.ReturnCreateOrConnectWithoutInboundInput | Prisma.ReturnCreateOrConnectWithoutInboundInput[]
+  upsert?: Prisma.ReturnUpsertWithWhereUniqueWithoutInboundInput | Prisma.ReturnUpsertWithWhereUniqueWithoutInboundInput[]
+  createMany?: Prisma.ReturnCreateManyInboundInputEnvelope
+  set?: Prisma.ReturnWhereUniqueInput | Prisma.ReturnWhereUniqueInput[]
+  disconnect?: Prisma.ReturnWhereUniqueInput | Prisma.ReturnWhereUniqueInput[]
+  delete?: Prisma.ReturnWhereUniqueInput | Prisma.ReturnWhereUniqueInput[]
+  connect?: Prisma.ReturnWhereUniqueInput | Prisma.ReturnWhereUniqueInput[]
+  update?: Prisma.ReturnUpdateWithWhereUniqueWithoutInboundInput | Prisma.ReturnUpdateWithWhereUniqueWithoutInboundInput[]
+  updateMany?: Prisma.ReturnUpdateManyWithWhereWithoutInboundInput | Prisma.ReturnUpdateManyWithWhereWithoutInboundInput[]
+  deleteMany?: Prisma.ReturnScalarWhereInput | Prisma.ReturnScalarWhereInput[]
+}
+
+export type ReturnUncheckedUpdateManyWithoutInboundNestedInput = {
+  create?: Prisma.XOR<Prisma.ReturnCreateWithoutInboundInput, Prisma.ReturnUncheckedCreateWithoutInboundInput> | Prisma.ReturnCreateWithoutInboundInput[] | Prisma.ReturnUncheckedCreateWithoutInboundInput[]
+  connectOrCreate?: Prisma.ReturnCreateOrConnectWithoutInboundInput | Prisma.ReturnCreateOrConnectWithoutInboundInput[]
+  upsert?: Prisma.ReturnUpsertWithWhereUniqueWithoutInboundInput | Prisma.ReturnUpsertWithWhereUniqueWithoutInboundInput[]
+  createMany?: Prisma.ReturnCreateManyInboundInputEnvelope
+  set?: Prisma.ReturnWhereUniqueInput | Prisma.ReturnWhereUniqueInput[]
+  disconnect?: Prisma.ReturnWhereUniqueInput | Prisma.ReturnWhereUniqueInput[]
+  delete?: Prisma.ReturnWhereUniqueInput | Prisma.ReturnWhereUniqueInput[]
+  connect?: Prisma.ReturnWhereUniqueInput | Prisma.ReturnWhereUniqueInput[]
+  update?: Prisma.ReturnUpdateWithWhereUniqueWithoutInboundInput | Prisma.ReturnUpdateWithWhereUniqueWithoutInboundInput[]
+  updateMany?: Prisma.ReturnUpdateManyWithWhereWithoutInboundInput | Prisma.ReturnUpdateManyWithWhereWithoutInboundInput[]
+  deleteMany?: Prisma.ReturnScalarWhereInput | Prisma.ReturnScalarWhereInput[]
+}
+
 export type ReturnCreateNestedOneWithoutStockCardsInput = {
   create?: Prisma.XOR<Prisma.ReturnCreateWithoutStockCardsInput, Prisma.ReturnUncheckedCreateWithoutStockCardsInput>
   connectOrCreate?: Prisma.ReturnCreateOrConnectWithoutStockCardsInput
@@ -809,6 +875,7 @@ export type ReturnCreateWithoutCreatedByInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   purchaseRequest: Prisma.PurchaseRequestCreateNestedOneWithoutReturnsInput
+  inbound?: Prisma.InboundCreateNestedOneWithoutReturnsInput
   vendor: Prisma.VendorCreateNestedOneWithoutReturnsInput
   approvedBy?: Prisma.UserCreateNestedOneWithoutApprovedReturnsInput
   items?: Prisma.ReturnItemCreateNestedManyWithoutReturnInput
@@ -819,6 +886,7 @@ export type ReturnUncheckedCreateWithoutCreatedByInput = {
   id?: string
   returnCode: string
   purchaseRequestId: string
+  inboundId?: string | null
   vendorId: string
   returnDate?: Date | string
   reason: $Enums.ReturnReason
@@ -859,6 +927,7 @@ export type ReturnCreateWithoutApprovedByInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   purchaseRequest: Prisma.PurchaseRequestCreateNestedOneWithoutReturnsInput
+  inbound?: Prisma.InboundCreateNestedOneWithoutReturnsInput
   vendor: Prisma.VendorCreateNestedOneWithoutReturnsInput
   createdBy: Prisma.UserCreateNestedOneWithoutCreatedReturnsInput
   items?: Prisma.ReturnItemCreateNestedManyWithoutReturnInput
@@ -869,6 +938,7 @@ export type ReturnUncheckedCreateWithoutApprovedByInput = {
   id?: string
   returnCode: string
   purchaseRequestId: string
+  inboundId?: string | null
   vendorId: string
   returnDate?: Date | string
   reason: $Enums.ReturnReason
@@ -918,6 +988,7 @@ export type ReturnScalarWhereInput = {
   id?: Prisma.StringFilter<"Return"> | string
   returnCode?: Prisma.StringFilter<"Return"> | string
   purchaseRequestId?: Prisma.StringFilter<"Return"> | string
+  inboundId?: Prisma.StringNullableFilter<"Return"> | string | null
   vendorId?: Prisma.StringFilter<"Return"> | string
   returnDate?: Prisma.DateTimeFilter<"Return"> | Date | string
   reason?: Prisma.EnumReturnReasonFilter<"Return"> | $Enums.ReturnReason
@@ -963,6 +1034,7 @@ export type ReturnCreateWithoutVendorInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   purchaseRequest: Prisma.PurchaseRequestCreateNestedOneWithoutReturnsInput
+  inbound?: Prisma.InboundCreateNestedOneWithoutReturnsInput
   createdBy: Prisma.UserCreateNestedOneWithoutCreatedReturnsInput
   approvedBy?: Prisma.UserCreateNestedOneWithoutApprovedReturnsInput
   items?: Prisma.ReturnItemCreateNestedManyWithoutReturnInput
@@ -973,6 +1045,7 @@ export type ReturnUncheckedCreateWithoutVendorInput = {
   id?: string
   returnCode: string
   purchaseRequestId: string
+  inboundId?: string | null
   returnDate?: Date | string
   reason: $Enums.ReturnReason
   status?: $Enums.ReturnStatus
@@ -1028,6 +1101,7 @@ export type ReturnCreateWithoutPurchaseRequestInput = {
   completedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  inbound?: Prisma.InboundCreateNestedOneWithoutReturnsInput
   vendor: Prisma.VendorCreateNestedOneWithoutReturnsInput
   createdBy: Prisma.UserCreateNestedOneWithoutCreatedReturnsInput
   approvedBy?: Prisma.UserCreateNestedOneWithoutApprovedReturnsInput
@@ -1038,6 +1112,7 @@ export type ReturnCreateWithoutPurchaseRequestInput = {
 export type ReturnUncheckedCreateWithoutPurchaseRequestInput = {
   id?: string
   returnCode: string
+  inboundId?: string | null
   vendorId: string
   returnDate?: Date | string
   reason: $Enums.ReturnReason
@@ -1081,7 +1156,7 @@ export type ReturnUpdateManyWithWhereWithoutPurchaseRequestInput = {
   data: Prisma.XOR<Prisma.ReturnUpdateManyMutationInput, Prisma.ReturnUncheckedUpdateManyWithoutPurchaseRequestInput>
 }
 
-export type ReturnCreateWithoutStockCardsInput = {
+export type ReturnCreateWithoutInboundInput = {
   id?: string
   returnCode: string
   returnDate?: Date | string
@@ -1099,12 +1174,82 @@ export type ReturnCreateWithoutStockCardsInput = {
   createdBy: Prisma.UserCreateNestedOneWithoutCreatedReturnsInput
   approvedBy?: Prisma.UserCreateNestedOneWithoutApprovedReturnsInput
   items?: Prisma.ReturnItemCreateNestedManyWithoutReturnInput
+  stockCards?: Prisma.StockCardCreateNestedManyWithoutReturnInput
+}
+
+export type ReturnUncheckedCreateWithoutInboundInput = {
+  id?: string
+  returnCode: string
+  purchaseRequestId: string
+  vendorId: string
+  returnDate?: Date | string
+  reason: $Enums.ReturnReason
+  status?: $Enums.ReturnStatus
+  notes?: string | null
+  createdById: string
+  approvedById?: string | null
+  approvedAt?: Date | string | null
+  approvalNotes?: string | null
+  sentToVendorAt?: Date | string | null
+  completedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  items?: Prisma.ReturnItemUncheckedCreateNestedManyWithoutReturnInput
+  stockCards?: Prisma.StockCardUncheckedCreateNestedManyWithoutReturnInput
+}
+
+export type ReturnCreateOrConnectWithoutInboundInput = {
+  where: Prisma.ReturnWhereUniqueInput
+  create: Prisma.XOR<Prisma.ReturnCreateWithoutInboundInput, Prisma.ReturnUncheckedCreateWithoutInboundInput>
+}
+
+export type ReturnCreateManyInboundInputEnvelope = {
+  data: Prisma.ReturnCreateManyInboundInput | Prisma.ReturnCreateManyInboundInput[]
+  skipDuplicates?: boolean
+}
+
+export type ReturnUpsertWithWhereUniqueWithoutInboundInput = {
+  where: Prisma.ReturnWhereUniqueInput
+  update: Prisma.XOR<Prisma.ReturnUpdateWithoutInboundInput, Prisma.ReturnUncheckedUpdateWithoutInboundInput>
+  create: Prisma.XOR<Prisma.ReturnCreateWithoutInboundInput, Prisma.ReturnUncheckedCreateWithoutInboundInput>
+}
+
+export type ReturnUpdateWithWhereUniqueWithoutInboundInput = {
+  where: Prisma.ReturnWhereUniqueInput
+  data: Prisma.XOR<Prisma.ReturnUpdateWithoutInboundInput, Prisma.ReturnUncheckedUpdateWithoutInboundInput>
+}
+
+export type ReturnUpdateManyWithWhereWithoutInboundInput = {
+  where: Prisma.ReturnScalarWhereInput
+  data: Prisma.XOR<Prisma.ReturnUpdateManyMutationInput, Prisma.ReturnUncheckedUpdateManyWithoutInboundInput>
+}
+
+export type ReturnCreateWithoutStockCardsInput = {
+  id?: string
+  returnCode: string
+  returnDate?: Date | string
+  reason: $Enums.ReturnReason
+  status?: $Enums.ReturnStatus
+  notes?: string | null
+  approvedAt?: Date | string | null
+  approvalNotes?: string | null
+  sentToVendorAt?: Date | string | null
+  completedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  purchaseRequest: Prisma.PurchaseRequestCreateNestedOneWithoutReturnsInput
+  inbound?: Prisma.InboundCreateNestedOneWithoutReturnsInput
+  vendor: Prisma.VendorCreateNestedOneWithoutReturnsInput
+  createdBy: Prisma.UserCreateNestedOneWithoutCreatedReturnsInput
+  approvedBy?: Prisma.UserCreateNestedOneWithoutApprovedReturnsInput
+  items?: Prisma.ReturnItemCreateNestedManyWithoutReturnInput
 }
 
 export type ReturnUncheckedCreateWithoutStockCardsInput = {
   id?: string
   returnCode: string
   purchaseRequestId: string
+  inboundId?: string | null
   vendorId: string
   returnDate?: Date | string
   reason: $Enums.ReturnReason
@@ -1151,6 +1296,7 @@ export type ReturnUpdateWithoutStockCardsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   purchaseRequest?: Prisma.PurchaseRequestUpdateOneRequiredWithoutReturnsNestedInput
+  inbound?: Prisma.InboundUpdateOneWithoutReturnsNestedInput
   vendor?: Prisma.VendorUpdateOneRequiredWithoutReturnsNestedInput
   createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedReturnsNestedInput
   approvedBy?: Prisma.UserUpdateOneWithoutApprovedReturnsNestedInput
@@ -1161,6 +1307,7 @@ export type ReturnUncheckedUpdateWithoutStockCardsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   returnCode?: Prisma.StringFieldUpdateOperationsInput | string
   purchaseRequestId?: Prisma.StringFieldUpdateOperationsInput | string
+  inboundId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vendorId?: Prisma.StringFieldUpdateOperationsInput | string
   returnDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reason?: Prisma.EnumReturnReasonFieldUpdateOperationsInput | $Enums.ReturnReason
@@ -1191,6 +1338,7 @@ export type ReturnCreateWithoutItemsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   purchaseRequest: Prisma.PurchaseRequestCreateNestedOneWithoutReturnsInput
+  inbound?: Prisma.InboundCreateNestedOneWithoutReturnsInput
   vendor: Prisma.VendorCreateNestedOneWithoutReturnsInput
   createdBy: Prisma.UserCreateNestedOneWithoutCreatedReturnsInput
   approvedBy?: Prisma.UserCreateNestedOneWithoutApprovedReturnsInput
@@ -1201,6 +1349,7 @@ export type ReturnUncheckedCreateWithoutItemsInput = {
   id?: string
   returnCode: string
   purchaseRequestId: string
+  inboundId?: string | null
   vendorId: string
   returnDate?: Date | string
   reason: $Enums.ReturnReason
@@ -1247,6 +1396,7 @@ export type ReturnUpdateWithoutItemsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   purchaseRequest?: Prisma.PurchaseRequestUpdateOneRequiredWithoutReturnsNestedInput
+  inbound?: Prisma.InboundUpdateOneWithoutReturnsNestedInput
   vendor?: Prisma.VendorUpdateOneRequiredWithoutReturnsNestedInput
   createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedReturnsNestedInput
   approvedBy?: Prisma.UserUpdateOneWithoutApprovedReturnsNestedInput
@@ -1257,6 +1407,7 @@ export type ReturnUncheckedUpdateWithoutItemsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   returnCode?: Prisma.StringFieldUpdateOperationsInput | string
   purchaseRequestId?: Prisma.StringFieldUpdateOperationsInput | string
+  inboundId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vendorId?: Prisma.StringFieldUpdateOperationsInput | string
   returnDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reason?: Prisma.EnumReturnReasonFieldUpdateOperationsInput | $Enums.ReturnReason
@@ -1277,6 +1428,7 @@ export type ReturnCreateManyCreatedByInput = {
   id?: string
   returnCode: string
   purchaseRequestId: string
+  inboundId?: string | null
   vendorId: string
   returnDate?: Date | string
   reason: $Enums.ReturnReason
@@ -1295,6 +1447,7 @@ export type ReturnCreateManyApprovedByInput = {
   id?: string
   returnCode: string
   purchaseRequestId: string
+  inboundId?: string | null
   vendorId: string
   returnDate?: Date | string
   reason: $Enums.ReturnReason
@@ -1323,6 +1476,7 @@ export type ReturnUpdateWithoutCreatedByInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   purchaseRequest?: Prisma.PurchaseRequestUpdateOneRequiredWithoutReturnsNestedInput
+  inbound?: Prisma.InboundUpdateOneWithoutReturnsNestedInput
   vendor?: Prisma.VendorUpdateOneRequiredWithoutReturnsNestedInput
   approvedBy?: Prisma.UserUpdateOneWithoutApprovedReturnsNestedInput
   items?: Prisma.ReturnItemUpdateManyWithoutReturnNestedInput
@@ -1333,6 +1487,7 @@ export type ReturnUncheckedUpdateWithoutCreatedByInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   returnCode?: Prisma.StringFieldUpdateOperationsInput | string
   purchaseRequestId?: Prisma.StringFieldUpdateOperationsInput | string
+  inboundId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vendorId?: Prisma.StringFieldUpdateOperationsInput | string
   returnDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reason?: Prisma.EnumReturnReasonFieldUpdateOperationsInput | $Enums.ReturnReason
@@ -1353,6 +1508,7 @@ export type ReturnUncheckedUpdateManyWithoutCreatedByInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   returnCode?: Prisma.StringFieldUpdateOperationsInput | string
   purchaseRequestId?: Prisma.StringFieldUpdateOperationsInput | string
+  inboundId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vendorId?: Prisma.StringFieldUpdateOperationsInput | string
   returnDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reason?: Prisma.EnumReturnReasonFieldUpdateOperationsInput | $Enums.ReturnReason
@@ -1381,6 +1537,7 @@ export type ReturnUpdateWithoutApprovedByInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   purchaseRequest?: Prisma.PurchaseRequestUpdateOneRequiredWithoutReturnsNestedInput
+  inbound?: Prisma.InboundUpdateOneWithoutReturnsNestedInput
   vendor?: Prisma.VendorUpdateOneRequiredWithoutReturnsNestedInput
   createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedReturnsNestedInput
   items?: Prisma.ReturnItemUpdateManyWithoutReturnNestedInput
@@ -1391,6 +1548,7 @@ export type ReturnUncheckedUpdateWithoutApprovedByInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   returnCode?: Prisma.StringFieldUpdateOperationsInput | string
   purchaseRequestId?: Prisma.StringFieldUpdateOperationsInput | string
+  inboundId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vendorId?: Prisma.StringFieldUpdateOperationsInput | string
   returnDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reason?: Prisma.EnumReturnReasonFieldUpdateOperationsInput | $Enums.ReturnReason
@@ -1411,6 +1569,7 @@ export type ReturnUncheckedUpdateManyWithoutApprovedByInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   returnCode?: Prisma.StringFieldUpdateOperationsInput | string
   purchaseRequestId?: Prisma.StringFieldUpdateOperationsInput | string
+  inboundId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vendorId?: Prisma.StringFieldUpdateOperationsInput | string
   returnDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reason?: Prisma.EnumReturnReasonFieldUpdateOperationsInput | $Enums.ReturnReason
@@ -1429,6 +1588,7 @@ export type ReturnCreateManyVendorInput = {
   id?: string
   returnCode: string
   purchaseRequestId: string
+  inboundId?: string | null
   returnDate?: Date | string
   reason: $Enums.ReturnReason
   status?: $Enums.ReturnStatus
@@ -1457,6 +1617,7 @@ export type ReturnUpdateWithoutVendorInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   purchaseRequest?: Prisma.PurchaseRequestUpdateOneRequiredWithoutReturnsNestedInput
+  inbound?: Prisma.InboundUpdateOneWithoutReturnsNestedInput
   createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedReturnsNestedInput
   approvedBy?: Prisma.UserUpdateOneWithoutApprovedReturnsNestedInput
   items?: Prisma.ReturnItemUpdateManyWithoutReturnNestedInput
@@ -1467,6 +1628,7 @@ export type ReturnUncheckedUpdateWithoutVendorInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   returnCode?: Prisma.StringFieldUpdateOperationsInput | string
   purchaseRequestId?: Prisma.StringFieldUpdateOperationsInput | string
+  inboundId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   returnDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reason?: Prisma.EnumReturnReasonFieldUpdateOperationsInput | $Enums.ReturnReason
   status?: Prisma.EnumReturnStatusFieldUpdateOperationsInput | $Enums.ReturnStatus
@@ -1487,6 +1649,7 @@ export type ReturnUncheckedUpdateManyWithoutVendorInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   returnCode?: Prisma.StringFieldUpdateOperationsInput | string
   purchaseRequestId?: Prisma.StringFieldUpdateOperationsInput | string
+  inboundId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   returnDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reason?: Prisma.EnumReturnReasonFieldUpdateOperationsInput | $Enums.ReturnReason
   status?: Prisma.EnumReturnStatusFieldUpdateOperationsInput | $Enums.ReturnStatus
@@ -1504,6 +1667,7 @@ export type ReturnUncheckedUpdateManyWithoutVendorInput = {
 export type ReturnCreateManyPurchaseRequestInput = {
   id?: string
   returnCode: string
+  inboundId?: string | null
   vendorId: string
   returnDate?: Date | string
   reason: $Enums.ReturnReason
@@ -1532,6 +1696,7 @@ export type ReturnUpdateWithoutPurchaseRequestInput = {
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  inbound?: Prisma.InboundUpdateOneWithoutReturnsNestedInput
   vendor?: Prisma.VendorUpdateOneRequiredWithoutReturnsNestedInput
   createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedReturnsNestedInput
   approvedBy?: Prisma.UserUpdateOneWithoutApprovedReturnsNestedInput
@@ -1542,6 +1707,7 @@ export type ReturnUpdateWithoutPurchaseRequestInput = {
 export type ReturnUncheckedUpdateWithoutPurchaseRequestInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   returnCode?: Prisma.StringFieldUpdateOperationsInput | string
+  inboundId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vendorId?: Prisma.StringFieldUpdateOperationsInput | string
   returnDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reason?: Prisma.EnumReturnReasonFieldUpdateOperationsInput | $Enums.ReturnReason
@@ -1562,6 +1728,87 @@ export type ReturnUncheckedUpdateWithoutPurchaseRequestInput = {
 export type ReturnUncheckedUpdateManyWithoutPurchaseRequestInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   returnCode?: Prisma.StringFieldUpdateOperationsInput | string
+  inboundId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vendorId?: Prisma.StringFieldUpdateOperationsInput | string
+  returnDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reason?: Prisma.EnumReturnReasonFieldUpdateOperationsInput | $Enums.ReturnReason
+  status?: Prisma.EnumReturnStatusFieldUpdateOperationsInput | $Enums.ReturnStatus
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.StringFieldUpdateOperationsInput | string
+  approvedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  approvalNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sentToVendorAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type ReturnCreateManyInboundInput = {
+  id?: string
+  returnCode: string
+  purchaseRequestId: string
+  vendorId: string
+  returnDate?: Date | string
+  reason: $Enums.ReturnReason
+  status?: $Enums.ReturnStatus
+  notes?: string | null
+  createdById: string
+  approvedById?: string | null
+  approvedAt?: Date | string | null
+  approvalNotes?: string | null
+  sentToVendorAt?: Date | string | null
+  completedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type ReturnUpdateWithoutInboundInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  returnCode?: Prisma.StringFieldUpdateOperationsInput | string
+  returnDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reason?: Prisma.EnumReturnReasonFieldUpdateOperationsInput | $Enums.ReturnReason
+  status?: Prisma.EnumReturnStatusFieldUpdateOperationsInput | $Enums.ReturnStatus
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  approvalNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sentToVendorAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  purchaseRequest?: Prisma.PurchaseRequestUpdateOneRequiredWithoutReturnsNestedInput
+  vendor?: Prisma.VendorUpdateOneRequiredWithoutReturnsNestedInput
+  createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedReturnsNestedInput
+  approvedBy?: Prisma.UserUpdateOneWithoutApprovedReturnsNestedInput
+  items?: Prisma.ReturnItemUpdateManyWithoutReturnNestedInput
+  stockCards?: Prisma.StockCardUpdateManyWithoutReturnNestedInput
+}
+
+export type ReturnUncheckedUpdateWithoutInboundInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  returnCode?: Prisma.StringFieldUpdateOperationsInput | string
+  purchaseRequestId?: Prisma.StringFieldUpdateOperationsInput | string
+  vendorId?: Prisma.StringFieldUpdateOperationsInput | string
+  returnDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reason?: Prisma.EnumReturnReasonFieldUpdateOperationsInput | $Enums.ReturnReason
+  status?: Prisma.EnumReturnStatusFieldUpdateOperationsInput | $Enums.ReturnStatus
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.StringFieldUpdateOperationsInput | string
+  approvedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  approvalNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sentToVendorAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  items?: Prisma.ReturnItemUncheckedUpdateManyWithoutReturnNestedInput
+  stockCards?: Prisma.StockCardUncheckedUpdateManyWithoutReturnNestedInput
+}
+
+export type ReturnUncheckedUpdateManyWithoutInboundInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  returnCode?: Prisma.StringFieldUpdateOperationsInput | string
+  purchaseRequestId?: Prisma.StringFieldUpdateOperationsInput | string
   vendorId?: Prisma.StringFieldUpdateOperationsInput | string
   returnDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reason?: Prisma.EnumReturnReasonFieldUpdateOperationsInput | $Enums.ReturnReason
@@ -1621,6 +1868,7 @@ export type ReturnSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   id?: boolean
   returnCode?: boolean
   purchaseRequestId?: boolean
+  inboundId?: boolean
   vendorId?: boolean
   returnDate?: boolean
   reason?: boolean
@@ -1635,6 +1883,7 @@ export type ReturnSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   createdAt?: boolean
   updatedAt?: boolean
   purchaseRequest?: boolean | Prisma.PurchaseRequestDefaultArgs<ExtArgs>
+  inbound?: boolean | Prisma.Return$inboundArgs<ExtArgs>
   vendor?: boolean | Prisma.VendorDefaultArgs<ExtArgs>
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   approvedBy?: boolean | Prisma.Return$approvedByArgs<ExtArgs>
@@ -1647,6 +1896,7 @@ export type ReturnSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
   id?: boolean
   returnCode?: boolean
   purchaseRequestId?: boolean
+  inboundId?: boolean
   vendorId?: boolean
   returnDate?: boolean
   reason?: boolean
@@ -1661,6 +1911,7 @@ export type ReturnSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
   createdAt?: boolean
   updatedAt?: boolean
   purchaseRequest?: boolean | Prisma.PurchaseRequestDefaultArgs<ExtArgs>
+  inbound?: boolean | Prisma.Return$inboundArgs<ExtArgs>
   vendor?: boolean | Prisma.VendorDefaultArgs<ExtArgs>
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   approvedBy?: boolean | Prisma.Return$approvedByArgs<ExtArgs>
@@ -1670,6 +1921,7 @@ export type ReturnSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
   id?: boolean
   returnCode?: boolean
   purchaseRequestId?: boolean
+  inboundId?: boolean
   vendorId?: boolean
   returnDate?: boolean
   reason?: boolean
@@ -1684,6 +1936,7 @@ export type ReturnSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
   createdAt?: boolean
   updatedAt?: boolean
   purchaseRequest?: boolean | Prisma.PurchaseRequestDefaultArgs<ExtArgs>
+  inbound?: boolean | Prisma.Return$inboundArgs<ExtArgs>
   vendor?: boolean | Prisma.VendorDefaultArgs<ExtArgs>
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   approvedBy?: boolean | Prisma.Return$approvedByArgs<ExtArgs>
@@ -1693,6 +1946,7 @@ export type ReturnSelectScalar = {
   id?: boolean
   returnCode?: boolean
   purchaseRequestId?: boolean
+  inboundId?: boolean
   vendorId?: boolean
   returnDate?: boolean
   reason?: boolean
@@ -1708,9 +1962,10 @@ export type ReturnSelectScalar = {
   updatedAt?: boolean
 }
 
-export type ReturnOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "returnCode" | "purchaseRequestId" | "vendorId" | "returnDate" | "reason" | "status" | "notes" | "createdById" | "approvedById" | "approvedAt" | "approvalNotes" | "sentToVendorAt" | "completedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["return"]>
+export type ReturnOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "returnCode" | "purchaseRequestId" | "inboundId" | "vendorId" | "returnDate" | "reason" | "status" | "notes" | "createdById" | "approvedById" | "approvedAt" | "approvalNotes" | "sentToVendorAt" | "completedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["return"]>
 export type ReturnInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   purchaseRequest?: boolean | Prisma.PurchaseRequestDefaultArgs<ExtArgs>
+  inbound?: boolean | Prisma.Return$inboundArgs<ExtArgs>
   vendor?: boolean | Prisma.VendorDefaultArgs<ExtArgs>
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   approvedBy?: boolean | Prisma.Return$approvedByArgs<ExtArgs>
@@ -1720,12 +1975,14 @@ export type ReturnInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs 
 }
 export type ReturnIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   purchaseRequest?: boolean | Prisma.PurchaseRequestDefaultArgs<ExtArgs>
+  inbound?: boolean | Prisma.Return$inboundArgs<ExtArgs>
   vendor?: boolean | Prisma.VendorDefaultArgs<ExtArgs>
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   approvedBy?: boolean | Prisma.Return$approvedByArgs<ExtArgs>
 }
 export type ReturnIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   purchaseRequest?: boolean | Prisma.PurchaseRequestDefaultArgs<ExtArgs>
+  inbound?: boolean | Prisma.Return$inboundArgs<ExtArgs>
   vendor?: boolean | Prisma.VendorDefaultArgs<ExtArgs>
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   approvedBy?: boolean | Prisma.Return$approvedByArgs<ExtArgs>
@@ -1735,6 +1992,7 @@ export type $ReturnPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
   name: "Return"
   objects: {
     purchaseRequest: Prisma.$PurchaseRequestPayload<ExtArgs>
+    inbound: Prisma.$InboundPayload<ExtArgs> | null
     vendor: Prisma.$VendorPayload<ExtArgs>
     createdBy: Prisma.$UserPayload<ExtArgs>
     approvedBy: Prisma.$UserPayload<ExtArgs> | null
@@ -1745,6 +2003,7 @@ export type $ReturnPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     id: string
     returnCode: string
     purchaseRequestId: string
+    inboundId: string | null
     vendorId: string
     returnDate: Date
     reason: $Enums.ReturnReason
@@ -2153,6 +2412,7 @@ readonly fields: ReturnFieldRefs;
 export interface Prisma__ReturnClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   purchaseRequest<T extends Prisma.PurchaseRequestDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PurchaseRequestDefaultArgs<ExtArgs>>): Prisma.Prisma__PurchaseRequestClient<runtime.Types.Result.GetResult<Prisma.$PurchaseRequestPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  inbound<T extends Prisma.Return$inboundArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Return$inboundArgs<ExtArgs>>): Prisma.Prisma__InboundClient<runtime.Types.Result.GetResult<Prisma.$InboundPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   vendor<T extends Prisma.VendorDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.VendorDefaultArgs<ExtArgs>>): Prisma.Prisma__VendorClient<runtime.Types.Result.GetResult<Prisma.$VendorPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   createdBy<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   approvedBy<T extends Prisma.Return$approvedByArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Return$approvedByArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
@@ -2190,6 +2450,7 @@ export interface ReturnFieldRefs {
   readonly id: Prisma.FieldRef<"Return", 'String'>
   readonly returnCode: Prisma.FieldRef<"Return", 'String'>
   readonly purchaseRequestId: Prisma.FieldRef<"Return", 'String'>
+  readonly inboundId: Prisma.FieldRef<"Return", 'String'>
   readonly vendorId: Prisma.FieldRef<"Return", 'String'>
   readonly returnDate: Prisma.FieldRef<"Return", 'DateTime'>
   readonly reason: Prisma.FieldRef<"Return", 'ReturnReason'>
@@ -2596,6 +2857,25 @@ export type ReturnDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Intern
    * Limit how many Returns to delete.
    */
   limit?: number
+}
+
+/**
+ * Return.inbound
+ */
+export type Return$inboundArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Inbound
+   */
+  select?: Prisma.InboundSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Inbound
+   */
+  omit?: Prisma.InboundOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.InboundInclude<ExtArgs> | null
+  where?: Prisma.InboundWhereInput
 }
 
 /**

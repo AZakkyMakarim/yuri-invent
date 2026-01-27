@@ -25,14 +25,14 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
                     ref={ref}
                     className={cn(
                         'input',
-                        error && 'border-[var(--color-danger)] focus:border-[var(--color-danger)]',
+                        error && 'border-(--color-danger) focus:border-(--color-danger)',
                         className
                     )}
                     {...props}
                 />
-                {error && <p className="mt-1 text-sm text-[var(--color-danger)]">{error}</p>}
+                {error && <p className="mt-1 text-sm text-(--color-danger)">{error}</p>}
                 {hint && !error && (
-                    <p className="mt-1 text-sm text-[var(--color-text-muted)]">{hint}</p>
+                    <p className="mt-1 text-sm text-(--color-text-muted)">{hint}</p>
                 )}
             </div>
         );
@@ -40,3 +40,4 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
 );
 
 Input.displayName = 'Input';
+

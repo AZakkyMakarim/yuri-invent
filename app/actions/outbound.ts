@@ -15,7 +15,7 @@ export async function getOutboundList(
         if (search) {
             where.OR = [
                 { outboundCode: { contains: search, mode: 'insensitive' } },
-                { mitra: { name: { contains: search, mode: 'insensitive' } } },
+                { partner: { name: { contains: search, mode: 'insensitive' } } },
                 { purpose: { contains: search, mode: 'insensitive' } },
             ];
         }
@@ -27,7 +27,8 @@ export async function getOutboundList(
                 take: limit,
                 orderBy: { requestDate: 'desc' },
                 include: {
-                    mitra: { select: { name: true } },
+                    partner: { select: { name: true } },
+                    warehouse: { select: { name: true } },
                     _count: { select: { items: true } }
                 }
             }),
@@ -56,7 +57,8 @@ export async function getOutboundById(id: string) {
         const outbound = await prisma.outbound.findUnique({
             where: { id },
             include: {
-                mitra: true,
+                partner: true,
+                warehouse: true,
                 createdBy: { select: { name: true, email: true } },
                 approvedBy: { select: { name: true, email: true } },
                 items: {
@@ -80,7 +82,8 @@ export async function getOutboundById(id: string) {
 
 export async function createOutbound(data: {
     userId: string;
-    mitraId?: string;
+    partnerId?: string;
+    warehouseId?: string;
     purpose?: string;
     notes?: string;
     items: { itemId: string; requestedQty: number; notes?: string }[]
@@ -95,11 +98,19 @@ export async function createOutbound(data: {
         const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
         const outboundCode = `OUT-${dateStr}-${random}`;
 
+        // Verify warehouse exists if provided
+        if (data.warehouseId) {
+            // Optional check
+        } else {
+            // Default to main? Optional logic.
+        }
+
         const outbound = await prisma.outbound.create({
             data: {
                 outboundCode,
                 createdById: data.userId,
-                mitraId: data.mitraId,
+                partnerId: data.partnerId,
+                warehouseId: data.warehouseId,
                 purpose: data.purpose,
                 notes: data.notes,
                 status: 'DRAFT',

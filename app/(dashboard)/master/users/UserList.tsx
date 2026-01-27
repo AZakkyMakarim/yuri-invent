@@ -188,10 +188,9 @@ export default function UserList() {
                     <UserIcon size={24} className="text-(--color-primary)" />
                 </div>
                 <div>
-                    <h3 className="font-semibold text-lg">User Management</h3>
+                    <h3 className="font-semibold text-lg">{t('title')}</h3>
                     <p className="text-(--color-text-secondary) text-sm">
-                        New users sign up via the <span className="font-mono bg-(--color-bg-tertiary) px-1 rounded">/sign-up</span> page.
-                        They appear here as <span className="text-yellow-600 font-medium">Inactive</span> until you verify them by assigning a role and setting them to Active.
+                        {t('description', { defaultValue: 'New users sign up via the public sign-up page. They appear here as Inactive until you verify them by assigning a role and setting them to Active.' })}
                     </p>
                 </div>
             </div>
@@ -201,14 +200,14 @@ export default function UserList() {
                 onApply={applyFilters}
                 onReset={resetFilters}
             >
-                <FilterField label="Search">
+                <FilterField label={t('filter.search')}>
                     <TextFilter
                         value={pendingFilters.search}
                         onChange={(v) => setPendingFilters({ ...pendingFilters, search: v })}
-                        placeholder="Search name or email..."
+                        placeholder={t('filter.search')}
                     />
                 </FilterField>
-                <FilterField label="Role">
+                <FilterField label={t('table.role')}>
                     <MultiSelectFilter
                         options={roles.map(r => r.name)}
                         selected={roles.filter(r => pendingFilters.roleId.includes(r.id)).map(r => r.name)}
@@ -216,15 +215,16 @@ export default function UserList() {
                             const ids = roles.filter(r => names.includes(r.name)).map(r => r.id);
                             setPendingFilters({ ...pendingFilters, roleId: ids });
                         }}
-                        placeholder="All Roles"
+                        placeholder={tCommon('all')}
                     />
                 </FilterField>
-                <FilterField label="Status">
+                <FilterField label={t('table.status')}>
                     <MultiSelectFilter
                         options={['Active', 'Inactive']}
                         selected={pendingFilters.status}
                         onChange={(v) => setPendingFilters({ ...pendingFilters, status: v })}
-                        placeholder="All"
+                        placeholder={tCommon('all')}
+                        formatLabel={(option) => (option === 'Active' ? tCommon('active') : tCommon('inactive'))}
                     />
                 </FilterField>
             </TableFilters>
@@ -233,11 +233,11 @@ export default function UserList() {
                 <TableHeader>
                     <TableRow>
                         <TableHead className="w-12">No</TableHead>
-                        <TableHead>{t('name')}</TableHead>
-                        <TableHead>{t('email')}</TableHead>
-                        <TableHead>{t('role')}</TableHead>
-                        <TableHead>{tCommon('status')}</TableHead>
-                        <TableHead>Joined At</TableHead>
+                        <TableHead>{t('table.name')}</TableHead>
+                        <TableHead>{t('table.email')}</TableHead>
+                        <TableHead>{t('table.role')}</TableHead>
+                        <TableHead>{t('table.status')}</TableHead>
+                        <TableHead>{t('table.created')}</TableHead>
                         <TableHead className="w-20">{tCommon('actions')}</TableHead>
                     </TableRow>
                 </TableHeader>
@@ -257,13 +257,13 @@ export default function UserList() {
                                         <Badge variant="info">{user.role.name}</Badge>
                                     ) : (
                                         <span className="flex items-center gap-1 text-yellow-600 text-sm">
-                                            <ShieldAlert size={14} /> Pending
+                                            <ShieldAlert size={14} /> {tCommon('pending')}
                                         </span>
                                     )}
                                 </TableCell>
                                 <TableCell>
                                     <Badge variant={user.isActive ? 'success' : 'warning'}>
-                                        {user.isActive ? 'Active' : 'Pending Verification'}
+                                        {user.isActive ? tCommon('active') : tCommon('status.pendingVerification')}
                                     </Badge>
                                 </TableCell>
                                 <TableCell className="text-sm text-(--color-text-secondary)">
@@ -291,7 +291,7 @@ export default function UserList() {
             <Modal
                 isOpen={editModalOpen}
                 onClose={() => setEditModalOpen(false)}
-                title={editingUser?.isActive ? `${tCommon('edit')} User` : "Verify User"}
+                title={editingUser?.isActive ? t('form.editTitle') : t('table.actions')} // Verify User... can rely on editTitle or a simpler fallback
                 footer={
                     <>
                         <Button variant="secondary" onClick={() => setEditModalOpen(false)}>
@@ -305,26 +305,26 @@ export default function UserList() {
             >
                 <div className="space-y-4">
                     <div>
-                        <label className="block text-sm font-medium mb-1">User Email</label>
+                        <label className="block text-sm font-medium mb-1">{t('form.email')}</label>
                         <p className="text-sm text-(--color-text-secondary) bg-(--color-bg-tertiary) p-2 rounded">{editingUser?.email}</p>
                     </div>
                     <div>
-                        <label className="block text-sm font-medium mb-1">Name</label>
+                        <label className="block text-sm font-medium mb-1">{t('form.name')}</label>
                         <p className="text-sm text-(--color-text-secondary) bg-(--color-bg-tertiary) p-2 rounded">{editingUser?.name}</p>
                     </div>
 
                     <div className="border-t border-(--color-border) my-4"></div>
 
                     <Dropdown
-                        label={t('role')}
+                        label={t('form.role')}
                         value={form.roleId}
                         onChange={(v) => setForm({ ...form, roleId: v })}
                         options={roles.map((r) => ({ value: r.id, label: r.name }))}
-                        placeholder="Assign Role..."
+                        placeholder={t('filter.role')}
                     />
                     <Toggle
-                        label="Account Status"
-                        description={form.isActive ? 'Active (User can login)' : 'Inactive (User cannot login)'}
+                        label={t('form.status')}
+                        description={form.isActive ? tCommon('active') : tCommon('inactive')}
                         checked={form.isActive}
                         onChange={(e) => setForm({ ...form, isActive: e.target.checked })}
                     />

@@ -92,7 +92,7 @@ export default function OpnameDetailPage() {
         // ... (reuse badge logic)
         let color = "bg-gray-100 text-gray-800";
         if (status === 'SCHEDULED') color = "bg-blue-100 text-blue-800";
-        if (status === 'IN_PROGRESS') color = "bg-amber-100 text-amber-800";
+        if (status === 'IN_PROGRESS') color = "bg-orange-100 text-orange-800";
         if (status === 'COMPLETED') color = "bg-green-100 text-green-800";
         return <Badge className={color}>{status.replace(/_/g, ' ')}</Badge>;
     };

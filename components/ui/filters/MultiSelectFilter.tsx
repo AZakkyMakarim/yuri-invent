@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { ChevronDown, Check, X, Search } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useTranslations } from 'next-intl';
 
 interface MultiSelectFilterProps {
     options: string[];
@@ -11,16 +12,19 @@ interface MultiSelectFilterProps {
     placeholder?: string;
     className?: string;
     searchable?: boolean;
+    formatLabel?: (option: string) => string;
 }
 
 export function MultiSelectFilter({
     options,
     selected,
     onChange,
-    placeholder = 'All',
+    placeholder,
     className,
     searchable = true,
+    formatLabel,
 }: MultiSelectFilterProps) {
+    const t = useTranslations('common');
     const [isOpen, setIsOpen] = useState(false);
     const [search, setSearch] = useState('');
     const dropdownRef = useRef<HTMLDivElement>(null);
@@ -65,9 +69,9 @@ export function MultiSelectFilter({
 
     const displayValue = selected.length > 0
         ? selected.length === 1
-            ? selected[0]
-            : `${selected.length} selected`
-        : placeholder;
+            ? (formatLabel ? formatLabel(selected[0]) : selected[0])
+            : `${selected.length} ${t('selected')}`
+        : (placeholder || t('all'));
     const hasSelection = selected.length > 0;
 
     return (
@@ -115,7 +119,7 @@ export function MultiSelectFilter({
                                     type="text"
                                     value={search}
                                     onChange={(e) => setSearch(e.target.value)}
-                                    placeholder="Search..."
+                                    placeholder={t('search')}
                                     className="w-full pl-8 pr-3 py-1.5 text-sm bg-(--color-bg-tertiary) border border-(--color-border) rounded focus:border-(--color-primary) focus:outline-none text-(--color-text-primary)"
                                 />
                             </div>
@@ -126,7 +130,7 @@ export function MultiSelectFilter({
                     <div className="max-h-48 overflow-y-auto">
                         {filteredOptions.length === 0 ? (
                             <div className="px-3 py-2 text-sm text-(--color-text-muted)">
-                                No options found
+                                {t('noData')}
                             </div>
                         ) : (
                             filteredOptions.map((option) => (
@@ -147,7 +151,7 @@ export function MultiSelectFilter({
                                             <Check size={12} className="text-white" />
                                         )}
                                     </div>
-                                    <span className="truncate">{option}</span>
+                                    <span className="truncate">{formatLabel ? formatLabel(option) : option}</span>
                                 </button>
                             ))
                         )}

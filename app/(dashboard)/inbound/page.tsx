@@ -25,9 +25,11 @@ import {
     TableRow,
 } from "@/components/ui/Table";
 import { getInbounds } from '@/app/actions/inbound';
+import { useTranslations } from 'next-intl';
 
 export default function InboundListPage() {
     const router = useRouter();
+    const t = useTranslations('inbound');
     const [data, setData] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState('');
@@ -54,9 +56,15 @@ export default function InboundListPage() {
             VERIFIED: "bg-green-100 text-green-800",
             REJECTED: "bg-red-100 text-red-800",
         };
+
+        let label = status.replace(/_/g, ' ');
+        if (status === 'PENDING_VERIFICATION') label = t('pendingVerification');
+        if (status === 'VERIFIED') label = t('verified');
+        if (status === 'REJECTED') label = t('rejected');
+
         return (
             <Badge className={styles[status] || "bg-gray-100 text-gray-800"}>
-                {status.replace(/_/g, ' ')}
+                {label}
             </Badge>
         );
     };
@@ -66,10 +74,10 @@ export default function InboundListPage() {
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
                     <h1 className="text-2xl font-bold bg-linear-to-r from-(--color-primary) to-(--color-secondary) bg-clip-text text-transparent">
-                        Inbound List
+                        {t('title')}
                     </h1>
                     <p className="text-(--color-text-secondary)">
-                        Track incoming goods and GRN history
+                        {t('description')}
                     </p>
                 </div>
             </div>
@@ -80,7 +88,7 @@ export default function InboundListPage() {
                         <div className="relative w-full sm:w-72">
                             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-(--color-text-muted)" />
                             <Input
-                                placeholder="Search GRN, PO, or Vendor..."
+                                placeholder={t('searchPlaceholder')}
                                 className="pl-9 bg-(--color-bg-secondary) border-(--color-border)"
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value)}
@@ -92,10 +100,10 @@ export default function InboundListPage() {
                                 value={statusFilter}
                                 onChange={(e) => setStatusFilter(e.target.value)}
                             >
-                                <option value="">All Status</option>
-                                <option value="PENDING_VERIFICATION">Pending Verification</option>
-                                <option value="VERIFIED">Verified</option>
-                                <option value="REJECTED">Rejected</option>
+                                <option value="">{t('allStatus')}</option>
+                                <option value="PENDING_VERIFICATION">{t('pendingVerification')}</option>
+                                <option value="VERIFIED">{t('verified')}</option>
+                                <option value="REJECTED">{t('rejected')}</option>
                             </select>
                         </div>
                     </div>
@@ -105,13 +113,13 @@ export default function InboundListPage() {
                         <Table>
                             <TableHeader className="bg-(--color-bg-secondary)">
                                 <TableRow>
-                                    <TableHead>GRN Number</TableHead>
-                                    <TableHead>Received Date</TableHead>
-                                    <TableHead>PO Reference</TableHead>
-                                    <TableHead>Vendor</TableHead>
-                                    <TableHead className="text-center">Items</TableHead>
-                                    <TableHead className="text-center">Status</TableHead>
-                                    <TableHead className="text-right">Actions</TableHead>
+                                    <TableHead>{t('table.grn')}</TableHead>
+                                    <TableHead>{t('table.date')}</TableHead>
+                                    <TableHead>{t('table.po')}</TableHead>
+                                    <TableHead>{t('table.vendor')}</TableHead>
+                                    <TableHead className="text-center">{t('table.items')}</TableHead>
+                                    <TableHead className="text-center">{t('table.status')}</TableHead>
+                                    <TableHead className="text-right">{t('table.actions')}</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
@@ -120,14 +128,14 @@ export default function InboundListPage() {
                                         <TableCell colSpan={7} className="h-24 text-center">
                                             <div className="flex justify-center items-center gap-2">
                                                 <Loader2 className="h-6 w-6 animate-spin text-(--color-primary)" />
-                                                <span>Loading data...</span>
+                                                <span>{t('table.loading')}</span>
                                             </div>
                                         </TableCell>
                                     </TableRow>
                                 ) : data.length === 0 ? (
                                     <TableRow>
                                         <TableCell colSpan={7} className="h-24 text-center text-(--color-text-muted)">
-                                            No Inbound records found.
+                                            {t('table.noData')}
                                         </TableCell>
                                     </TableRow>
                                 ) : (

@@ -42,6 +42,12 @@ export async function PUT(request: Request, { params }: RouteParams) {
         const body = await request.json();
         const { sku, name, description, categoryId, uomId, minStockLevel, maxStockLevel, isActive } = body;
 
+        const parseNumber = (value: any) => {
+            if (value === null || value === undefined || value === '') return null;
+            const num = Number(value);
+            return isNaN(num) ? null : num;
+        };
+
         const item = await prisma.item.update({
             where: { id },
             data: {
@@ -53,6 +59,16 @@ export async function PUT(request: Request, { params }: RouteParams) {
                 ...(minStockLevel !== undefined && { minStockLevel }),
                 ...(maxStockLevel !== undefined && { maxStockLevel }),
                 ...(isActive !== undefined && { isActive }),
+                ...(body.imagePath !== undefined && { imagePath: body.imagePath }),
+                ...(body.barcode !== undefined && { barcode: body.barcode }),
+                ...(body.brand !== undefined && { brand: body.brand }),
+                ...(body.type !== undefined && { type: body.type }),
+                ...(body.color !== undefined && { color: body.color }),
+                ...(body.weight !== undefined && { weight: parseNumber(body.weight) }),
+                ...(body.length !== undefined && { length: parseNumber(body.length) }),
+                ...(body.width !== undefined && { width: parseNumber(body.width) }),
+                ...(body.height !== undefined && { height: parseNumber(body.height) }),
+                ...(body.movementType !== undefined && { movementType: body.movementType }),
             },
             include: {
                 category: { select: { id: true, name: true, code: true } },

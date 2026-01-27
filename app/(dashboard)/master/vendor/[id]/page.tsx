@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { ArrowLeft, Building2, Edit, MapPin, Phone, Mail, User, CreditCard, Package, Plus, Trash2, DollarSign, FileText } from 'lucide-react';
+import { ArrowLeft, Building2, Edit, MapPin, Phone, Mail, User, CreditCard, Package, Plus, Trash2, DollarSign, FileText, Image as ImageIcon } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Table, TableHead, TableBody, TableRow, TableCell, TableHeader } from '@/components/ui/Table';
@@ -54,14 +54,16 @@ interface VendorItem {
     vendorId: string;
     itemId: string;
     cogsPerUom: number;
+    link: string | null;
     isActive: boolean;
     createdAt: string;
-    item: Item;
+    item: Item & { imagePath: string | null };
 }
 
 interface AddItemForm {
     itemId: string;
     cogsPerUom: string;
+    link: string;
 }
 
 export default function VendorDetailPage() {
@@ -81,10 +83,12 @@ export default function VendorDetailPage() {
     const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
 
     // Form states
-    const [addItemForm, setAddItemForm] = useState<AddItemForm>({ itemId: '', cogsPerUom: '' });
+    const [addItemForm, setAddItemForm] = useState<AddItemForm>({ itemId: '', cogsPerUom: '', link: '' });
     const [editingVendorItem, setEditingVendorItem] = useState<VendorItem | null>(null);
     const [editCogs, setEditCogs] = useState('');
+    const [editLink, setEditLink] = useState('');
     const [deletingItemId, setDeletingItemId] = useState<string | null>(null);
+    const [viewedImage, setViewedImage] = useState<{ url: string; alt: string } | null>(null);
 
     // Fetch vendor details
     const fetchVendor = useCallback(async () => {
@@ -147,10 +151,11 @@ export default function VendorDetailPage() {
                 body: JSON.stringify({
                     itemId: addItemForm.itemId,
                     cogsPerUom: cogsValue,
+                    link: addItemForm.link,
                 }),
             });
             setAddItemModalOpen(false);
-            setAddItemForm({ itemId: '', cogsPerUom: '' });
+            setAddItemForm({ itemId: '', cogsPerUom: '', link: '' });
             fetchVendorItems();
             fetchVendor(); // Refresh count
         } catch (error) {
@@ -175,11 +180,15 @@ export default function VendorDetailPage() {
         try {
             await apiFetch(`/vendors/${vendorId}/items/${editingVendorItem.itemId}`, {
                 method: 'PUT',
-                body: JSON.stringify({ cogsPerUom: cogsValue }),
+                body: JSON.stringify({
+                    cogsPerUom: cogsValue,
+                    link: editLink
+                }),
             });
             setEditCogsModalOpen(false);
             setEditingVendorItem(null);
             setEditCogs('');
+            setEditLink('');
             fetchVendorItems();
         } catch (error) {
             console.error('Failed to update COGS:', error);
@@ -208,6 +217,7 @@ export default function VendorDetailPage() {
     const openEditCogsModal = (vendorItem: VendorItem) => {
         setEditingVendorItem(vendorItem);
         setEditCogs(vendorItem.cogsPerUom.toString());
+        setEditLink(vendorItem.link || '');
         setEditCogsModalOpen(true);
     };
 
@@ -275,8 +285,8 @@ export default function VendorDetailPage() {
                         <div className="p-6 space-y-6">
                             {/* Vendor Code */}
                             <div className="flex items-center gap-4">
-                                <div className="p-4 bg-linear-to-br from-indigo-500 to-purple-600 rounded-xl shadow-md">
-                                    <Building2 size={24} className="text-white" />
+                                <div className="p-3 bg-indigo-500 rounded-lg shadow-md">
+                                    <Building2 size={20} className="text-white" />
                                 </div>
                                 <div className="flex-1">
                                     <div className="text-xs text-(--color-text-muted) mb-1">Vendor Code</div>
@@ -285,43 +295,37 @@ export default function VendorDetailPage() {
                             </div>
 
                             {/* Contact Person */}
-                            {vendor.contactName && (
-                                <div className="flex items-center gap-3">
-                                    <div className="p-3 bg-orange-500 bg-opacity-10 rounded-lg">
-                                        <User size={20} className="text-orange-500" />
-                                    </div>
-                                    <div className="flex-1">
-                                        <div className="text-xs text-(--color-text-muted) mb-1">Contact Person</div>
-                                        <div className="text-sm font-medium">{vendor.contactName}</div>
-                                    </div>
+                            <div className="flex items-center gap-3">
+                                <div className="p-3 bg-orange-500 bg-opacity-10 rounded-lg shadow-md">
+                                    <User size={20} className="text-white" />
                                 </div>
-                            )}
+                                <div className="flex-1">
+                                    <div className="text-xs text-(--color-text-muted) mb-1">Contact Person</div>
+                                    <div className="text-sm font-medium">{vendor.contactName || "-"}</div>
+                                </div>
+                            </div>
 
                             {/* Phone */}
-                            {vendor.phone && (
-                                <div className="flex items-center gap-4">
-                                    <div className="p-4 bg-linear-to-br from-green-500 to-emerald-600 rounded-xl shadow-md">
-                                        <Phone size={24} className="text-white" />
-                                    </div>
-                                    <div className="flex-1">
-                                        <div className="text-xs text-(--color-text-muted) mb-1">Phone Number</div>
-                                        <div className="text-sm font-medium">{vendor.phone}</div>
-                                    </div>
+                            <div className="flex items-center gap-4">
+                                <div className="p-3 bg-green-500 bg-opacity-10 rounded-lg shadow-md">
+                                    <Phone size={20} className="text-white" />
                                 </div>
-                            )}
+                                <div className="flex-1">
+                                    <div className="text-xs text-(--color-text-muted) mb-1">Phone Number</div>
+                                    <div className="text-sm font-medium">{vendor.phone || "-"}</div>
+                                </div>
+                            </div>
 
                             {/* Email */}
-                            {vendor.email && (
-                                <div className="flex items-center gap-3">
-                                    <div className="p-3 bg-purple-500 bg-opacity-10 rounded-lg">
-                                        <Mail size={20} className="text-purple-500" />
-                                    </div>
-                                    <div className="flex-1">
-                                        <div className="text-xs text-(--color-text-muted) mb-1">Email Address</div>
-                                        <div className="text-sm font-medium break-all">{vendor.email}</div>
-                                    </div>
+                            <div className="flex items-center gap-3">
+                                <div className="p-3 bg-red-500 bg-opacity-10 rounded-lg shadow-md">
+                                    <Mail size={20} className="text-white" />
                                 </div>
-                            )}
+                                <div className="flex-1">
+                                    <div className="text-xs text-(--color-text-muted) mb-1">Email Address</div>
+                                    <div className="text-sm font-medium break-all">{vendor.email || "-"}</div>
+                                </div>
+                            </div>
                         </div>
 
                         {/* Address Section */}
@@ -331,43 +335,40 @@ export default function VendorDetailPage() {
                                     <MapPin size={16} />
                                     Address
                                 </h3>
-                                {vendor.address ? (
-                                    <p className="text-sm text-(--color-text-muted) leading-relaxed">{vendor.address}</p>
-                                ) : (
-                                    <p className="text-sm text-(--color-text-muted) italic">No address provided</p>
-                                )}
+
+                                <p className="text-sm text-(--color-text-muted) leading-relaxed">{vendor.address || "-"}</p>
+
                             </div>
                         </div>
 
                         {/* Banking Information */}
-                        {vendor.bank && (
-                            <div className="px-6 pb-6">
-                                <div className="border-t border-(--color-border) pt-6">
-                                    <h3 className="text-sm font-semibold mb-4 flex items-center gap-2">
-                                        <CreditCard size={16} />
-                                        Banking Information
-                                    </h3>
-                                    <div className="space-y-3">
-                                        <div>
-                                            <div className="text-xs text-(--color-text-muted) mb-1">Bank Name</div>
-                                            <div className="text-sm font-medium">{vendor.bank}</div>
-                                        </div>
-                                        {vendor.bankBranch && (
-                                            <div>
-                                                <div className="text-xs text-(--color-text-muted) mb-1">Branch</div>
-                                                <div className="text-sm font-medium">{vendor.bankBranch}</div>
-                                            </div>
-                                        )}
-                                        {vendor.bankAccount && (
-                                            <div>
-                                                <div className="text-xs text-(--color-text-muted) mb-1">Account Number</div>
-                                                <div className="text-sm font-mono font-medium">{vendor.bankAccount}</div>
-                                            </div>
-                                        )}
+
+                        <div className="px-6 pb-6">
+                            <div className="border-t border-(--color-border) pt-6">
+                                <h3 className="text-sm font-semibold mb-4 flex items-center gap-2">
+                                    <CreditCard size={16} />
+                                    Banking Information
+                                </h3>
+                                <div className="space-y-3">
+                                    <div>
+                                        <div className="text-xs text-(--color-text-muted) mb-1">Bank Name</div>
+                                        <div className="text-sm font-medium">{vendor.bank || "-"}</div>
                                     </div>
+                                    {vendor.bankBranch && (
+                                        <div>
+                                            <div className="text-xs text-(--color-text-muted) mb-1">Branch</div>
+                                            <div className="text-sm font-medium">{vendor.bankBranch || "-"}</div>
+                                        </div>
+                                    )}
+                                    {vendor.bankAccount && (
+                                        <div>
+                                            <div className="text-xs text-(--color-text-muted) mb-1">Account Number</div>
+                                            <div className="text-sm font-mono font-medium">{vendor.bankAccount || "-"}</div>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
-                        )}
+                        </div>
 
                         {/* SPK Document */}
                         {vendor.vendorType === 'SPK' && vendor.spkDocumentPath && (
@@ -452,18 +453,41 @@ export default function VendorDetailPage() {
                                                     <Table>
                                                         <TableHeader>
                                                             <TableRow>
+                                                                <TableHead>No</TableHead>
                                                                 <TableHead>SKU</TableHead>
+                                                                <TableHead>Image</TableHead>
                                                                 <TableHead>Item Name</TableHead>
                                                                 <TableHead>Category</TableHead>
                                                                 <TableHead>UOM</TableHead>
                                                                 <TableHead>COGS per UOM</TableHead>
+                                                                <TableHead>Link</TableHead>
                                                                 <TableHead>Added Date</TableHead>
                                                                 <TableHead>Actions</TableHead>
                                                             </TableRow>
                                                         </TableHeader>
                                                         <TableBody>
-                                                            {vendorItems.map((vendorItem) => (
+                                                            {vendorItems.map((vendorItem, index) => (
                                                                 <TableRow key={vendorItem.id}>
+                                                                    <TableCell>
+                                                                        {index + 1}
+                                                                    </TableCell>
+                                                                    <TableCell>
+                                                                        {vendorItem.item.imagePath ? (
+                                                                            <img
+                                                                                src={vendorItem.item.imagePath}
+                                                                                alt={vendorItem.item.name}
+                                                                                className="w-8 h-8 object-cover rounded cursor-pointer hover:opacity-80 transition-opacity"
+                                                                                onClick={() => setViewedImage({
+                                                                                    url: vendorItem.item.imagePath!,
+                                                                                    alt: vendorItem.item.name
+                                                                                })}
+                                                                            />
+                                                                        ) : (
+                                                                            <div className="w-8 h-8 bg-gray-50 rounded flex items-center justify-center">
+                                                                                <ImageIcon size={16} className="text-gray-300" />
+                                                                            </div>
+                                                                        )}
+                                                                    </TableCell>
                                                                     <TableCell className="font-mono text-sm">{vendorItem.item.sku}</TableCell>
                                                                     <TableCell className="font-medium">{vendorItem.item.name}</TableCell>
                                                                     <TableCell>{vendorItem.item.category.name}</TableCell>
@@ -474,6 +498,20 @@ export default function VendorDetailPage() {
                                                                     </TableCell>
                                                                     <TableCell className="font-semibold text-(--color-primary)">
                                                                         Rp {vendorItem.cogsPerUom.toLocaleString('id-ID')}
+                                                                    </TableCell>
+                                                                    <TableCell>
+                                                                        {vendorItem.link ? (
+                                                                            <a
+                                                                                href={vendorItem.link}
+                                                                                target="_blank"
+                                                                                rel="noopener noreferrer"
+                                                                                className="text-(--color-primary) hover:underline flex items-center gap-1"
+                                                                            >
+                                                                                Link <Edit size={12} />
+                                                                            </a>
+                                                                        ) : (
+                                                                            <span className="text-(--color-text-muted) text-sm">-</span>
+                                                                        )}
                                                                     </TableCell>
                                                                     <TableCell className="text-sm text-(--color-text-muted)">
                                                                         {formatDate(vendorItem.createdAt)}
@@ -535,7 +573,7 @@ export default function VendorDetailPage() {
                 isOpen={addItemModalOpen}
                 onClose={() => {
                     setAddItemModalOpen(false);
-                    setAddItemForm({ itemId: '', cogsPerUom: '' });
+                    setAddItemForm({ itemId: '', cogsPerUom: '', link: '' });
                 }}
                 title="Add Item to Vendor"
             >
@@ -581,12 +619,21 @@ export default function VendorDetailPage() {
                         </div>
                     </div>
 
+                    <div>
+                        <label className="text-sm font-medium mb-1 block">Item Link / Website (Optional)</label>
+                        <Input
+                            placeholder="e.g. https://shopee.co.id/..."
+                            value={addItemForm.link}
+                            onChange={(e) => setAddItemForm({ ...addItemForm, link: e.target.value })}
+                        />
+                    </div>
+
                     <div className="flex justify-end gap-2 pt-4">
                         <Button
                             variant="secondary"
                             onClick={() => {
                                 setAddItemModalOpen(false);
-                                setAddItemForm({ itemId: '', cogsPerUom: '' });
+                                setAddItemForm({ itemId: '', cogsPerUom: '', link: '' });
                             }}
                         >
                             Cancel
@@ -605,8 +652,9 @@ export default function VendorDetailPage() {
                     setEditCogsModalOpen(false);
                     setEditingVendorItem(null);
                     setEditCogs('');
+                    setEditLink('');
                 }}
-                title="Edit COGS"
+                title="Edit Item Details"
             >
                 {editingVendorItem && (
                     <div className="space-y-4">
@@ -639,6 +687,15 @@ export default function VendorDetailPage() {
                             </div>
                         </div>
 
+                        <div>
+                            <label className="text-sm font-medium mb-1 block">Item Link / Website</label>
+                            <Input
+                                placeholder="e.g. https://shopee.co.id/..."
+                                value={editLink}
+                                onChange={(e) => setEditLink(e.target.value)}
+                            />
+                        </div>
+
                         <div className="flex justify-end gap-2 pt-4">
                             <Button
                                 variant="secondary"
@@ -646,12 +703,13 @@ export default function VendorDetailPage() {
                                     setEditCogsModalOpen(false);
                                     setEditingVendorItem(null);
                                     setEditCogs('');
+                                    setEditLink('');
                                 }}
                             >
                                 Cancel
                             </Button>
                             <Button onClick={handleUpdateCogs}>
-                                Update COGS
+                                Save Changes
                             </Button>
                         </div>
                     </div>
@@ -685,6 +743,53 @@ export default function VendorDetailPage() {
                     </div>
                 </div>
             </Modal>
+        </div>
+    );
+}
+
+// Image Overlay Component
+function ImageOverlay({
+    src,
+    alt,
+    onClose
+}: {
+    src: string;
+    alt: string;
+    onClose: () => void
+}) {
+    // Close on escape key
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') onClose();
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [onClose]);
+
+    return (
+        <div
+            className="fixed inset-0 z-60 flex items-center justify-center bg-black/80 animate-fadeIn"
+            onClick={onClose}
+        >
+            <div className="relative max-w-4xl max-h-[90vh] w-full p-4 flex flex-col items-center">
+                <button
+                    onClick={onClose}
+                    className="absolute top-4 right-4 text-white hover:text-gray-300 transition-colors bg-black/50 rounded-full p-2"
+                >
+                    <Plus className="rotate-45" size={32} />
+                </button>
+
+                <img
+                    src={src}
+                    alt={alt}
+                    className="max-w-full max-h-[85vh] object-contain rounded-lg shadow-2xl"
+                    onClick={(e) => e.stopPropagation()}
+                />
+
+                <div className="mt-4 text-white text-lg font-medium text-center bg-black/50 px-4 py-2 rounded-full backdrop-blur-sm">
+                    {alt}
+                </div>
+            </div>
         </div>
     );
 }

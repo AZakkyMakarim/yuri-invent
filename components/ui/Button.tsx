@@ -31,7 +31,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
             primary: 'btn-primary',
             secondary: 'btn-secondary',
             danger: 'btn-danger',
-            ghost: 'hover:bg-[var(--color-bg-hover)] text-[var(--color-text-secondary)]',
+            ghost: 'hover:bg-(--color-bg-hover) text-(--color-text-secondary)',
         };
 
         const sizes = {
@@ -63,3 +63,4 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 );
 
 Button.displayName = 'Button';
+

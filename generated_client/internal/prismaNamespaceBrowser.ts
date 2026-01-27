@@ -56,9 +56,10 @@ export const ModelName = {
   Permission: 'Permission',
   Category: 'Category',
   UOM: 'UOM',
+  Warehouse: 'Warehouse',
+  WarehouseStock: 'WarehouseStock',
   Vendor: 'Vendor',
   VendorItem: 'VendorItem',
-  Mitra: 'Mitra',
   Item: 'Item',
   ItemPriceHistory: 'ItemPriceHistory',
   Currency: 'Currency',
@@ -70,6 +71,8 @@ export const ModelName = {
   InboundItem: 'InboundItem',
   Outbound: 'Outbound',
   OutboundItem: 'OutboundItem',
+  Partner: 'Partner',
+  PartnerItemPrice: 'PartnerItemPrice',
   StockCard: 'StockCard',
   StockOpname: 'StockOpname',
   StockOpnameCount: 'StockOpnameCount',
@@ -163,6 +166,33 @@ export const UOMScalarFieldEnum = {
 export type UOMScalarFieldEnum = (typeof UOMScalarFieldEnum)[keyof typeof UOMScalarFieldEnum]
 
 
+export const WarehouseScalarFieldEnum = {
+  id: 'id',
+  code: 'code',
+  name: 'name',
+  type: 'type',
+  address: 'address',
+  isActive: 'isActive',
+  isDefault: 'isDefault',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type WarehouseScalarFieldEnum = (typeof WarehouseScalarFieldEnum)[keyof typeof WarehouseScalarFieldEnum]
+
+
+export const WarehouseStockScalarFieldEnum = {
+  id: 'id',
+  warehouseId: 'warehouseId',
+  itemId: 'itemId',
+  quantity: 'quantity',
+  reorderLevel: 'reorderLevel',
+  updatedAt: 'updatedAt'
+} as const
+
+export type WarehouseStockScalarFieldEnum = (typeof WarehouseStockScalarFieldEnum)[keyof typeof WarehouseStockScalarFieldEnum]
+
+
 export const VendorScalarFieldEnum = {
   id: 'id',
   code: 'code',
@@ -177,6 +207,7 @@ export const VendorScalarFieldEnum = {
   vendorType: 'vendorType',
   bank: 'bank',
   bankBranch: 'bankBranch',
+  link: 'link',
   spkDocumentPath: 'spkDocumentPath',
   createdById: 'createdById',
   createdAt: 'createdAt',
@@ -191,30 +222,13 @@ export const VendorItemScalarFieldEnum = {
   vendorId: 'vendorId',
   itemId: 'itemId',
   cogsPerUom: 'cogsPerUom',
+  link: 'link',
   isActive: 'isActive',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
 export type VendorItemScalarFieldEnum = (typeof VendorItemScalarFieldEnum)[keyof typeof VendorItemScalarFieldEnum]
-
-
-export const MitraScalarFieldEnum = {
-  id: 'id',
-  code: 'code',
-  name: 'name',
-  address: 'address',
-  phone: 'phone',
-  email: 'email',
-  contactName: 'contactName',
-  bankName: 'bankName',
-  bankAccount: 'bankAccount',
-  isActive: 'isActive',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type MitraScalarFieldEnum = (typeof MitraScalarFieldEnum)[keyof typeof MitraScalarFieldEnum]
 
 
 export const ItemScalarFieldEnum = {
@@ -228,6 +242,16 @@ export const ItemScalarFieldEnum = {
   maxStockLevel: 'maxStockLevel',
   currentStock: 'currentStock',
   isActive: 'isActive',
+  imagePath: 'imagePath',
+  barcode: 'barcode',
+  brand: 'brand',
+  type: 'type',
+  color: 'color',
+  weight: 'weight',
+  length: 'length',
+  width: 'width',
+  height: 'height',
+  movementType: 'movementType',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   createdById: 'createdById'
@@ -308,6 +332,7 @@ export const PurchaseRequestScalarFieldEnum = {
   prNumber: 'prNumber',
   vendorId: 'vendorId',
   rabId: 'rabId',
+  targetWarehouseId: 'targetWarehouseId',
   totalAmount: 'totalAmount',
   currency: 'currency',
   status: 'status',
@@ -320,6 +345,7 @@ export const PurchaseRequestScalarFieldEnum = {
   purchasingAcceptedById: 'purchasingAcceptedById',
   purchasingAcceptedAt: 'purchasingAcceptedAt',
   purchasingNotes: 'purchasingNotes',
+  paymentType: 'paymentType',
   poNumber: 'poNumber',
   poSentAt: 'poSentAt',
   poDocumentPath: 'poDocumentPath',
@@ -355,6 +381,7 @@ export const InboundScalarFieldEnum = {
   grnNumber: 'grnNumber',
   purchaseRequestId: 'purchaseRequestId',
   vendorId: 'vendorId',
+  warehouseId: 'warehouseId',
   receiveDate: 'receiveDate',
   status: 'status',
   notes: 'notes',
@@ -364,7 +391,8 @@ export const InboundScalarFieldEnum = {
   verifiedAt: 'verifiedAt',
   verificationNotes: 'verificationNotes',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  parentInboundId: 'parentInboundId'
 } as const
 
 export type InboundScalarFieldEnum = (typeof InboundScalarFieldEnum)[keyof typeof InboundScalarFieldEnum]
@@ -391,7 +419,8 @@ export type InboundItemScalarFieldEnum = (typeof InboundItemScalarFieldEnum)[key
 export const OutboundScalarFieldEnum = {
   id: 'id',
   outboundCode: 'outboundCode',
-  mitraId: 'mitraId',
+  warehouseId: 'warehouseId',
+  partnerId: 'partnerId',
   requestDate: 'requestDate',
   releaseDate: 'releaseDate',
   status: 'status',
@@ -420,9 +449,40 @@ export const OutboundItemScalarFieldEnum = {
 export type OutboundItemScalarFieldEnum = (typeof OutboundItemScalarFieldEnum)[keyof typeof OutboundItemScalarFieldEnum]
 
 
+export const PartnerScalarFieldEnum = {
+  id: 'id',
+  code: 'code',
+  name: 'name',
+  address: 'address',
+  phone: 'phone',
+  email: 'email',
+  contactName: 'contactName',
+  bankName: 'bankName',
+  bankAccount: 'bankAccount',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PartnerScalarFieldEnum = (typeof PartnerScalarFieldEnum)[keyof typeof PartnerScalarFieldEnum]
+
+
+export const PartnerItemPriceScalarFieldEnum = {
+  id: 'id',
+  partnerId: 'partnerId',
+  itemId: 'itemId',
+  price: 'price',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PartnerItemPriceScalarFieldEnum = (typeof PartnerItemPriceScalarFieldEnum)[keyof typeof PartnerItemPriceScalarFieldEnum]
+
+
 export const StockCardScalarFieldEnum = {
   id: 'id',
   itemId: 'itemId',
+  warehouseId: 'warehouseId',
   movementType: 'movementType',
   referenceType: 'referenceType',
   referenceId: 'referenceId',
@@ -444,6 +504,7 @@ export type StockCardScalarFieldEnum = (typeof StockCardScalarFieldEnum)[keyof t
 export const StockOpnameScalarFieldEnum = {
   id: 'id',
   opnameCode: 'opnameCode',
+  warehouseId: 'warehouseId',
   scheduledDate: 'scheduledDate',
   startedAt: 'startedAt',
   completedAt: 'completedAt',
@@ -514,6 +575,7 @@ export const ReturnScalarFieldEnum = {
   id: 'id',
   returnCode: 'returnCode',
   purchaseRequestId: 'purchaseRequestId',
+  inboundId: 'inboundId',
   vendorId: 'vendorId',
   returnDate: 'returnDate',
   reason: 'reason',

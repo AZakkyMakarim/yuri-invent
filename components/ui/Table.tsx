@@ -55,13 +55,13 @@ export function TableRow({ children, className, onClick }: TableRowProps) {
 }
 
 // Table Head Cell
-interface TableHeadProps {
+interface TableHeadProps extends React.ThHTMLAttributes<HTMLTableCellElement> {
     children: ReactNode;
     className?: string;
 }
 
-export function TableHead({ children, className }: TableHeadProps) {
-    return <th className={cn(className)}>{children}</th>;
+export function TableHead({ children, className, ...props }: TableHeadProps) {
+    return <th className={cn(className)} {...props}>{children}</th>;
 }
 
 // Table Cell

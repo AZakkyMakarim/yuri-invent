@@ -19,10 +19,14 @@ export async function GET(
                 where: { vendorId, isActive: true },
                 include: {
                     item: {
-                        include: {
+                        select: {
+                            id: true,
+                            sku: true,
+                            name: true,
+                            imagePath: true,
                             category: true,
-                            uom: true,
-                        },
+                            uom: true
+                        }
                     },
                 },
                 orderBy: { createdAt: 'desc' },
@@ -56,7 +60,7 @@ export async function POST(
     try {
         const { id: vendorId } = await params;
         const body = await request.json();
-        const { itemId, cogsPerUom } = body;
+        const { itemId, cogsPerUom, link } = body;
 
         // Validate required fields
         if (!itemId || cogsPerUom === undefined || cogsPerUom === null) {
@@ -101,7 +105,7 @@ export async function POST(
             // Update existing relationship
             const updated = await prisma.vendorItem.update({
                 where: { id: existing.id },
-                data: { cogsPerUom, isActive: true },
+                data: { cogsPerUom, isActive: true, link: link || null },
                 include: {
                     item: {
                         include: {
@@ -119,6 +123,7 @@ export async function POST(
                     vendorId,
                     itemId,
                     cogsPerUom,
+                    link: link || null,
                 },
                 include: {
                     item: {

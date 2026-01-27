@@ -35,15 +35,15 @@ export default async function DashboardPage() {
                     title={t('totalItems')}
                     value={stats.totalItems}
                     icon={Package}
-                    iconColor="text-[var(--color-info)]"
-                    iconBgColor="bg-[var(--color-info)]/10"
+                    iconColor="text-(--color-info)"
+                    iconBgColor="bg-(--color-info)/10"
                 />
                 <StatsCard
                     title={t('lowStock')}
                     value={stats.lowStockItems}
                     icon={AlertTriangle}
-                    iconColor="text-[var(--color-warning)]"
-                    iconBgColor="bg-[var(--color-warning)]/10"
+                    iconColor="text-(--color-warning)"
+                    iconBgColor="bg-(--color-warning)/10"
                     trend={
                         stats.lowStockItems > 0
                             ? { value: 'Requires attention', isPositive: false }
@@ -54,15 +54,15 @@ export default async function DashboardPage() {
                     title={t('pendingPR')}
                     value={stats.pendingPRs}
                     icon={ShoppingCart}
-                    iconColor="text-[var(--color-secondary)]"
-                    iconBgColor="bg-[var(--color-secondary)]/10"
+                    iconColor="text-(--color-secondary)"
+                    iconBgColor="bg-(--color-secondary)/10"
                 />
                 <StatsCard
                     title={t('pendingVerification')}
                     value={stats.pendingVerifications}
                     icon={ClipboardCheck}
-                    iconColor="text-[var(--color-accent)]"
-                    iconBgColor="bg-[var(--color-accent)]/10"
+                    iconColor="text-(--color-accent)"
+                    iconBgColor="bg-(--color-accent)/10"
                 />
             </div>
 
@@ -100,3 +100,4 @@ export default async function DashboardPage() {
         </div>
     );
 }
+

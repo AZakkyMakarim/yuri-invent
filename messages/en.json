@@ -9,6 +9,7 @@
         "search": "Search",
         "filter": "Filter",
         "actions": "Actions",
+        "applyFilters": "Apply Filters",
         "status": "Status",
         "loading": "Loading...",
         "noData": "No data available",
@@ -26,7 +27,12 @@
         "export": "Export",
         "import": "Import",
         "selectAll": "Select All",
-        "deselectAll": "Deselect All"
+        "deselectAll": "Deselect All",
+        "active": "Active",
+        "inactive": "Inactive",
+        "all": "All",
+        "created": "Created",
+        "createdBy": "Created By"
     },
     "nav": {
         "dashboard": "Dashboard",
@@ -39,12 +45,12 @@
         "outboundVerification": "Outbound Verification",
         "stock": "Stock",
         "stockCard": "Stock Card",
-        "items": "Items",
         "itemsStock": "Items & Stock",
         "purchaseRequest": "Purchase Request",
         "prList": "PR List",
         "prInput": "Create PR",
         "prVerification": "PR Verification (Manager)",
+        "prConfirmation": "PR Confirmation (Purchasing)",
         "poVerification": "PO Verification (Purchasing)",
         "stockOpname": "Stock Opname",
         "opnameList": "Opname List",
@@ -69,7 +75,8 @@
         "category": "Categories & UOM",
         "itemMaster": "Items & Stock",
         "vendor": "Vendors",
-        "mitra": "Partners (Mitra)",
+        "partners": "Partners",
+        "warehouses": "Warehouses",
         "users": "Users & Roles"
     },
     "status": {
@@ -94,37 +101,263 @@
         "recentActivity": "Recent Activity"
     },
     "master": {
-        "category": {
-            "title": "Categories",
-            "name": "Category Name",
-            "code": "Category Code",
-            "addNew": "Add New Category"
-        },
-        "uom": {
-            "title": "Units of Measurement",
-            "name": "UOM Name",
-            "symbol": "Symbol",
-            "addNew": "Add New UOM"
-        },
         "item": {
-            "title": "Items",
-            "sku": "SKU",
-            "name": "Item Name",
-            "category": "Category",
-            "uom": "UOM",
-            "currentStock": "Current Stock",
-            "minStock": "Min Stock Level",
-            "addNew": "Add New Item"
+            "title": "Items Master",
+            "addNew": "New Item",
+            "searchPlaceholder": "Search items...",
+            "table": {
+                "sku": "SKU",
+                "name": "Name",
+                "category": "Category",
+                "uom": "UOM",
+                "minStock": "Min Stock",
+                "maxStock": "Max Stock",
+                "stock": "Current Stock",
+                "created": "Created",
+                "creator": "Creator"
+            },
+            "form": {
+                "createTitle": "Create Item",
+                "editTitle": "Edit Item",
+                "sku": "SKU",
+                "name": "Item Name",
+                "description": "Description",
+                "category": "Category",
+                "uom": "UOM",
+                "minStock": "Min Stock Level",
+                "maxStock": "Max Stock Level",
+                "status": "Item Status",
+                "image": "Item Image",
+                "barcode": "Barcode",
+                "scanBarcode": "Scan barcode...",
+                "selectCategory": "Select Category",
+                "selectUom": "Select UOM",
+                "imageHint": "Click to upload image",
+                "imageChange": "Click to change",
+                "imageFormat": "Supports JPG, PNG, WEBP (Max 5MB)"
+            },
+            "deleteConfirm": "Are you sure you want to delete this item?",
+            "filters": {
+                "search": "Search",
+                "category": "Category",
+                "uom": "UOM",
+                "status": "Status",
+                "creator": "Created By",
+                "date": "Date Created"
+            },
+            "placeholders": {
+                "sku": "e.g., ITM-001",
+                "name": "e.g., Laptop Dell XPS 15",
+                "description": "Optional description...",
+                "all": "All"
+            },
+            "statusLabel": {
+                "active": "Active",
+                "inactive": "Inactive"
+            },
+            "errors": {
+                "uploadImage": "Failed to upload image",
+                "saveItem": "Failed to save item"
+            }
+        },
+        "user": {
+            "title": "Users & Roles",
+            "description": "New users sign up via the public sign-up page. They appear here as Inactive until you verify them by assigning a role and setting them to Active.",
+            "tabs": {
+                "users": "Users",
+                "roles": "Roles"
+            },
+            "table": {
+                "name": "Name",
+                "email": "Email",
+                "role": "Role",
+                "created": "Created At",
+                "status": "Status",
+                "actions": "Actions"
+            },
+            "filter": {
+                "role": "Filter by Role",
+                "status": "Filter Status",
+                "search": "Search users..."
+            },
+            "form": {
+                "createTitle": "Add New User",
+                "editTitle": "Edit User",
+                "name": "Name",
+                "email": "Email",
+                "password": "Password",
+                "passwordHint": "Leave blank to keep current password",
+                "role": "Role",
+                "status": "Active Status",
+                "namePlaceholder": "John Doe",
+                "emailPlaceholder": "john@example.com",
+                "passwordPlaceholder": "******"
+            },
+            "messages": {
+                "createSuccess": "User created successfully",
+                "updateSuccess": "User updated successfully",
+                "deleteConfirm": "Are you sure you want to delete this user? This action cannot be undone.",
+                "deleteSuccess": "User deleted successfully"
+            }
+        },
+        "role": {
+            "title": "Role Management",
+            "listTitle": "Roles",
+            "permissionsTitle": "{role} Permissions",
+            "addNew": "Add Role",
+            "searchPlaceholder": "Search permissions...",
+            "saveChanges": "Save Changes",
+            "discardChanges": "Discard Changes",
+            "noChanges": "No changes to save",
+            "form": {
+                "createTitle": "Create New Role",
+                "name": "Role Name",
+                "description": "Description",
+                "namePlaceholder": "e.g. Warehouse Staff",
+                "descriptionPlaceholder": "Description..."
+            },
+            "table": {
+                "module": "Module",
+                "view": "View",
+                "create": "Create",
+                "edit": "Edit",
+                "delete": "Delete",
+                "verify": "Verify/Approve"
+            },
+            "messages": {
+                "createSuccess": "Role created successfully",
+                "updateSuccess": "Permissions updated successfully",
+                "noChanges": "Select a role to manage permissions"
+            },
+            "modules": {
+                "inbound_list": "Inbound List",
+                "inbound_verification": "Inbound Verification",
+                "outbound_list_request": "Outbound List & Request",
+                "outbound_verification": "Outbound Verification",
+                "stock_card": "Stock Card",
+                "items": "Items",
+                "pr_list": "PR List",
+                "pr_input": "Create PR",
+                "pr_verification": "PR Verification (Manager)",
+                "po_verification": "PO Verification (Purchasing)",
+                "opname_list": "Opname List",
+                "opname_schedule": "Opname Schedule",
+                "adjustment_list_input": "Adjustment List & Input",
+                "adjustment_verification": "Adjustment Verification",
+                "return_list_input": "Return List & Input",
+                "return_verification": "Return Verification",
+                "bill_list_input": "Bill List & Input",
+                "bill_verification": "Bill Verification",
+                "payment_realization": "Payment Realization",
+                "payment_validation": "Payment Validation",
+                "rab_list": "RAB List",
+                "rab_input": "RAB Input",
+                "rab_verification": "RAB Verification",
+                "rab_realization": "RAB Realization",
+                "categories_uom": "Categories & UOM",
+                "items_stock": "Items & Stock",
+                "vendors": "Vendors",
+                "partners_mitra_": "Partners (Mitra)",
+                "users_roles": "Users & Roles"
+            }
         },
         "vendor": {
-            "title": "Vendors",
-            "code": "Vendor Code",
-            "name": "Vendor Name",
-            "contact": "Contact Person",
-            "phone": "Phone",
-            "email": "Email",
-            "address": "Address",
-            "addNew": "Add New Vendor"
+            "title": "Vendor Master",
+            "addNew": "New Vendor",
+            "searchPlaceholder": "Search by Name, Bank, or Phone...",
+            "table": {
+                "date": "Date Joined",
+                "vendor": "Vendor Name",
+                "type": "Type",
+                "bank": "Bank Info",
+                "contact": "Phone / Address"
+            },
+            "form": {
+                "createTitle": "Create Vendor",
+                "editTitle": "Edit Vendor",
+                "name": "Vendor Name",
+                "type": "Vendor Type",
+                "phone": "Phone Number",
+                "address": "Address",
+                "bank": "Bank Name",
+                "branch": "Bank Branch",
+                "account": "Bank Account",
+                "spk": "SPK Document",
+                "link": "Link / Map",
+                "status": "Status",
+                "uploadSpk": "Upload SPK Document",
+                "acceptedFormats": "Accepted formats: Only PDF (Max 5MB)",
+                "clickToSelect": "Click to select PDF document",
+                "selected": "Selected",
+                "fileUploaded": "Document uploaded",
+                "viewCurrent": "View current document",
+                "item": "Item",
+                "cogs": "COGS per UOM"
+            },
+            "sections": {
+                "basic": "Basic Information",
+                "contact": "Contact Information",
+                "items": "Vendor Items",
+                "optional": "(Optional)",
+                "required": "(Required for SPK vendors)"
+            },
+            "messages": {
+                "deleteConfirm": "Are you sure you want to delete this vendor?",
+                "uploadFailed": "Failed to upload SPK document",
+                "saveFailed": "Failed to save vendor",
+                "fileSizeError": "File size exceeds 5MB limit",
+                "fileTypeError": "Only PDF files are allowed"
+            },
+            "view": {
+                "title": "Vendor Details",
+                "contactPath": "Contact Path"
+            }
+        },
+        "category": {
+            "title": "Category Master",
+            "addNew": "New Category",
+            "deleteConfirm": "Are you sure you want to delete this category?",
+            "table": {
+                "code": "Code",
+                "name": "Name",
+                "created": "Created",
+                "creator": "Creator"
+            },
+            "filter": {
+                "code": "Filter code...",
+                "name": "Filter name..."
+            },
+            "form": {
+                "createTitle": "Create Category",
+                "editTitle": "Edit Category",
+                "code": "Code",
+                "name": "Name",
+                "codePlaceholder": "e.g., ELEC",
+                "namePlaceholder": "e.g., Electronics"
+            }
+        },
+        "uom": {
+            "title": "UOM Master",
+            "addNew": "New UOM",
+            "deleteConfirm": "Are you sure you want to delete this UOM?",
+            "table": {
+                "symbol": "Symbol",
+                "name": "Name",
+                "created": "Created",
+                "creator": "Creator"
+            },
+            "filter": {
+                "symbol": "Filter symbol...",
+                "name": "Filter name..."
+            },
+            "form": {
+                "createTitle": "Create UOM",
+                "editTitle": "Edit UOM",
+                "symbol": "Symbol",
+                "name": "Name",
+                "symbolPlaceholder": "e.g., pcs",
+                "namePlaceholder": "e.g., Pieces"
+            }
         },
         "mitra": {
             "title": "Partners",
@@ -135,32 +368,81 @@
             "email": "Email",
             "address": "Address",
             "addNew": "Add New Partner"
-        },
-        "user": {
-            "title": "Users & Roles",
-            "name": "Name",
-            "email": "Email",
-            "role": "Role"
         }
     },
     "budget": {
-        "title": "Budget Plan (RAB)",
-        "fiscalYear": "Fiscal Year",
-        "fiscalMonth": "Month",
-        "totalBudget": "Total Budget",
-        "usedBudget": "Used Budget",
-        "remainingBudget": "Remaining Budget",
-        "exceedWarning": "This action will exceed the monthly budget!"
-    },
-    "purchase": {
-        "title": "Purchase Request",
-        "prNumber": "PR Number",
-        "poNumber": "PO Number",
-        "vendor": "Vendor",
-        "requestDate": "Request Date",
-        "totalAmount": "Total Amount",
-        "managerApproval": "Manager Approval",
-        "purchasingApproval": "Purchasing Approval"
+        "title": "Budget Plans (RAB)",
+        "description": "Manage monthly budget plans and tracking",
+        "createNew": "Create New RAB",
+        "searchPlaceholder": "Search RAB Code or Period...",
+        "deleteConfirm": "Are you sure you want to delete this RAB?",
+        "table": {
+            "code": "RAB Code",
+            "period": "Period",
+            "totalBudget": "Total Budget",
+            "remaining": "Remaining",
+            "status": "Status",
+            "createdBy": "Created By",
+            "actions": "Actions",
+            "loading": "Loading data...",
+            "noData": "No RAB records found",
+            "viewDetails": "View Details",
+            "delete": "Delete"
+        },
+        "form": {
+            "createTitle": "Create Budget Plan",
+            "description": "Create a new monthly budget plan",
+            "saving": "Saving...",
+            "save": "Save Plan",
+            "sections": {
+                "period": "Fiscal Period",
+                "fiscalYear": "Fiscal Year",
+                "selectYear": "Select Year",
+                "fiscalMonth": "Fiscal Month",
+                "selectMonth": "Select Month",
+                "currency": "Currency"
+            },
+            "itemModal": {
+                "editTitle": "Edit Item",
+                "addTitle": "Add Item",
+                "itemLabel": "Item",
+                "selectItemPlaceholder": "Select an item...",
+                "requiredStockLabel": "Required Stock",
+                "cancel": "Cancel",
+                "update": "Update Item",
+                "add": "Add Item",
+                "alertSelect": "Please select an item"
+            },
+            "alerts": {
+                "userAuth": "User session not found",
+                "noItems": "Please add at least one item",
+                "allItems": "Some lines are missing item selection",
+                "success": "RAB created successfully",
+                "failed": "Failed to create RAB: "
+            },
+            "table": {
+                "no": "No",
+                "itemName": "Item Name",
+                "required": "Required",
+                "lastStock": "Last Stock",
+                "replenish": "Replenish",
+                "unitPrice": "Unit Price",
+                "totalCost": "Total Cost",
+                "addItem": "Add Item",
+                "total": "Total",
+                "loading": "Loading..."
+            }
+        },
+        "verification": {
+            "title": "Budget Verification",
+            "description": "Verify and approve submitted budget plans",
+            "loading": "Loading pending verifications...",
+            "noData": "No pending verifications",
+            "approve": "Approve",
+            "reject": "Reject",
+            "approveConfirm": "Are you sure you want to approve this RAB?",
+            "rejectConfirm": "Are you sure you want to reject this RAB?"
+        }
     },
     "stockOpname": {
         "title": "Stock Opname",
@@ -172,5 +454,244 @@
         "variance": "Variance",
         "recount": "Recount Required",
         "finalize": "Finalize Opname"
+    },
+    "inbound": {
+        "title": "Inbound List",
+        "description": "Track incoming goods and GRN history",
+        "searchPlaceholder": "Search GRN, PO, or Vendor...",
+        "allStatus": "All Status",
+        "pendingVerification": "Pending Verification",
+        "verified": "Verified",
+        "rejected": "Rejected",
+        "table": {
+            "grn": "GRN Number",
+            "date": "Received Date",
+            "po": "PO Reference",
+            "vendor": "Vendor",
+            "items": "Items",
+            "status": "Status",
+            "actions": "Actions",
+            "noData": "No Inbound records found.",
+            "loading": "Loading data..."
+        },
+        "issues": {
+            "title": "Resolution Center",
+            "description": "Manage Shortages, Returns, and Inbound Discrepancies",
+            "tabs": {
+                "shortages": "Pending Shortages",
+                "returns": "Pending Returns",
+                "history": "Discrepancy History"
+            },
+            "table": {
+                "childGrn": "Child GRN",
+                "parentGrn": "Parent GRN",
+                "returnId": "Return ID",
+                "reason": "Reason",
+                "issueStatus": "Issue Status",
+                "notes": "Notes"
+            },
+            "actions": {
+                "wait": "Wait (View)",
+                "closeShort": "Close Short",
+                "processReturn": "Process Return",
+                "keepItems": "Keep Items",
+                "resolve": "Resolve",
+                "resolved": "Resolved"
+            }
+        },
+        "verification": {
+            "modalTitle": "Verify Inbound",
+            "vendor": "Vendor",
+            "po": "PO Number",
+            "pr": "PR Number",
+            "proofDoc": "Proof of Delivery (Surat Jalan)",
+            "upload": "Upload Document",
+            "table": {
+                "item": "Item",
+                "exp": "Exp",
+                "rcv": "Rcv",
+                "acc": "Acc",
+                "rej": "Rej",
+                "status": "Status & Action"
+            },
+            "confirm": "Confirm Verification"
+        }
+    },
+    "purchase": {
+        "title": "Purchase Requests",
+        "description": "Manage material purchase requests",
+        "createRequest": "Create Request",
+        "searchPlaceholder": "Search PR Number or Notes...",
+        "allStatus": "All Status",
+        "status": {
+            "DRAFT": "Draft",
+            "PENDING_MANAGER_APPROVAL": "Pending Manager",
+            "PENDING_PURCHASING_APPROVAL": "Pending Purchasing",
+            "PAYMENT_RELEASED": "Payment Released",
+            "APPROVED": "Approved",
+            "REJECTED": "Rejected",
+            "CANCELLED": "Cancelled"
+        },
+        "table": {
+            "prNumber": "PR Number",
+            "date": "Date",
+            "vendor": "Vendor",
+            "createdBy": "Created By",
+            "approvedBy": "Approved By",
+            "totalAmount": "Total Amount",
+            "status": "Status",
+            "actions": "Actions",
+            "loading": "Loading data...",
+            "noData": "No Purchase Requests found."
+        },
+        "deleteConfirm": "Are you sure you want to delete this PR? This action cannot be undone.",
+        "managerVerification": {
+            "title": "Manager Verification",
+            "description": "Review and approve Purchase Requests",
+            "searchPlaceholder": "Search PR Number...",
+            "loading": "Loading pending requests...",
+            "noData": "No pending verification tasks.",
+            "actions": {
+                "approve": "Approve",
+                "reject": "Reject",
+                "viewDetails": "View Details",
+                "approveConfirm": "Approve this Purchase Request?"
+            },
+            "modal": {
+                "title": "Reject Purchase Request",
+                "description": "Please provide a reason for rejection. This will be visible to the requester.",
+                "placeholder": "Rejection notes...",
+                "cancel": "Cancel",
+                "confirmReject": "Reject Request",
+                "emptyReason": "Please provide a reason for rejection."
+            }
+        },
+        "form": {
+            "createTitle": "Create Purchase Request",
+            "editTitle": "Edit Purchase Request",
+            "createDescription": "New request for material purchase",
+            "editDescription": "Modify existing request",
+            "buttons": {
+                "cancel": "Cancel",
+                "saveDraft": "Save Draft",
+                "submitApproval": "Submit for Approval",
+                "resubmitApproval": "Resubmit for Approval",
+                "addItem": "Add Item"
+            },
+            "sections": {
+                "generalInfo": "General Information",
+                "sourceVendor": "Source & Vendor",
+                "requestItems": "Request Items"
+            },
+            "fields": {
+                "requestDate": "Request Date",
+                "description": "Description / Notes",
+                "descriptionPlaceholder": "Enter purpose of request...",
+                "vendor": "Vendor",
+                "vendorPlaceholder": "Select Vendor",
+                "vendorHelp": "Only items supplied by this vendor will be available.",
+                "sourceRab": "Source RAB (Optional)",
+                "rabPlaceholder": "Select Approved RAB...",
+                "rabHelp": "Optional: Select a RAB to add budgeted items.",
+                "rabSelected": "✓ RAB selected. Use 'Add Item' button to add items from this RAB.",
+                "rabNoVendor": "Select a vendor first to filter RAB items."
+            },
+            "warnings": {
+                "changeVendor": "Changing vendor will clear current items. Continue?",
+                "itemExists": "This item is already in the request",
+                "noVendor": "Vendor is required",
+                "noItems": "Please add at least one item",
+                "unsupplied": "⚠️ Warning: The following {count} item(s) are not typically supplied by this vendor:\n\n{items}\n\nPrices may need verification. Continue with submission?"
+            },
+            "itemsTable": {
+                "code": "Item Code",
+                "description": "Description",
+                "source": "Source",
+                "qty": "Qty",
+                "uom": "UOM",
+                "estPrice": "Est. Price",
+                "total": "Total",
+                "action": "Action",
+                "noItems": "No items added yet. Click 'Add Item' to add items.",
+                "grandTotal": "Grand Total"
+            },
+            "badges": {
+                "rab": "RAB",
+                "supplied": "Supplied",
+                "unsupplied": "Unsupplied",
+                "verifyPricing": "Verify pricing"
+            },
+            "messages": {
+                "successCreated": "PR Created Successfully! Number: {number}",
+                "successUpdated": "PR Updated Successfully! Number: {number}"
+            }
+        },
+        "purchasingVerification": {
+            "title": "Purchasing Verification",
+            "description": "Convert approved requests to Purchase Orders",
+            "searchPlaceholder": "Search PR Number...",
+            "loading": "Loading approved requests...",
+            "noData": "No requests waiting for PO creation.",
+            "actions": {
+                "viewDetails": "View Details",
+                "verifyAndCreate": "Verify & Create PO"
+            },
+            "alerts": {
+                "success": "Purchase Order Created Successfully!",
+                "poNumber": "PO Number",
+                "grnNumber": "GRN Number",
+                "inboundCreated": "Inbound entry has been created and is ready for goods receipt.",
+                "failed": "Failed to create PO"
+            }
+        },
+        "itemPicker": {
+            "title": "Select Items",
+            "searchPlaceholder": "Search items...",
+            "filters": {
+                "all": "All",
+                "rab": "From RAB",
+                "catalog": "Catalog"
+            },
+            "loading": "Loading items...",
+            "noItemsFound": "No items found",
+            "tryAdjustingSearch": "Try adjusting your search or filters",
+            "badges": {
+                "rab": "RAB",
+                "catalog": "Catalog"
+            },
+            "uom": "UOM",
+            "rabQty": "RAB Qty",
+            "notSupplied": "Not supplied by vendor",
+            "estPrice": "Est. Price",
+            "add": "Add",
+            "showing": "Showing",
+            "items": "items"
+        },
+        "justification": {
+            "title": "Budget Justification",
+            "warningTitle": "Budget Variance Detected",
+            "warningDescription": "The following items exceed the budget plan (RAB) or are not in the approved budget:",
+            "warningDescriptionGeneral": "This request includes items that differ from the budget plan.",
+            "reasonNotInRab": "Item not in RAB",
+            "reasonExceedsRab": "Requested: {requested}, Budget: {budget}",
+            "fields": {
+                "reason": "Justification Reason",
+                "reasonPlaceholder": "Explain why this purchase is necessary despite budget variance...",
+                "supportingDoc": "Supporting Document (Optional)"
+            },
+            "errors": {
+                "invalidType": "Invalid file type. Allowed: PDF, JPG, PNG",
+                "fileTooLarge": "File is too large (max 10MB)",
+                "reasonRequired": "Justification reason is required",
+                "uploadFailed": "Failed to upload document",
+                "submissionFailed": "Submission failed"
+            },
+            "removeFile": "Remove File",
+            "uploadText": "Upload a file",
+            "dragDropText": "or drag and drop",
+            "fileConstraints": "PDF, PNG, JPG up to 10MB",
+            "cancel": "Cancel",
+            "submit": "Submit Request"
+        }
     }
 }

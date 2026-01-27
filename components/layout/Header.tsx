@@ -30,8 +30,8 @@ export default function Header() {
     }).format(time).replace(/\./g, ':'); // Replace dots with colons for time if Indonesia locale uses dots
 
     return (
-        <header className="h-16 flex items-center justify-end px-6 border-b border-(--color-border) bg-(--color-bg-primary) sticky top-0 z-30 transition-colors duration-300">
-            <div className="text-sm font-medium text-(--color-text-secondary)">
+        <header className="h-16 flex items-center justify-end px-6 bg-(--color-bg-primary) sticky top-0 z-30 transition-colors duration-300 gap-4">
+            <div className="text-sm font-medium text-(--color-text-secondary) pl-4">
                 {formattedTime} WIB
             </div>
         </header>

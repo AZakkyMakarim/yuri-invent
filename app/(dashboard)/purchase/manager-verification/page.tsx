@@ -26,10 +26,12 @@ import { Modal } from "@/components/ui/Modal";
 import { formatCurrency } from '@/lib/utils';
 import { getPurchaseRequests, verifyPurchaseRequest } from '@/app/actions/purchase';
 import { useAuth } from '@/contexts/AuthContext';
+import { useTranslations } from 'next-intl';
 
 export default function ManagerVerificationPage() {
     const router = useRouter();
     const { user } = useAuth();
+    const t = useTranslations('purchase');
     const [data, setData] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState('');
@@ -56,7 +58,7 @@ export default function ManagerVerificationPage() {
     };
 
     const handleApprove = async (id: string) => {
-        if (!confirm('Approve this Purchase Request?')) return;
+        if (!confirm(t('managerVerification.actions.approveConfirm'))) return;
 
         setProcessingId(id);
         const result = await verifyPurchaseRequest(id, 'APPROVE', user?.id || 'manager-id');
@@ -77,7 +79,7 @@ export default function ManagerVerificationPage() {
     const handleReject = async () => {
         if (!rejectId) return;
         if (!rejectNotes.trim()) {
-            alert('Please provide a reason for rejection.');
+            alert(t('managerVerification.modal.emptyReason'));
             return;
         }
 
@@ -98,10 +100,10 @@ export default function ManagerVerificationPage() {
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
                     <h1 className="text-2xl font-bold bg-linear-to-r from-(--color-primary) to-(--color-secondary) bg-clip-text text-transparent">
-                        Manager Verification
+                        {t('managerVerification.title')}
                     </h1>
                     <p className="text-(--color-text-secondary)">
-                        Review and approve Purchase Requests
+                        {t('managerVerification.description')}
                     </p>
                 </div>
             </div>
@@ -111,7 +113,7 @@ export default function ManagerVerificationPage() {
                     <div className="relative w-full sm:w-72">
                         <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-(--color-text-muted)" />
                         <Input
-                            placeholder="Search PR Number..."
+                            placeholder={t('managerVerification.searchPlaceholder')}
                             className="pl-9 bg-(--color-bg-secondary) border-(--color-border)"
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
@@ -123,12 +125,12 @@ export default function ManagerVerificationPage() {
                         <Table>
                             <TableHeader className="bg-(--color-bg-secondary)">
                                 <TableRow>
-                                    <TableHead>PR Number</TableHead>
-                                    <TableHead>Date</TableHead>
-                                    <TableHead>Vendor</TableHead>
-                                    <TableHead>Created By</TableHead>
-                                    <TableHead className="text-right">Total Amount</TableHead>
-                                    <TableHead className="text-center">Actions</TableHead>
+                                    <TableHead>{t('table.prNumber')}</TableHead>
+                                    <TableHead>{t('table.date')}</TableHead>
+                                    <TableHead>{t('table.vendor')}</TableHead>
+                                    <TableHead>{t('table.createdBy')}</TableHead>
+                                    <TableHead className="text-right">{t('table.totalAmount')}</TableHead>
+                                    <TableHead className="text-center">{t('table.actions')}</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
@@ -137,14 +139,14 @@ export default function ManagerVerificationPage() {
                                         <TableCell colSpan={6} className="h-24 text-center">
                                             <div className="flex justify-center items-center gap-2">
                                                 <Loader2 className="h-6 w-6 animate-spin text-(--color-primary)" />
-                                                <span>Loading pending requests...</span>
+                                                <span>{t('managerVerification.loading')}</span>
                                             </div>
                                         </TableCell>
                                     </TableRow>
                                 ) : data.length === 0 ? (
                                     <TableRow>
                                         <TableCell colSpan={6} className="h-24 text-center text-(--color-text-muted)">
-                                            No pending verification tasks.
+                                            {t('managerVerification.noData')}
                                         </TableCell>
                                     </TableRow>
                                 ) : (
@@ -166,7 +168,7 @@ export default function ManagerVerificationPage() {
                                                         variant="ghost"
                                                         size="sm"
                                                         onClick={() => router.push(`/purchase/${pr.id}`)}
-                                                        title="View Details"
+                                                        title={t('managerVerification.actions.viewDetails')}
                                                     >
                                                         <Eye size={18} className="text-(--color-text-secondary)" />
                                                     </Button>
@@ -175,7 +177,7 @@ export default function ManagerVerificationPage() {
                                                         size="sm"
                                                         onClick={() => handleApprove(pr.id)}
                                                         disabled={processingId === pr.id}
-                                                        title="Approve"
+                                                        title={t('managerVerification.actions.approve')}
                                                         className="hover:bg-green-100 text-green-600 hover:text-green-700"
                                                     >
                                                         {processingId === pr.id ? <Loader2 className="animate-spin h-4 w-4" /> : <Check size={18} />}
@@ -185,7 +187,7 @@ export default function ManagerVerificationPage() {
                                                         size="sm"
                                                         onClick={() => openRejectModal(pr.id)}
                                                         disabled={processingId === pr.id}
-                                                        title="Reject"
+                                                        title={t('managerVerification.actions.reject')}
                                                         className="hover:bg-red-100 text-red-600 hover:text-red-700"
                                                     >
                                                         <X size={18} />
@@ -204,29 +206,29 @@ export default function ManagerVerificationPage() {
             <Modal
                 isOpen={!!rejectId}
                 onClose={() => setRejectId(null)}
-                title="Reject Purchase Request"
+                title={t('managerVerification.modal.title')}
                 footer={
                     <>
-                        <Button variant="ghost" onClick={() => setRejectId(null)}>Cancel</Button>
+                        <Button variant="ghost" onClick={() => setRejectId(null)}>{t('managerVerification.modal.cancel')}</Button>
                         <Button
                             variant="danger"
                             onClick={handleReject}
                             disabled={!rejectNotes.trim() || !!processingId}
                         >
                             {processingId ? <Loader2 className="animate-spin h-4 w-4 mr-2" /> : null}
-                            Reject Request
+                            {t('managerVerification.modal.confirmReject')}
                         </Button>
                     </>
                 }
             >
                 <div className="py-2">
                     <p className="text-sm text-(--color-text-secondary) mb-2">
-                        Please provide a reason for rejecting this request. This will be visible to the requester.
+                        {t('managerVerification.modal.description')}
                     </p>
                     <Textarea
                         value={rejectNotes}
                         onChange={(e) => setRejectNotes(e.target.value)}
-                        placeholder="Rejection notes..."
+                        placeholder={t('managerVerification.modal.placeholder')}
                         className="bg-(--color-bg-secondary)"
                     />
                 </div>

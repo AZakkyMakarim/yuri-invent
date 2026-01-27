@@ -18,8 +18,8 @@ export function StatsCard({
     title,
     value,
     icon: Icon,
-    iconColor = 'text-[var(--color-info)]',
-    iconBgColor = 'bg-[var(--color-info)]/10',
+    iconColor = 'text-(--color-info)',
+    iconBgColor = 'bg-(--color-info)/10',
     trend,
     className,
 }: StatsCardProps) {
@@ -27,7 +27,7 @@ export function StatsCard({
         <div className={cn('card', className)}>
             <div className="flex items-center justify-between">
                 <div>
-                    <p className="text-sm text-[var(--color-text-secondary)]">{title}</p>
+                    <p className="text-sm text-(--color-text-secondary)">{title}</p>
                     <p className="text-2xl font-bold mt-1">{value}</p>
                 </div>
                 <div className={cn('w-12 h-12 rounded-xl flex items-center justify-center', iconBgColor)}>
@@ -38,7 +38,7 @@ export function StatsCard({
                 <div
                     className={cn(
                         'mt-3 flex items-center gap-1 text-sm',
-                        trend.isPositive ? 'text-[var(--color-success)]' : 'text-[var(--color-warning)]'
+                        trend.isPositive ? 'text-(--color-success)' : 'text-(--color-warning)'
                     )}
                 >
                     <span>{trend.value}</span>
@@ -47,3 +47,4 @@ export function StatsCard({
         </div>
     );
 }
+

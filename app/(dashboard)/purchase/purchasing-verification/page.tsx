@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { format } from 'date-fns';
 import {
-    Check,
     Search,
     Loader2,
     Eye,
@@ -12,7 +11,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
+import { Card, CardContent, CardHeader } from '@/components/ui/Card';
 import {
     Table,
     TableBody,
@@ -22,21 +21,22 @@ import {
     TableRow,
 } from "@/components/ui/Table";
 import { formatCurrency } from '@/lib/utils';
-import { getPurchaseRequests } from '@/app/actions/purchase';
-import { verifyPurchaseOrder } from '@/app/actions/po-verification';
+import { getPurchaseRequests, createPurchaseOrder, releasePayment } from '@/app/actions/purchase';
 import POVerificationModal, { POVerificationData } from '@/components/purchase/POVerificationModal';
 import { useAuth } from '@/contexts/AuthContext';
+import { useTranslations } from 'next-intl';
 
 export default function PurchasingVerificationPage() {
     const router = useRouter();
     const { user } = useAuth();
+    const t = useTranslations('purchase');
     const [data, setData] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState('');
     const [processingId, setProcessingId] = useState<string | null>(null);
 
     // Modal state
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isPOModalOpen, setIsPOModalOpen] = useState(false);
     const [selectedPR, setSelectedPR] = useState<any>(null);
 
     useEffect(() => {
@@ -45,8 +45,15 @@ export default function PurchasingVerificationPage() {
 
     const loadData = async () => {
         setLoading(true);
-        // Fetch only PENDING_PURCHASING_APPROVAL
-        const result = await getPurchaseRequests(1, 50, search, 'PENDING_PURCHASING_APPROVAL');
+        // Step 2: Confirmation done. Ready for PO.
+        // Include WAITING_PAYMENT to allow Finance Release simulation
+        const checkStatuses = [
+            'CONFIRMED',
+            'WAITING_PAYMENT',
+            'PAYMENT_RELEASED'
+        ].join(',');
+
+        const result = await getPurchaseRequests(1, 50, search, checkStatuses);
         if (result.success) {
             setData(result.data || []);
         } else {
@@ -55,9 +62,27 @@ export default function PurchasingVerificationPage() {
         setLoading(false);
     };
 
-    const handleOpenModal = (pr: any) => {
+    const handleCreatePOOpen = (pr: any) => {
         setSelectedPR(pr);
-        setIsModalOpen(true);
+        setIsPOModalOpen(true);
+    };
+
+    const handleSimulatePayment = async (pr: any) => {
+        if (!confirm("Simulate Finance releasing payment for this Non-SPK request?")) return;
+        if (!user?.id) return;
+
+        setProcessingId(pr.id);
+        try {
+            const res = await releasePayment(pr.id, user.id);
+            if (res.success) {
+                alert("Payment released (Simulated). You can now create PO.");
+                loadData();
+            } else {
+                alert("Failed: " + res.error);
+            }
+        } finally {
+            setProcessingId(null);
+        }
     };
 
     const handleVerify = async (data: POVerificationData) => {
@@ -66,28 +91,33 @@ export default function PurchasingVerificationPage() {
         setProcessingId(selectedPR.id);
 
         try {
-            const result = await verifyPurchaseOrder({
-                prId: selectedPR.id,
-                userId: user.id,
-                ...data
-            });
+            const result = await createPurchaseOrder(
+                selectedPR.id,
+                user.id,
+                {
+                    poDocumentPath: data.poDocumentPath,
+                    shippingTrackingNumber: data.shippingTrackingNumber,
+                    estimatedShippingDate: data.estimatedShippingDate,
+                    notes: data.purchasingNotes
+                }
+            );
 
             if (result.success) {
-                alert(
-                    `✅ Purchase Order Created Successfully!\n\n` +
-                    `PO Number: ${result.data?.poNumber}\n` +
-                    `GRN Number: ${result.data?.grnNumber}\n\n` +
-                    `Inbound entry has been created and is ready for goods receipt.`
-                );
-                setIsModalOpen(false);
+                // Determine message based on result fields
+                let msg = `✅ PO Created Successfully!\n\nPO Number: ${result.data?.poNumber}`;
+                if (result.data?.grnNumber) {
+                    msg += `\nGRN Number: ${result.data.grnNumber}\nInbound Created.`;
+                }
+
+                alert(msg);
+                setIsPOModalOpen(false);
                 setSelectedPR(null);
                 await loadData();
             } else {
                 throw new Error(result.error);
             }
         } catch (error: any) {
-            alert('Failed to create PO: ' + error.message);
-            throw error;
+            alert(`Failed: ` + error.message);
         } finally {
             setProcessingId(null);
         }
@@ -98,10 +128,10 @@ export default function PurchasingVerificationPage() {
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
                     <h1 className="text-2xl font-bold bg-linear-to-r from-(--color-primary) to-(--color-secondary) bg-clip-text text-transparent">
-                        Purchasing Verification
+                        PO Verification
                     </h1>
                     <p className="text-(--color-text-secondary)">
-                        Convert approved requests to Purchase Orders
+                        {t('purchasingVerification.description')}
                     </p>
                 </div>
             </div>
@@ -111,7 +141,7 @@ export default function PurchasingVerificationPage() {
                     <div className="relative w-full sm:w-72">
                         <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-(--color-text-muted)" />
                         <Input
-                            placeholder="Search PR Number..."
+                            placeholder={t('purchasingVerification.searchPlaceholder')}
                             className="pl-9 bg-(--color-bg-secondary) border-(--color-border)"
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
@@ -123,12 +153,12 @@ export default function PurchasingVerificationPage() {
                         <Table>
                             <TableHeader className="bg-(--color-bg-secondary)">
                                 <TableRow>
-                                    <TableHead>PR Number</TableHead>
-                                    <TableHead>Date</TableHead>
-                                    <TableHead>Vendor</TableHead>
-                                    <TableHead>Approved By</TableHead>
-                                    <TableHead className="text-right">Total Amount</TableHead>
-                                    <TableHead className="text-center">Actions</TableHead>
+                                    <TableHead>{t('table.prNumber')}</TableHead>
+                                    <TableHead>{t('table.date')}</TableHead>
+                                    <TableHead>{t('table.vendor')}</TableHead>
+                                    <TableHead>{t('table.status')}</TableHead>
+                                    <TableHead className="text-right">{t('table.totalAmount')}</TableHead>
+                                    <TableHead className="text-center">{t('table.actions')}</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
@@ -137,14 +167,14 @@ export default function PurchasingVerificationPage() {
                                         <TableCell colSpan={6} className="h-24 text-center">
                                             <div className="flex justify-center items-center gap-2">
                                                 <Loader2 className="h-6 w-6 animate-spin text-(--color-primary)" />
-                                                <span>Loading approved requests...</span>
+                                                <span>{t('purchasingVerification.loading')}</span>
                                             </div>
                                         </TableCell>
                                     </TableRow>
                                 ) : data.length === 0 ? (
                                     <TableRow>
                                         <TableCell colSpan={6} className="h-24 text-center text-(--color-text-muted)">
-                                            No requests waiting for PO creation.
+                                            {t('purchasingVerification.noData')}
                                         </TableCell>
                                     </TableRow>
                                 ) : (
@@ -156,11 +186,14 @@ export default function PurchasingVerificationPage() {
                                             </TableCell>
                                             <TableCell>{format(new Date(pr.requestDate), 'dd MMM yyyy')}</TableCell>
                                             <TableCell>{pr.vendor?.name}</TableCell>
-                                            <TableCell className="text-xs text-(--color-text-secondary)">
-                                                {pr.managerApprovedBy?.name}
-                                                <div className="text-[10px] text-(--color-text-muted)">
-                                                    {pr.managerApprovedAt && format(new Date(pr.managerApprovedAt), 'dd/MM/yy')}
-                                                </div>
+                                            <TableCell className="text-xs font-medium">
+                                                <span className={`px-2 py-1 rounded text-[10px] ${pr.status === 'CONFIRMED' ? 'bg-blue-100 text-blue-800' :
+                                                        pr.status === 'WAITING_PAYMENT' ? 'bg-orange-100 text-orange-800' :
+                                                            pr.status === 'PAYMENT_RELEASED' ? 'bg-green-100 text-green-800' :
+                                                                'bg-gray-100 text-gray-800'
+                                                    }`}>
+                                                    {pr.status.replace(/_/g, ' ')}
+                                                </span>
                                             </TableCell>
                                             <TableCell className="text-right font-medium">
                                                 {formatCurrency(Number(pr.totalAmount))}
@@ -171,20 +204,37 @@ export default function PurchasingVerificationPage() {
                                                         variant="ghost"
                                                         size="sm"
                                                         onClick={() => router.push(`/purchase/${pr.id}`)}
-                                                        title="View Details"
+                                                        title={t('purchasingVerification.actions.viewDetails')}
                                                     >
                                                         <Eye size={18} className="text-(--color-text-secondary)" />
                                                     </Button>
-                                                    <Button
-                                                        variant="primary"
-                                                        size="sm"
-                                                        onClick={() => handleOpenModal(pr)}
-                                                        disabled={processingId === pr.id}
-                                                        className="bg-blue-600 hover:bg-blue-700 text-white"
-                                                    >
-                                                        {processingId === pr.id ? <Loader2 className="animate-spin h-4 w-4" /> : <FileText size={16} className="mr-2" />}
-                                                        Verify & Create PO
-                                                    </Button>
+
+                                                    {/* Waiting Payment (Non-SPK) */}
+                                                    {pr.status === 'WAITING_PAYMENT' && (
+                                                        <Button
+                                                            variant="secondary"
+                                                            size="sm"
+                                                            onClick={() => handleSimulatePayment(pr)}
+                                                            className="border-orange-200 bg-orange-50 text-orange-700 hover:bg-orange-100"
+                                                            disabled={processingId === pr.id}
+                                                        >
+                                                            {processingId === pr.id ? <Loader2 className="animate-spin h-4 w-4" /> : <span className="mr-1">💰</span>}
+                                                            Release Pay
+                                                        </Button>
+                                                    )}
+
+                                                    {/* Step 2: Create PO */}
+                                                    {(pr.status === 'CONFIRMED' || pr.status === 'PAYMENT_RELEASED') && (
+                                                        <Button
+                                                            variant="primary"
+                                                            size="sm"
+                                                            onClick={() => handleCreatePOOpen(pr)}
+                                                            className="bg-green-600 hover:bg-green-700 text-white"
+                                                        >
+                                                            <FileText size={16} className="mr-2" />
+                                                            Create PO
+                                                        </Button>
+                                                    )}
                                                 </div>
                                             </TableCell>
                                         </TableRow>
@@ -196,12 +246,12 @@ export default function PurchasingVerificationPage() {
                 </CardContent>
             </Card>
 
-            {/* PO Verification Modal */}
+            {/* PO Verification Modal (Step 2) */}
             {selectedPR && (
                 <POVerificationModal
-                    isOpen={isModalOpen}
+                    isOpen={isPOModalOpen}
                     onClose={() => {
-                        setIsModalOpen(false);
+                        setIsPOModalOpen(false);
                         setSelectedPR(null);
                     }}
                     onVerify={handleVerify}

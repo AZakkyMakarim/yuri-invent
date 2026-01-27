@@ -6,7 +6,10 @@ import { Plus, Pencil, Trash2, FolderTree, Ruler, Check, X } from 'lucide-react'
 import {
     Button,
     Input,
-    Modal,
+    Pagination,
+    TextFilter,
+    MultiSelectFilter,
+    DateRangeFilter,
     Table,
     TableHeader,
     TableBody,
@@ -20,12 +23,14 @@ import {
     SortableTableHead,
     TableFilters,
     FilterField,
-    Pagination,
-    TextFilter,
-    MultiSelectFilter,
-    DateRangeFilter,
 } from '@/components/ui';
 import type { SortDirection } from '@/components/ui';
+import dynamic from 'next/dynamic';
+
+const Modal = dynamic(() => import('@/components/ui/Modal').then(mod => mod.Modal), {
+    loading: () => <></>,
+    ssr: false
+});
 import { apiFetch } from '@/lib/utils';
 import { formatDate } from '@/lib/format';
 
@@ -111,6 +116,9 @@ export default function CategoryPage() {
     const [uomSort, setUomSort] = useState<SortState>({ field: null, direction: null });
     const [uomPage, setUomPage] = useState(1);
 
+    // Tab state
+    const [activeTab, setActiveTab] = useState('categories');
+
     // All creators for filter dropdowns (fetched once)
     const [allCategoryCreators, setAllCategoryCreators] = useState<string[]>([]);
     const [allUomCreators, setAllUomCreators] = useState<string[]>([]);
@@ -118,8 +126,6 @@ export default function CategoryPage() {
     // Pending filters for staged filtering
     const [pendingCategoryFilters, setPendingCategoryFilters] = useState<Filters>(defaultFilters);
     const [pendingUomFilters, setPendingUomFilters] = useState<Filters>(defaultFilters);
-
-    const statusOptions = ['Active', 'Inactive'];
 
     // Check if there are active filters
     const hasCategoryActiveFilters =
@@ -236,12 +242,16 @@ export default function CategoryPage() {
 
     // Fetch data when dependencies change
     useEffect(() => {
-        fetchCategories();
-    }, [fetchCategories]);
+        if (activeTab === 'categories') {
+            fetchCategories();
+        }
+    }, [fetchCategories, activeTab]);
 
     useEffect(() => {
-        fetchUoms();
-    }, [fetchUoms]);
+        if (activeTab === 'uom') {
+            fetchUoms();
+        }
+    }, [fetchUoms, activeTab]);
 
     useEffect(() => {
         fetchCreators();
@@ -308,7 +318,7 @@ export default function CategoryPage() {
     };
 
     const handleCategoryDelete = async (id: string) => {
-        if (!confirm('Are you sure you want to delete this category?')) return;
+        if (!confirm(t('deleteConfirm'))) return;
         try {
             await apiFetch(`/categories/${id}`, { method: 'DELETE' });
             fetchCategories();
@@ -354,7 +364,7 @@ export default function CategoryPage() {
     };
 
     const handleUomDelete = async (id: string) => {
-        if (!confirm('Are you sure you want to delete this UOM?')) return;
+        if (!confirm(tUom('deleteConfirm'))) return;
         try {
             await apiFetch(`/uoms/${id}`, { method: 'DELETE' });
             fetchUoms();
@@ -368,13 +378,20 @@ export default function CategoryPage() {
         { id: 'uom', label: tUom('title'), icon: <Ruler size={18} /> },
     ];
 
+
+
     return (
         <div className="animate-fadeIn">
-            <Tabs tabs={tabs} defaultTab="categories">
-                {(activeTab) => (
+            <Tabs
+                tabs={tabs}
+                defaultTab="categories"
+                activeTab={activeTab}
+                onChange={setActiveTab}
+            >
+                {(currentTab) => (
                     <>
                         {/* Categories Tab */}
-                        {activeTab === 'categories' && (
+                        {currentTab === 'categories' && (
                             <div>
                                 <div className="flex items-center justify-between mb-4">
                                     <h1 className="text-xl font-bold">{t('title')}</h1>
@@ -389,29 +406,30 @@ export default function CategoryPage() {
                                     onApply={applyCategoryFilters}
                                     onReset={resetCategoryFilters}
                                 >
-                                    <FilterField label="Code">
+                                    <FilterField label={t('table.code')}>
                                         <TextFilter
                                             value={pendingCategoryFilters.code}
                                             onChange={(v) => setPendingCategoryFilters({ ...pendingCategoryFilters, code: v })}
-                                            placeholder="Filter code..."
+                                            placeholder={t('filter.code')}
                                         />
                                     </FilterField>
-                                    <FilterField label="Name">
+                                    <FilterField label={t('table.name')}>
                                         <TextFilter
                                             value={pendingCategoryFilters.name}
                                             onChange={(v) => setPendingCategoryFilters({ ...pendingCategoryFilters, name: v })}
-                                            placeholder="Filter name..."
+                                            placeholder={t('filter.name')}
                                         />
                                     </FilterField>
-                                    <FilterField label="Status">
+                                    <FilterField label={tCommon('status')}>
                                         <MultiSelectFilter
-                                            options={statusOptions}
+                                            options={['Active', 'Inactive']}
                                             selected={pendingCategoryFilters.status}
                                             onChange={(v) => setPendingCategoryFilters({ ...pendingCategoryFilters, status: v })}
-                                            placeholder="All"
+                                            placeholder={tCommon('all')}
+                                            formatLabel={(option) => (option === 'Active' ? tCommon('active') : tCommon('inactive'))}
                                         />
                                     </FilterField>
-                                    <FilterField label="Created">
+                                    <FilterField label={t('table.created')}>
                                         <DateRangeFilter
                                             startDate={pendingCategoryFilters.dateStart}
                                             endDate={pendingCategoryFilters.dateEnd}
@@ -429,23 +447,23 @@ export default function CategoryPage() {
                                                 sortDirection={categorySort.field === 'code' ? categorySort.direction : null}
                                                 onSort={() => toggleSort('code', categorySort, setCategorySort)}
                                             >
-                                                {t('code')}
+                                                {t('table.code')}
                                             </SortableTableHead>
                                             <SortableTableHead
                                                 sortable
                                                 sortDirection={categorySort.field === 'name' ? categorySort.direction : null}
                                                 onSort={() => toggleSort('name', categorySort, setCategorySort)}
                                             >
-                                                {t('name')}
+                                                {t('table.name')}
                                             </SortableTableHead>
                                             <SortableTableHead
                                                 sortable
                                                 sortDirection={categorySort.field === 'createdAt' ? categorySort.direction : null}
                                                 onSort={() => toggleSort('createdAt', categorySort, setCategorySort)}
                                             >
-                                                Created
+                                                {t('table.created')}
                                             </SortableTableHead>
-                                            <TableHead>Creator</TableHead>
+                                            <TableHead>{t('table.creator')}</TableHead>
                                             <SortableTableHead
                                                 sortable
                                                 sortDirection={categorySort.field === 'status' ? categorySort.direction : null}
@@ -477,11 +495,11 @@ export default function CategoryPage() {
                                                         <Badge variant={category.isActive ? 'success' : 'danger'}>
                                                             {category.isActive ? (
                                                                 <span className="flex items-center gap-1">
-                                                                    <Check size={12} /> Active
+                                                                    <Check size={12} /> {tCommon('active')}
                                                                 </span>
                                                             ) : (
                                                                 <span className="flex items-center gap-1">
-                                                                    <X size={12} /> Inactive
+                                                                    <X size={12} /> {tCommon('inactive')}
                                                                 </span>
                                                             )}
                                                         </Badge>
@@ -535,29 +553,30 @@ export default function CategoryPage() {
                                     onApply={applyUomFilters}
                                     onReset={resetUomFilters}
                                 >
-                                    <FilterField label="Symbol">
+                                    <FilterField label={tUom('table.symbol')}>
                                         <TextFilter
                                             value={pendingUomFilters.code}
                                             onChange={(v) => setPendingUomFilters({ ...pendingUomFilters, code: v })}
-                                            placeholder="Filter symbol..."
+                                            placeholder={tUom('filter.symbol')}
                                         />
                                     </FilterField>
-                                    <FilterField label="Name">
+                                    <FilterField label={tUom('table.name')}>
                                         <TextFilter
                                             value={pendingUomFilters.name}
                                             onChange={(v) => setPendingUomFilters({ ...pendingUomFilters, name: v })}
-                                            placeholder="Filter name..."
+                                            placeholder={tUom('filter.name')}
                                         />
                                     </FilterField>
-                                    <FilterField label="Status">
+                                    <FilterField label={tCommon('status')}>
                                         <MultiSelectFilter
-                                            options={statusOptions}
+                                            options={['Active', 'Inactive']}
                                             selected={pendingUomFilters.status}
                                             onChange={(v) => setPendingUomFilters({ ...pendingUomFilters, status: v })}
-                                            placeholder="All"
+                                            placeholder={tCommon('all')}
+                                            formatLabel={(option) => (option === 'Active' ? tCommon('active') : tCommon('inactive'))}
                                         />
                                     </FilterField>
-                                    <FilterField label="Created">
+                                    <FilterField label={tUom('table.created')}>
                                         <DateRangeFilter
                                             startDate={pendingUomFilters.dateStart}
                                             endDate={pendingUomFilters.dateEnd}
@@ -575,23 +594,23 @@ export default function CategoryPage() {
                                                 sortDirection={uomSort.field === 'code' ? uomSort.direction : null}
                                                 onSort={() => toggleSort('code', uomSort, setUomSort)}
                                             >
-                                                {tUom('symbol')}
+                                                {tUom('table.symbol')}
                                             </SortableTableHead>
                                             <SortableTableHead
                                                 sortable
                                                 sortDirection={uomSort.field === 'name' ? uomSort.direction : null}
                                                 onSort={() => toggleSort('name', uomSort, setUomSort)}
                                             >
-                                                {tUom('name')}
+                                                {tUom('table.name')}
                                             </SortableTableHead>
                                             <SortableTableHead
                                                 sortable
                                                 sortDirection={uomSort.field === 'createdAt' ? uomSort.direction : null}
                                                 onSort={() => toggleSort('createdAt', uomSort, setUomSort)}
                                             >
-                                                Created
+                                                {tUom('table.created')}
                                             </SortableTableHead>
-                                            <TableHead>Creator</TableHead>
+                                            <TableHead>{tUom('table.creator')}</TableHead>
                                             <SortableTableHead
                                                 sortable
                                                 sortDirection={uomSort.field === 'status' ? uomSort.direction : null}
@@ -623,11 +642,11 @@ export default function CategoryPage() {
                                                         <Badge variant={uom.isActive ? 'success' : 'danger'}>
                                                             {uom.isActive ? (
                                                                 <span className="flex items-center gap-1">
-                                                                    <Check size={12} /> Active
+                                                                    <Check size={12} /> {tCommon('active')}
                                                                 </span>
                                                             ) : (
                                                                 <span className="flex items-center gap-1">
-                                                                    <X size={12} /> Inactive
+                                                                    <X size={12} /> {tCommon('inactive')}
                                                                 </span>
                                                             )}
                                                         </Badge>
@@ -672,7 +691,7 @@ export default function CategoryPage() {
             <Modal
                 isOpen={categoryModalOpen}
                 onClose={() => setCategoryModalOpen(false)}
-                title={editingCategory ? `${tCommon('edit')} ${t('title')}` : t('addNew')}
+                title={editingCategory ? t('form.editTitle') : t('form.createTitle')}
                 footer={
                     <>
                         <Button variant="secondary" onClick={() => setCategoryModalOpen(false)}>
@@ -686,21 +705,21 @@ export default function CategoryPage() {
             >
                 <div className="space-y-4">
                     <Input
-                        label={t('code')}
+                        label={t('form.code')}
                         value={categoryForm.code}
                         onChange={(e) => setCategoryForm({ ...categoryForm, code: e.target.value })}
-                        placeholder="e.g., ELEC"
+                        placeholder={t('form.codePlaceholder')}
                     />
                     <Input
-                        label={t('name')}
+                        label={t('form.name')}
                         value={categoryForm.name}
                         onChange={(e) => setCategoryForm({ ...categoryForm, name: e.target.value })}
-                        placeholder="e.g., Electronics"
+                        placeholder={t('form.namePlaceholder')}
                     />
                     <div className="pt-2">
                         <Toggle
                             label={tCommon('status')}
-                            description={categoryForm.isActive ? 'Active' : 'Inactive'}
+                            description={categoryForm.isActive ? tCommon('active') : tCommon('inactive')}
                             checked={categoryForm.isActive}
                             onChange={(e) => setCategoryForm({ ...categoryForm, isActive: e.target.checked })}
                         />
@@ -712,7 +731,7 @@ export default function CategoryPage() {
             <Modal
                 isOpen={uomModalOpen}
                 onClose={() => setUomModalOpen(false)}
-                title={editingUom ? `${tCommon('edit')} ${tUom('title')}` : tUom('addNew')}
+                title={editingUom ? tUom('form.editTitle') : tUom('form.createTitle')}
                 footer={
                     <>
                         <Button variant="secondary" onClick={() => setUomModalOpen(false)}>
@@ -726,21 +745,21 @@ export default function CategoryPage() {
             >
                 <div className="space-y-4">
                     <Input
-                        label={tUom('symbol')}
+                        label={tUom('form.symbol')}
                         value={uomForm.symbol}
                         onChange={(e) => setUomForm({ ...uomForm, symbol: e.target.value })}
-                        placeholder="e.g., pcs"
+                        placeholder={tUom('form.symbolPlaceholder')}
                     />
                     <Input
-                        label={tUom('name')}
+                        label={tUom('form.name')}
                         value={uomForm.name}
                         onChange={(e) => setUomForm({ ...uomForm, name: e.target.value })}
-                        placeholder="e.g., Pieces"
+                        placeholder={tUom('form.namePlaceholder')}
                     />
                     <div className="pt-2">
                         <Toggle
                             label={tCommon('status')}
-                            description={uomForm.isActive ? 'Active' : 'Inactive'}
+                            description={uomForm.isActive ? tCommon('active') : tCommon('inactive')}
                             checked={uomForm.isActive}
                             onChange={(e) => setUomForm({ ...uomForm, isActive: e.target.checked })}
                         />

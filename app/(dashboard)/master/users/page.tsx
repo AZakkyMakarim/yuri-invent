@@ -20,8 +20,8 @@ export default function UsersPage() {
 
             <Tabs
                 tabs={[
-                    { id: 'users', label: 'Users', icon: <Users size={18} /> },
-                    { id: 'roles', label: 'Roles', icon: <Shield size={18} /> },
+                    { id: 'users', label: t('tabs.users'), icon: <Users size={18} /> },
+                    { id: 'roles', label: t('tabs.roles'), icon: <Shield size={18} /> },
                 ]}
                 defaultTab="users"
             >

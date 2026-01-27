@@ -8,7 +8,7 @@ const Card = forwardRef<
     <div
         ref={ref}
         className={cn(
-            "rounded-lg border border-[var(--color-border)] bg-[var(--color-bg-card)] text-[var(--color-text-primary)] shadow-sm",
+            "rounded-lg border border-(--color-border) bg-(--color-bg-card) text-(--color-text-primary) shadow-sm",
             className
         )}
         {...props}
@@ -49,7 +49,7 @@ const CardDescription = forwardRef<
 >(({ className, ...props }, ref) => (
     <p
         ref={ref}
-        className={cn("text-sm text-[var(--color-text-muted)]", className)}
+        className={cn("text-sm text-(--color-text-muted)", className)}
         {...props}
     />
 ))
@@ -76,3 +76,4 @@ const CardFooter = forwardRef<
 CardFooter.displayName = "CardFooter"
 
 export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent }
+

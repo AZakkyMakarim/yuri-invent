@@ -106,6 +106,7 @@ export async function verifyPurchaseOrder(params: VerifyPOParams) {
                     grnNumber,
                     purchaseRequestId: prId,
                     vendorId: pr.vendorId,
+                    warehouseId: pr.targetWarehouseId,
                     receiveDate: estimatedShippingDate || new Date(),
                     status: 'PENDING_VERIFICATION',
                     notes: `Created from PO ${poNumber}`,

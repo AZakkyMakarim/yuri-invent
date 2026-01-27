@@ -835,14 +835,6 @@ export type StockOpnameCountUncheckedUpdateManyWithoutStockOpnameNestedInput = {
   deleteMany?: Prisma.StockOpnameCountScalarWhereInput | Prisma.StockOpnameCountScalarWhereInput[]
 }
 
-export type NullableIntFieldUpdateOperationsInput = {
-  set?: number | null
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
-}
-
 export type StockOpnameCountCreateWithoutCounterAInput = {
   id?: string
   systemQty: number

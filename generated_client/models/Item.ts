@@ -30,12 +30,20 @@ export type ItemAvgAggregateOutputType = {
   minStockLevel: number | null
   maxStockLevel: number | null
   currentStock: number | null
+  weight: number | null
+  length: number | null
+  width: number | null
+  height: number | null
 }
 
 export type ItemSumAggregateOutputType = {
   minStockLevel: number | null
   maxStockLevel: number | null
   currentStock: number | null
+  weight: number | null
+  length: number | null
+  width: number | null
+  height: number | null
 }
 
 export type ItemMinAggregateOutputType = {
@@ -49,6 +57,16 @@ export type ItemMinAggregateOutputType = {
   maxStockLevel: number | null
   currentStock: number | null
   isActive: boolean | null
+  imagePath: string | null
+  barcode: string | null
+  brand: string | null
+  type: string | null
+  color: string | null
+  weight: number | null
+  length: number | null
+  width: number | null
+  height: number | null
+  movementType: string | null
   createdAt: Date | null
   updatedAt: Date | null
   createdById: string | null
@@ -65,6 +83,16 @@ export type ItemMaxAggregateOutputType = {
   maxStockLevel: number | null
   currentStock: number | null
   isActive: boolean | null
+  imagePath: string | null
+  barcode: string | null
+  brand: string | null
+  type: string | null
+  color: string | null
+  weight: number | null
+  length: number | null
+  width: number | null
+  height: number | null
+  movementType: string | null
   createdAt: Date | null
   updatedAt: Date | null
   createdById: string | null
@@ -81,6 +109,16 @@ export type ItemCountAggregateOutputType = {
   maxStockLevel: number
   currentStock: number
   isActive: number
+  imagePath: number
+  barcode: number
+  brand: number
+  type: number
+  color: number
+  weight: number
+  length: number
+  width: number
+  height: number
+  movementType: number
   createdAt: number
   updatedAt: number
   createdById: number
@@ -92,12 +130,20 @@ export type ItemAvgAggregateInputType = {
   minStockLevel?: true
   maxStockLevel?: true
   currentStock?: true
+  weight?: true
+  length?: true
+  width?: true
+  height?: true
 }
 
 export type ItemSumAggregateInputType = {
   minStockLevel?: true
   maxStockLevel?: true
   currentStock?: true
+  weight?: true
+  length?: true
+  width?: true
+  height?: true
 }
 
 export type ItemMinAggregateInputType = {
@@ -111,6 +157,16 @@ export type ItemMinAggregateInputType = {
   maxStockLevel?: true
   currentStock?: true
   isActive?: true
+  imagePath?: true
+  barcode?: true
+  brand?: true
+  type?: true
+  color?: true
+  weight?: true
+  length?: true
+  width?: true
+  height?: true
+  movementType?: true
   createdAt?: true
   updatedAt?: true
   createdById?: true
@@ -127,6 +183,16 @@ export type ItemMaxAggregateInputType = {
   maxStockLevel?: true
   currentStock?: true
   isActive?: true
+  imagePath?: true
+  barcode?: true
+  brand?: true
+  type?: true
+  color?: true
+  weight?: true
+  length?: true
+  width?: true
+  height?: true
+  movementType?: true
   createdAt?: true
   updatedAt?: true
   createdById?: true
@@ -143,6 +209,16 @@ export type ItemCountAggregateInputType = {
   maxStockLevel?: true
   currentStock?: true
   isActive?: true
+  imagePath?: true
+  barcode?: true
+  brand?: true
+  type?: true
+  color?: true
+  weight?: true
+  length?: true
+  width?: true
+  height?: true
+  movementType?: true
   createdAt?: true
   updatedAt?: true
   createdById?: true
@@ -246,6 +322,16 @@ export type ItemGroupByOutputType = {
   maxStockLevel: number
   currentStock: number
   isActive: boolean
+  imagePath: string | null
+  barcode: string | null
+  brand: string | null
+  type: string | null
+  color: string | null
+  weight: number | null
+  length: number | null
+  width: number | null
+  height: number | null
+  movementType: string | null
   createdAt: Date
   updatedAt: Date
   createdById: string | null
@@ -285,6 +371,16 @@ export type ItemWhereInput = {
   maxStockLevel?: Prisma.IntFilter<"Item"> | number
   currentStock?: Prisma.IntFilter<"Item"> | number
   isActive?: Prisma.BoolFilter<"Item"> | boolean
+  imagePath?: Prisma.StringNullableFilter<"Item"> | string | null
+  barcode?: Prisma.StringNullableFilter<"Item"> | string | null
+  brand?: Prisma.StringNullableFilter<"Item"> | string | null
+  type?: Prisma.StringNullableFilter<"Item"> | string | null
+  color?: Prisma.StringNullableFilter<"Item"> | string | null
+  weight?: Prisma.FloatNullableFilter<"Item"> | number | null
+  length?: Prisma.FloatNullableFilter<"Item"> | number | null
+  width?: Prisma.FloatNullableFilter<"Item"> | number | null
+  height?: Prisma.FloatNullableFilter<"Item"> | number | null
+  movementType?: Prisma.StringNullableFilter<"Item"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Item"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Item"> | Date | string
   createdById?: Prisma.StringNullableFilter<"Item"> | string | null
@@ -301,6 +397,8 @@ export type ItemWhereInput = {
   priceHistories?: Prisma.ItemPriceHistoryListRelationFilter
   vendorSupplies?: Prisma.VendorItemListRelationFilter
   rabLines?: Prisma.RABLineListRelationFilter
+  partnerPrices?: Prisma.PartnerItemPriceListRelationFilter
+  warehouseStocks?: Prisma.WarehouseStockListRelationFilter
 }
 
 export type ItemOrderByWithRelationInput = {
@@ -314,6 +412,16 @@ export type ItemOrderByWithRelationInput = {
   maxStockLevel?: Prisma.SortOrder
   currentStock?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  imagePath?: Prisma.SortOrderInput | Prisma.SortOrder
+  barcode?: Prisma.SortOrderInput | Prisma.SortOrder
+  brand?: Prisma.SortOrderInput | Prisma.SortOrder
+  type?: Prisma.SortOrderInput | Prisma.SortOrder
+  color?: Prisma.SortOrderInput | Prisma.SortOrder
+  weight?: Prisma.SortOrderInput | Prisma.SortOrder
+  length?: Prisma.SortOrderInput | Prisma.SortOrder
+  width?: Prisma.SortOrderInput | Prisma.SortOrder
+  height?: Prisma.SortOrderInput | Prisma.SortOrder
+  movementType?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   createdById?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -330,6 +438,8 @@ export type ItemOrderByWithRelationInput = {
   priceHistories?: Prisma.ItemPriceHistoryOrderByRelationAggregateInput
   vendorSupplies?: Prisma.VendorItemOrderByRelationAggregateInput
   rabLines?: Prisma.RABLineOrderByRelationAggregateInput
+  partnerPrices?: Prisma.PartnerItemPriceOrderByRelationAggregateInput
+  warehouseStocks?: Prisma.WarehouseStockOrderByRelationAggregateInput
 }
 
 export type ItemWhereUniqueInput = Prisma.AtLeast<{
@@ -346,6 +456,16 @@ export type ItemWhereUniqueInput = Prisma.AtLeast<{
   maxStockLevel?: Prisma.IntFilter<"Item"> | number
   currentStock?: Prisma.IntFilter<"Item"> | number
   isActive?: Prisma.BoolFilter<"Item"> | boolean
+  imagePath?: Prisma.StringNullableFilter<"Item"> | string | null
+  barcode?: Prisma.StringNullableFilter<"Item"> | string | null
+  brand?: Prisma.StringNullableFilter<"Item"> | string | null
+  type?: Prisma.StringNullableFilter<"Item"> | string | null
+  color?: Prisma.StringNullableFilter<"Item"> | string | null
+  weight?: Prisma.FloatNullableFilter<"Item"> | number | null
+  length?: Prisma.FloatNullableFilter<"Item"> | number | null
+  width?: Prisma.FloatNullableFilter<"Item"> | number | null
+  height?: Prisma.FloatNullableFilter<"Item"> | number | null
+  movementType?: Prisma.StringNullableFilter<"Item"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Item"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Item"> | Date | string
   createdById?: Prisma.StringNullableFilter<"Item"> | string | null
@@ -362,6 +482,8 @@ export type ItemWhereUniqueInput = Prisma.AtLeast<{
   priceHistories?: Prisma.ItemPriceHistoryListRelationFilter
   vendorSupplies?: Prisma.VendorItemListRelationFilter
   rabLines?: Prisma.RABLineListRelationFilter
+  partnerPrices?: Prisma.PartnerItemPriceListRelationFilter
+  warehouseStocks?: Prisma.WarehouseStockListRelationFilter
 }, "id" | "sku">
 
 export type ItemOrderByWithAggregationInput = {
@@ -375,6 +497,16 @@ export type ItemOrderByWithAggregationInput = {
   maxStockLevel?: Prisma.SortOrder
   currentStock?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  imagePath?: Prisma.SortOrderInput | Prisma.SortOrder
+  barcode?: Prisma.SortOrderInput | Prisma.SortOrder
+  brand?: Prisma.SortOrderInput | Prisma.SortOrder
+  type?: Prisma.SortOrderInput | Prisma.SortOrder
+  color?: Prisma.SortOrderInput | Prisma.SortOrder
+  weight?: Prisma.SortOrderInput | Prisma.SortOrder
+  length?: Prisma.SortOrderInput | Prisma.SortOrder
+  width?: Prisma.SortOrderInput | Prisma.SortOrder
+  height?: Prisma.SortOrderInput | Prisma.SortOrder
+  movementType?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   createdById?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -399,6 +531,16 @@ export type ItemScalarWhereWithAggregatesInput = {
   maxStockLevel?: Prisma.IntWithAggregatesFilter<"Item"> | number
   currentStock?: Prisma.IntWithAggregatesFilter<"Item"> | number
   isActive?: Prisma.BoolWithAggregatesFilter<"Item"> | boolean
+  imagePath?: Prisma.StringNullableWithAggregatesFilter<"Item"> | string | null
+  barcode?: Prisma.StringNullableWithAggregatesFilter<"Item"> | string | null
+  brand?: Prisma.StringNullableWithAggregatesFilter<"Item"> | string | null
+  type?: Prisma.StringNullableWithAggregatesFilter<"Item"> | string | null
+  color?: Prisma.StringNullableWithAggregatesFilter<"Item"> | string | null
+  weight?: Prisma.FloatNullableWithAggregatesFilter<"Item"> | number | null
+  length?: Prisma.FloatNullableWithAggregatesFilter<"Item"> | number | null
+  width?: Prisma.FloatNullableWithAggregatesFilter<"Item"> | number | null
+  height?: Prisma.FloatNullableWithAggregatesFilter<"Item"> | number | null
+  movementType?: Prisma.StringNullableWithAggregatesFilter<"Item"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Item"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Item"> | Date | string
   createdById?: Prisma.StringNullableWithAggregatesFilter<"Item"> | string | null
@@ -413,6 +555,16 @@ export type ItemCreateInput = {
   maxStockLevel?: number
   currentStock?: number
   isActive?: boolean
+  imagePath?: string | null
+  barcode?: string | null
+  brand?: string | null
+  type?: string | null
+  color?: string | null
+  weight?: number | null
+  length?: number | null
+  width?: number | null
+  height?: number | null
+  movementType?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   category: Prisma.CategoryCreateNestedOneWithoutItemsInput
@@ -428,6 +580,8 @@ export type ItemCreateInput = {
   priceHistories?: Prisma.ItemPriceHistoryCreateNestedManyWithoutItemInput
   vendorSupplies?: Prisma.VendorItemCreateNestedManyWithoutItemInput
   rabLines?: Prisma.RABLineCreateNestedManyWithoutItemInput
+  partnerPrices?: Prisma.PartnerItemPriceCreateNestedManyWithoutItemInput
+  warehouseStocks?: Prisma.WarehouseStockCreateNestedManyWithoutItemInput
 }
 
 export type ItemUncheckedCreateInput = {
@@ -441,6 +595,16 @@ export type ItemUncheckedCreateInput = {
   maxStockLevel?: number
   currentStock?: number
   isActive?: boolean
+  imagePath?: string | null
+  barcode?: string | null
+  brand?: string | null
+  type?: string | null
+  color?: string | null
+  weight?: number | null
+  length?: number | null
+  width?: number | null
+  height?: number | null
+  movementType?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   createdById?: string | null
@@ -454,6 +618,8 @@ export type ItemUncheckedCreateInput = {
   priceHistories?: Prisma.ItemPriceHistoryUncheckedCreateNestedManyWithoutItemInput
   vendorSupplies?: Prisma.VendorItemUncheckedCreateNestedManyWithoutItemInput
   rabLines?: Prisma.RABLineUncheckedCreateNestedManyWithoutItemInput
+  partnerPrices?: Prisma.PartnerItemPriceUncheckedCreateNestedManyWithoutItemInput
+  warehouseStocks?: Prisma.WarehouseStockUncheckedCreateNestedManyWithoutItemInput
 }
 
 export type ItemUpdateInput = {
@@ -465,6 +631,16 @@ export type ItemUpdateInput = {
   maxStockLevel?: Prisma.IntFieldUpdateOperationsInput | number
   currentStock?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  imagePath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  weight?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  length?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  width?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  height?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  movementType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   category?: Prisma.CategoryUpdateOneRequiredWithoutItemsNestedInput
@@ -480,6 +656,8 @@ export type ItemUpdateInput = {
   priceHistories?: Prisma.ItemPriceHistoryUpdateManyWithoutItemNestedInput
   vendorSupplies?: Prisma.VendorItemUpdateManyWithoutItemNestedInput
   rabLines?: Prisma.RABLineUpdateManyWithoutItemNestedInput
+  partnerPrices?: Prisma.PartnerItemPriceUpdateManyWithoutItemNestedInput
+  warehouseStocks?: Prisma.WarehouseStockUpdateManyWithoutItemNestedInput
 }
 
 export type ItemUncheckedUpdateInput = {
@@ -493,6 +671,16 @@ export type ItemUncheckedUpdateInput = {
   maxStockLevel?: Prisma.IntFieldUpdateOperationsInput | number
   currentStock?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  imagePath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  weight?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  length?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  width?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  height?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  movementType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -506,6 +694,8 @@ export type ItemUncheckedUpdateInput = {
   priceHistories?: Prisma.ItemPriceHistoryUncheckedUpdateManyWithoutItemNestedInput
   vendorSupplies?: Prisma.VendorItemUncheckedUpdateManyWithoutItemNestedInput
   rabLines?: Prisma.RABLineUncheckedUpdateManyWithoutItemNestedInput
+  partnerPrices?: Prisma.PartnerItemPriceUncheckedUpdateManyWithoutItemNestedInput
+  warehouseStocks?: Prisma.WarehouseStockUncheckedUpdateManyWithoutItemNestedInput
 }
 
 export type ItemCreateManyInput = {
@@ -519,6 +709,16 @@ export type ItemCreateManyInput = {
   maxStockLevel?: number
   currentStock?: number
   isActive?: boolean
+  imagePath?: string | null
+  barcode?: string | null
+  brand?: string | null
+  type?: string | null
+  color?: string | null
+  weight?: number | null
+  length?: number | null
+  width?: number | null
+  height?: number | null
+  movementType?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   createdById?: string | null
@@ -533,6 +733,16 @@ export type ItemUpdateManyMutationInput = {
   maxStockLevel?: Prisma.IntFieldUpdateOperationsInput | number
   currentStock?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  imagePath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  weight?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  length?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  width?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  height?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  movementType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -548,6 +758,16 @@ export type ItemUncheckedUpdateManyInput = {
   maxStockLevel?: Prisma.IntFieldUpdateOperationsInput | number
   currentStock?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  imagePath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  weight?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  length?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  width?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  height?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  movementType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -579,6 +799,16 @@ export type ItemCountOrderByAggregateInput = {
   maxStockLevel?: Prisma.SortOrder
   currentStock?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  imagePath?: Prisma.SortOrder
+  barcode?: Prisma.SortOrder
+  brand?: Prisma.SortOrder
+  type?: Prisma.SortOrder
+  color?: Prisma.SortOrder
+  weight?: Prisma.SortOrder
+  length?: Prisma.SortOrder
+  width?: Prisma.SortOrder
+  height?: Prisma.SortOrder
+  movementType?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   createdById?: Prisma.SortOrder
@@ -588,6 +818,10 @@ export type ItemAvgOrderByAggregateInput = {
   minStockLevel?: Prisma.SortOrder
   maxStockLevel?: Prisma.SortOrder
   currentStock?: Prisma.SortOrder
+  weight?: Prisma.SortOrder
+  length?: Prisma.SortOrder
+  width?: Prisma.SortOrder
+  height?: Prisma.SortOrder
 }
 
 export type ItemMaxOrderByAggregateInput = {
@@ -601,6 +835,16 @@ export type ItemMaxOrderByAggregateInput = {
   maxStockLevel?: Prisma.SortOrder
   currentStock?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  imagePath?: Prisma.SortOrder
+  barcode?: Prisma.SortOrder
+  brand?: Prisma.SortOrder
+  type?: Prisma.SortOrder
+  color?: Prisma.SortOrder
+  weight?: Prisma.SortOrder
+  length?: Prisma.SortOrder
+  width?: Prisma.SortOrder
+  height?: Prisma.SortOrder
+  movementType?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   createdById?: Prisma.SortOrder
@@ -617,6 +861,16 @@ export type ItemMinOrderByAggregateInput = {
   maxStockLevel?: Prisma.SortOrder
   currentStock?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  imagePath?: Prisma.SortOrder
+  barcode?: Prisma.SortOrder
+  brand?: Prisma.SortOrder
+  type?: Prisma.SortOrder
+  color?: Prisma.SortOrder
+  weight?: Prisma.SortOrder
+  length?: Prisma.SortOrder
+  width?: Prisma.SortOrder
+  height?: Prisma.SortOrder
+  movementType?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   createdById?: Prisma.SortOrder
@@ -626,6 +880,10 @@ export type ItemSumOrderByAggregateInput = {
   minStockLevel?: Prisma.SortOrder
   maxStockLevel?: Prisma.SortOrder
   currentStock?: Prisma.SortOrder
+  weight?: Prisma.SortOrder
+  length?: Prisma.SortOrder
+  width?: Prisma.SortOrder
+  height?: Prisma.SortOrder
 }
 
 export type ItemCreateNestedManyWithoutCreatedByInput = {
@@ -754,6 +1012,20 @@ export type ItemUncheckedUpdateManyWithoutUomNestedInput = {
   deleteMany?: Prisma.ItemScalarWhereInput | Prisma.ItemScalarWhereInput[]
 }
 
+export type ItemCreateNestedOneWithoutWarehouseStocksInput = {
+  create?: Prisma.XOR<Prisma.ItemCreateWithoutWarehouseStocksInput, Prisma.ItemUncheckedCreateWithoutWarehouseStocksInput>
+  connectOrCreate?: Prisma.ItemCreateOrConnectWithoutWarehouseStocksInput
+  connect?: Prisma.ItemWhereUniqueInput
+}
+
+export type ItemUpdateOneRequiredWithoutWarehouseStocksNestedInput = {
+  create?: Prisma.XOR<Prisma.ItemCreateWithoutWarehouseStocksInput, Prisma.ItemUncheckedCreateWithoutWarehouseStocksInput>
+  connectOrCreate?: Prisma.ItemCreateOrConnectWithoutWarehouseStocksInput
+  upsert?: Prisma.ItemUpsertWithoutWarehouseStocksInput
+  connect?: Prisma.ItemWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ItemUpdateToOneWithWhereWithoutWarehouseStocksInput, Prisma.ItemUpdateWithoutWarehouseStocksInput>, Prisma.ItemUncheckedUpdateWithoutWarehouseStocksInput>
+}
+
 export type ItemCreateNestedOneWithoutVendorSuppliesInput = {
   create?: Prisma.XOR<Prisma.ItemCreateWithoutVendorSuppliesInput, Prisma.ItemUncheckedCreateWithoutVendorSuppliesInput>
   connectOrCreate?: Prisma.ItemCreateOrConnectWithoutVendorSuppliesInput
@@ -768,8 +1040,8 @@ export type ItemUpdateOneRequiredWithoutVendorSuppliesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ItemUpdateToOneWithWhereWithoutVendorSuppliesInput, Prisma.ItemUpdateWithoutVendorSuppliesInput>, Prisma.ItemUncheckedUpdateWithoutVendorSuppliesInput>
 }
 
-export type IntFieldUpdateOperationsInput = {
-  set?: number
+export type NullableFloatFieldUpdateOperationsInput = {
+  set?: number | null
   increment?: number
   decrement?: number
   multiply?: number
@@ -846,6 +1118,20 @@ export type ItemUpdateOneRequiredWithoutOutboundItemsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ItemUpdateToOneWithWhereWithoutOutboundItemsInput, Prisma.ItemUpdateWithoutOutboundItemsInput>, Prisma.ItemUncheckedUpdateWithoutOutboundItemsInput>
 }
 
+export type ItemCreateNestedOneWithoutPartnerPricesInput = {
+  create?: Prisma.XOR<Prisma.ItemCreateWithoutPartnerPricesInput, Prisma.ItemUncheckedCreateWithoutPartnerPricesInput>
+  connectOrCreate?: Prisma.ItemCreateOrConnectWithoutPartnerPricesInput
+  connect?: Prisma.ItemWhereUniqueInput
+}
+
+export type ItemUpdateOneRequiredWithoutPartnerPricesNestedInput = {
+  create?: Prisma.XOR<Prisma.ItemCreateWithoutPartnerPricesInput, Prisma.ItemUncheckedCreateWithoutPartnerPricesInput>
+  connectOrCreate?: Prisma.ItemCreateOrConnectWithoutPartnerPricesInput
+  upsert?: Prisma.ItemUpsertWithoutPartnerPricesInput
+  connect?: Prisma.ItemWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ItemUpdateToOneWithWhereWithoutPartnerPricesInput, Prisma.ItemUpdateWithoutPartnerPricesInput>, Prisma.ItemUncheckedUpdateWithoutPartnerPricesInput>
+}
+
 export type ItemCreateNestedOneWithoutStockCardsInput = {
   create?: Prisma.XOR<Prisma.ItemCreateWithoutStockCardsInput, Prisma.ItemUncheckedCreateWithoutStockCardsInput>
   connectOrCreate?: Prisma.ItemCreateOrConnectWithoutStockCardsInput
@@ -911,6 +1197,16 @@ export type ItemCreateWithoutCreatedByInput = {
   maxStockLevel?: number
   currentStock?: number
   isActive?: boolean
+  imagePath?: string | null
+  barcode?: string | null
+  brand?: string | null
+  type?: string | null
+  color?: string | null
+  weight?: number | null
+  length?: number | null
+  width?: number | null
+  height?: number | null
+  movementType?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   category: Prisma.CategoryCreateNestedOneWithoutItemsInput
@@ -925,6 +1221,8 @@ export type ItemCreateWithoutCreatedByInput = {
   priceHistories?: Prisma.ItemPriceHistoryCreateNestedManyWithoutItemInput
   vendorSupplies?: Prisma.VendorItemCreateNestedManyWithoutItemInput
   rabLines?: Prisma.RABLineCreateNestedManyWithoutItemInput
+  partnerPrices?: Prisma.PartnerItemPriceCreateNestedManyWithoutItemInput
+  warehouseStocks?: Prisma.WarehouseStockCreateNestedManyWithoutItemInput
 }
 
 export type ItemUncheckedCreateWithoutCreatedByInput = {
@@ -938,6 +1236,16 @@ export type ItemUncheckedCreateWithoutCreatedByInput = {
   maxStockLevel?: number
   currentStock?: number
   isActive?: boolean
+  imagePath?: string | null
+  barcode?: string | null
+  brand?: string | null
+  type?: string | null
+  color?: string | null
+  weight?: number | null
+  length?: number | null
+  width?: number | null
+  height?: number | null
+  movementType?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   purchaseRequestItems?: Prisma.PurchaseRequestItemUncheckedCreateNestedManyWithoutItemInput
@@ -950,6 +1258,8 @@ export type ItemUncheckedCreateWithoutCreatedByInput = {
   priceHistories?: Prisma.ItemPriceHistoryUncheckedCreateNestedManyWithoutItemInput
   vendorSupplies?: Prisma.VendorItemUncheckedCreateNestedManyWithoutItemInput
   rabLines?: Prisma.RABLineUncheckedCreateNestedManyWithoutItemInput
+  partnerPrices?: Prisma.PartnerItemPriceUncheckedCreateNestedManyWithoutItemInput
+  warehouseStocks?: Prisma.WarehouseStockUncheckedCreateNestedManyWithoutItemInput
 }
 
 export type ItemCreateOrConnectWithoutCreatedByInput = {
@@ -992,6 +1302,16 @@ export type ItemScalarWhereInput = {
   maxStockLevel?: Prisma.IntFilter<"Item"> | number
   currentStock?: Prisma.IntFilter<"Item"> | number
   isActive?: Prisma.BoolFilter<"Item"> | boolean
+  imagePath?: Prisma.StringNullableFilter<"Item"> | string | null
+  barcode?: Prisma.StringNullableFilter<"Item"> | string | null
+  brand?: Prisma.StringNullableFilter<"Item"> | string | null
+  type?: Prisma.StringNullableFilter<"Item"> | string | null
+  color?: Prisma.StringNullableFilter<"Item"> | string | null
+  weight?: Prisma.FloatNullableFilter<"Item"> | number | null
+  length?: Prisma.FloatNullableFilter<"Item"> | number | null
+  width?: Prisma.FloatNullableFilter<"Item"> | number | null
+  height?: Prisma.FloatNullableFilter<"Item"> | number | null
+  movementType?: Prisma.StringNullableFilter<"Item"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Item"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Item"> | Date | string
   createdById?: Prisma.StringNullableFilter<"Item"> | string | null
@@ -1006,6 +1326,16 @@ export type ItemCreateWithoutCategoryInput = {
   maxStockLevel?: number
   currentStock?: number
   isActive?: boolean
+  imagePath?: string | null
+  barcode?: string | null
+  brand?: string | null
+  type?: string | null
+  color?: string | null
+  weight?: number | null
+  length?: number | null
+  width?: number | null
+  height?: number | null
+  movementType?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   uom: Prisma.UOMCreateNestedOneWithoutItemsInput
@@ -1020,6 +1350,8 @@ export type ItemCreateWithoutCategoryInput = {
   priceHistories?: Prisma.ItemPriceHistoryCreateNestedManyWithoutItemInput
   vendorSupplies?: Prisma.VendorItemCreateNestedManyWithoutItemInput
   rabLines?: Prisma.RABLineCreateNestedManyWithoutItemInput
+  partnerPrices?: Prisma.PartnerItemPriceCreateNestedManyWithoutItemInput
+  warehouseStocks?: Prisma.WarehouseStockCreateNestedManyWithoutItemInput
 }
 
 export type ItemUncheckedCreateWithoutCategoryInput = {
@@ -1032,6 +1364,16 @@ export type ItemUncheckedCreateWithoutCategoryInput = {
   maxStockLevel?: number
   currentStock?: number
   isActive?: boolean
+  imagePath?: string | null
+  barcode?: string | null
+  brand?: string | null
+  type?: string | null
+  color?: string | null
+  weight?: number | null
+  length?: number | null
+  width?: number | null
+  height?: number | null
+  movementType?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   createdById?: string | null
@@ -1045,6 +1387,8 @@ export type ItemUncheckedCreateWithoutCategoryInput = {
   priceHistories?: Prisma.ItemPriceHistoryUncheckedCreateNestedManyWithoutItemInput
   vendorSupplies?: Prisma.VendorItemUncheckedCreateNestedManyWithoutItemInput
   rabLines?: Prisma.RABLineUncheckedCreateNestedManyWithoutItemInput
+  partnerPrices?: Prisma.PartnerItemPriceUncheckedCreateNestedManyWithoutItemInput
+  warehouseStocks?: Prisma.WarehouseStockUncheckedCreateNestedManyWithoutItemInput
 }
 
 export type ItemCreateOrConnectWithoutCategoryInput = {
@@ -1082,6 +1426,16 @@ export type ItemCreateWithoutUomInput = {
   maxStockLevel?: number
   currentStock?: number
   isActive?: boolean
+  imagePath?: string | null
+  barcode?: string | null
+  brand?: string | null
+  type?: string | null
+  color?: string | null
+  weight?: number | null
+  length?: number | null
+  width?: number | null
+  height?: number | null
+  movementType?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   category: Prisma.CategoryCreateNestedOneWithoutItemsInput
@@ -1096,6 +1450,8 @@ export type ItemCreateWithoutUomInput = {
   priceHistories?: Prisma.ItemPriceHistoryCreateNestedManyWithoutItemInput
   vendorSupplies?: Prisma.VendorItemCreateNestedManyWithoutItemInput
   rabLines?: Prisma.RABLineCreateNestedManyWithoutItemInput
+  partnerPrices?: Prisma.PartnerItemPriceCreateNestedManyWithoutItemInput
+  warehouseStocks?: Prisma.WarehouseStockCreateNestedManyWithoutItemInput
 }
 
 export type ItemUncheckedCreateWithoutUomInput = {
@@ -1108,6 +1464,16 @@ export type ItemUncheckedCreateWithoutUomInput = {
   maxStockLevel?: number
   currentStock?: number
   isActive?: boolean
+  imagePath?: string | null
+  barcode?: string | null
+  brand?: string | null
+  type?: string | null
+  color?: string | null
+  weight?: number | null
+  length?: number | null
+  width?: number | null
+  height?: number | null
+  movementType?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   createdById?: string | null
@@ -1121,6 +1487,8 @@ export type ItemUncheckedCreateWithoutUomInput = {
   priceHistories?: Prisma.ItemPriceHistoryUncheckedCreateNestedManyWithoutItemInput
   vendorSupplies?: Prisma.VendorItemUncheckedCreateNestedManyWithoutItemInput
   rabLines?: Prisma.RABLineUncheckedCreateNestedManyWithoutItemInput
+  partnerPrices?: Prisma.PartnerItemPriceUncheckedCreateNestedManyWithoutItemInput
+  warehouseStocks?: Prisma.WarehouseStockUncheckedCreateNestedManyWithoutItemInput
 }
 
 export type ItemCreateOrConnectWithoutUomInput = {
@@ -1149,6 +1517,170 @@ export type ItemUpdateManyWithWhereWithoutUomInput = {
   data: Prisma.XOR<Prisma.ItemUpdateManyMutationInput, Prisma.ItemUncheckedUpdateManyWithoutUomInput>
 }
 
+export type ItemCreateWithoutWarehouseStocksInput = {
+  id?: string
+  sku: string
+  name: string
+  description?: string | null
+  minStockLevel?: number
+  maxStockLevel?: number
+  currentStock?: number
+  isActive?: boolean
+  imagePath?: string | null
+  barcode?: string | null
+  brand?: string | null
+  type?: string | null
+  color?: string | null
+  weight?: number | null
+  length?: number | null
+  width?: number | null
+  height?: number | null
+  movementType?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  category: Prisma.CategoryCreateNestedOneWithoutItemsInput
+  uom: Prisma.UOMCreateNestedOneWithoutItemsInput
+  createdBy?: Prisma.UserCreateNestedOneWithoutCreatedItemsInput
+  purchaseRequestItems?: Prisma.PurchaseRequestItemCreateNestedManyWithoutItemInput
+  inboundItems?: Prisma.InboundItemCreateNestedManyWithoutItemInput
+  outboundItems?: Prisma.OutboundItemCreateNestedManyWithoutItemInput
+  stockCards?: Prisma.StockCardCreateNestedManyWithoutItemInput
+  stockOpnameCounts?: Prisma.StockOpnameCountCreateNestedManyWithoutItemInput
+  stockAdjustmentItems?: Prisma.StockAdjustmentItemCreateNestedManyWithoutItemInput
+  returnItems?: Prisma.ReturnItemCreateNestedManyWithoutItemInput
+  priceHistories?: Prisma.ItemPriceHistoryCreateNestedManyWithoutItemInput
+  vendorSupplies?: Prisma.VendorItemCreateNestedManyWithoutItemInput
+  rabLines?: Prisma.RABLineCreateNestedManyWithoutItemInput
+  partnerPrices?: Prisma.PartnerItemPriceCreateNestedManyWithoutItemInput
+}
+
+export type ItemUncheckedCreateWithoutWarehouseStocksInput = {
+  id?: string
+  sku: string
+  name: string
+  description?: string | null
+  categoryId: string
+  uomId: string
+  minStockLevel?: number
+  maxStockLevel?: number
+  currentStock?: number
+  isActive?: boolean
+  imagePath?: string | null
+  barcode?: string | null
+  brand?: string | null
+  type?: string | null
+  color?: string | null
+  weight?: number | null
+  length?: number | null
+  width?: number | null
+  height?: number | null
+  movementType?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  createdById?: string | null
+  purchaseRequestItems?: Prisma.PurchaseRequestItemUncheckedCreateNestedManyWithoutItemInput
+  inboundItems?: Prisma.InboundItemUncheckedCreateNestedManyWithoutItemInput
+  outboundItems?: Prisma.OutboundItemUncheckedCreateNestedManyWithoutItemInput
+  stockCards?: Prisma.StockCardUncheckedCreateNestedManyWithoutItemInput
+  stockOpnameCounts?: Prisma.StockOpnameCountUncheckedCreateNestedManyWithoutItemInput
+  stockAdjustmentItems?: Prisma.StockAdjustmentItemUncheckedCreateNestedManyWithoutItemInput
+  returnItems?: Prisma.ReturnItemUncheckedCreateNestedManyWithoutItemInput
+  priceHistories?: Prisma.ItemPriceHistoryUncheckedCreateNestedManyWithoutItemInput
+  vendorSupplies?: Prisma.VendorItemUncheckedCreateNestedManyWithoutItemInput
+  rabLines?: Prisma.RABLineUncheckedCreateNestedManyWithoutItemInput
+  partnerPrices?: Prisma.PartnerItemPriceUncheckedCreateNestedManyWithoutItemInput
+}
+
+export type ItemCreateOrConnectWithoutWarehouseStocksInput = {
+  where: Prisma.ItemWhereUniqueInput
+  create: Prisma.XOR<Prisma.ItemCreateWithoutWarehouseStocksInput, Prisma.ItemUncheckedCreateWithoutWarehouseStocksInput>
+}
+
+export type ItemUpsertWithoutWarehouseStocksInput = {
+  update: Prisma.XOR<Prisma.ItemUpdateWithoutWarehouseStocksInput, Prisma.ItemUncheckedUpdateWithoutWarehouseStocksInput>
+  create: Prisma.XOR<Prisma.ItemCreateWithoutWarehouseStocksInput, Prisma.ItemUncheckedCreateWithoutWarehouseStocksInput>
+  where?: Prisma.ItemWhereInput
+}
+
+export type ItemUpdateToOneWithWhereWithoutWarehouseStocksInput = {
+  where?: Prisma.ItemWhereInput
+  data: Prisma.XOR<Prisma.ItemUpdateWithoutWarehouseStocksInput, Prisma.ItemUncheckedUpdateWithoutWarehouseStocksInput>
+}
+
+export type ItemUpdateWithoutWarehouseStocksInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  sku?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  minStockLevel?: Prisma.IntFieldUpdateOperationsInput | number
+  maxStockLevel?: Prisma.IntFieldUpdateOperationsInput | number
+  currentStock?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  imagePath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  weight?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  length?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  width?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  height?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  movementType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  category?: Prisma.CategoryUpdateOneRequiredWithoutItemsNestedInput
+  uom?: Prisma.UOMUpdateOneRequiredWithoutItemsNestedInput
+  createdBy?: Prisma.UserUpdateOneWithoutCreatedItemsNestedInput
+  purchaseRequestItems?: Prisma.PurchaseRequestItemUpdateManyWithoutItemNestedInput
+  inboundItems?: Prisma.InboundItemUpdateManyWithoutItemNestedInput
+  outboundItems?: Prisma.OutboundItemUpdateManyWithoutItemNestedInput
+  stockCards?: Prisma.StockCardUpdateManyWithoutItemNestedInput
+  stockOpnameCounts?: Prisma.StockOpnameCountUpdateManyWithoutItemNestedInput
+  stockAdjustmentItems?: Prisma.StockAdjustmentItemUpdateManyWithoutItemNestedInput
+  returnItems?: Prisma.ReturnItemUpdateManyWithoutItemNestedInput
+  priceHistories?: Prisma.ItemPriceHistoryUpdateManyWithoutItemNestedInput
+  vendorSupplies?: Prisma.VendorItemUpdateManyWithoutItemNestedInput
+  rabLines?: Prisma.RABLineUpdateManyWithoutItemNestedInput
+  partnerPrices?: Prisma.PartnerItemPriceUpdateManyWithoutItemNestedInput
+}
+
+export type ItemUncheckedUpdateWithoutWarehouseStocksInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  sku?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  categoryId?: Prisma.StringFieldUpdateOperationsInput | string
+  uomId?: Prisma.StringFieldUpdateOperationsInput | string
+  minStockLevel?: Prisma.IntFieldUpdateOperationsInput | number
+  maxStockLevel?: Prisma.IntFieldUpdateOperationsInput | number
+  currentStock?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  imagePath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  weight?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  length?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  width?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  height?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  movementType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  purchaseRequestItems?: Prisma.PurchaseRequestItemUncheckedUpdateManyWithoutItemNestedInput
+  inboundItems?: Prisma.InboundItemUncheckedUpdateManyWithoutItemNestedInput
+  outboundItems?: Prisma.OutboundItemUncheckedUpdateManyWithoutItemNestedInput
+  stockCards?: Prisma.StockCardUncheckedUpdateManyWithoutItemNestedInput
+  stockOpnameCounts?: Prisma.StockOpnameCountUncheckedUpdateManyWithoutItemNestedInput
+  stockAdjustmentItems?: Prisma.StockAdjustmentItemUncheckedUpdateManyWithoutItemNestedInput
+  returnItems?: Prisma.ReturnItemUncheckedUpdateManyWithoutItemNestedInput
+  priceHistories?: Prisma.ItemPriceHistoryUncheckedUpdateManyWithoutItemNestedInput
+  vendorSupplies?: Prisma.VendorItemUncheckedUpdateManyWithoutItemNestedInput
+  rabLines?: Prisma.RABLineUncheckedUpdateManyWithoutItemNestedInput
+  partnerPrices?: Prisma.PartnerItemPriceUncheckedUpdateManyWithoutItemNestedInput
+}
+
 export type ItemCreateWithoutVendorSuppliesInput = {
   id?: string
   sku: string
@@ -1158,6 +1690,16 @@ export type ItemCreateWithoutVendorSuppliesInput = {
   maxStockLevel?: number
   currentStock?: number
   isActive?: boolean
+  imagePath?: string | null
+  barcode?: string | null
+  brand?: string | null
+  type?: string | null
+  color?: string | null
+  weight?: number | null
+  length?: number | null
+  width?: number | null
+  height?: number | null
+  movementType?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   category: Prisma.CategoryCreateNestedOneWithoutItemsInput
@@ -1172,6 +1714,8 @@ export type ItemCreateWithoutVendorSuppliesInput = {
   returnItems?: Prisma.ReturnItemCreateNestedManyWithoutItemInput
   priceHistories?: Prisma.ItemPriceHistoryCreateNestedManyWithoutItemInput
   rabLines?: Prisma.RABLineCreateNestedManyWithoutItemInput
+  partnerPrices?: Prisma.PartnerItemPriceCreateNestedManyWithoutItemInput
+  warehouseStocks?: Prisma.WarehouseStockCreateNestedManyWithoutItemInput
 }
 
 export type ItemUncheckedCreateWithoutVendorSuppliesInput = {
@@ -1185,6 +1729,16 @@ export type ItemUncheckedCreateWithoutVendorSuppliesInput = {
   maxStockLevel?: number
   currentStock?: number
   isActive?: boolean
+  imagePath?: string | null
+  barcode?: string | null
+  brand?: string | null
+  type?: string | null
+  color?: string | null
+  weight?: number | null
+  length?: number | null
+  width?: number | null
+  height?: number | null
+  movementType?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   createdById?: string | null
@@ -1197,6 +1751,8 @@ export type ItemUncheckedCreateWithoutVendorSuppliesInput = {
   returnItems?: Prisma.ReturnItemUncheckedCreateNestedManyWithoutItemInput
   priceHistories?: Prisma.ItemPriceHistoryUncheckedCreateNestedManyWithoutItemInput
   rabLines?: Prisma.RABLineUncheckedCreateNestedManyWithoutItemInput
+  partnerPrices?: Prisma.PartnerItemPriceUncheckedCreateNestedManyWithoutItemInput
+  warehouseStocks?: Prisma.WarehouseStockUncheckedCreateNestedManyWithoutItemInput
 }
 
 export type ItemCreateOrConnectWithoutVendorSuppliesInput = {
@@ -1224,6 +1780,16 @@ export type ItemUpdateWithoutVendorSuppliesInput = {
   maxStockLevel?: Prisma.IntFieldUpdateOperationsInput | number
   currentStock?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  imagePath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  weight?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  length?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  width?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  height?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  movementType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   category?: Prisma.CategoryUpdateOneRequiredWithoutItemsNestedInput
@@ -1238,6 +1804,8 @@ export type ItemUpdateWithoutVendorSuppliesInput = {
   returnItems?: Prisma.ReturnItemUpdateManyWithoutItemNestedInput
   priceHistories?: Prisma.ItemPriceHistoryUpdateManyWithoutItemNestedInput
   rabLines?: Prisma.RABLineUpdateManyWithoutItemNestedInput
+  partnerPrices?: Prisma.PartnerItemPriceUpdateManyWithoutItemNestedInput
+  warehouseStocks?: Prisma.WarehouseStockUpdateManyWithoutItemNestedInput
 }
 
 export type ItemUncheckedUpdateWithoutVendorSuppliesInput = {
@@ -1251,6 +1819,16 @@ export type ItemUncheckedUpdateWithoutVendorSuppliesInput = {
   maxStockLevel?: Prisma.IntFieldUpdateOperationsInput | number
   currentStock?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  imagePath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  weight?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  length?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  width?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  height?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  movementType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1263,6 +1841,8 @@ export type ItemUncheckedUpdateWithoutVendorSuppliesInput = {
   returnItems?: Prisma.ReturnItemUncheckedUpdateManyWithoutItemNestedInput
   priceHistories?: Prisma.ItemPriceHistoryUncheckedUpdateManyWithoutItemNestedInput
   rabLines?: Prisma.RABLineUncheckedUpdateManyWithoutItemNestedInput
+  partnerPrices?: Prisma.PartnerItemPriceUncheckedUpdateManyWithoutItemNestedInput
+  warehouseStocks?: Prisma.WarehouseStockUncheckedUpdateManyWithoutItemNestedInput
 }
 
 export type ItemCreateWithoutPriceHistoriesInput = {
@@ -1274,6 +1854,16 @@ export type ItemCreateWithoutPriceHistoriesInput = {
   maxStockLevel?: number
   currentStock?: number
   isActive?: boolean
+  imagePath?: string | null
+  barcode?: string | null
+  brand?: string | null
+  type?: string | null
+  color?: string | null
+  weight?: number | null
+  length?: number | null
+  width?: number | null
+  height?: number | null
+  movementType?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   category: Prisma.CategoryCreateNestedOneWithoutItemsInput
@@ -1288,6 +1878,8 @@ export type ItemCreateWithoutPriceHistoriesInput = {
   returnItems?: Prisma.ReturnItemCreateNestedManyWithoutItemInput
   vendorSupplies?: Prisma.VendorItemCreateNestedManyWithoutItemInput
   rabLines?: Prisma.RABLineCreateNestedManyWithoutItemInput
+  partnerPrices?: Prisma.PartnerItemPriceCreateNestedManyWithoutItemInput
+  warehouseStocks?: Prisma.WarehouseStockCreateNestedManyWithoutItemInput
 }
 
 export type ItemUncheckedCreateWithoutPriceHistoriesInput = {
@@ -1301,6 +1893,16 @@ export type ItemUncheckedCreateWithoutPriceHistoriesInput = {
   maxStockLevel?: number
   currentStock?: number
   isActive?: boolean
+  imagePath?: string | null
+  barcode?: string | null
+  brand?: string | null
+  type?: string | null
+  color?: string | null
+  weight?: number | null
+  length?: number | null
+  width?: number | null
+  height?: number | null
+  movementType?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   createdById?: string | null
@@ -1313,6 +1915,8 @@ export type ItemUncheckedCreateWithoutPriceHistoriesInput = {
   returnItems?: Prisma.ReturnItemUncheckedCreateNestedManyWithoutItemInput
   vendorSupplies?: Prisma.VendorItemUncheckedCreateNestedManyWithoutItemInput
   rabLines?: Prisma.RABLineUncheckedCreateNestedManyWithoutItemInput
+  partnerPrices?: Prisma.PartnerItemPriceUncheckedCreateNestedManyWithoutItemInput
+  warehouseStocks?: Prisma.WarehouseStockUncheckedCreateNestedManyWithoutItemInput
 }
 
 export type ItemCreateOrConnectWithoutPriceHistoriesInput = {
@@ -1340,6 +1944,16 @@ export type ItemUpdateWithoutPriceHistoriesInput = {
   maxStockLevel?: Prisma.IntFieldUpdateOperationsInput | number
   currentStock?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  imagePath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  weight?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  length?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  width?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  height?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  movementType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   category?: Prisma.CategoryUpdateOneRequiredWithoutItemsNestedInput
@@ -1354,6 +1968,8 @@ export type ItemUpdateWithoutPriceHistoriesInput = {
   returnItems?: Prisma.ReturnItemUpdateManyWithoutItemNestedInput
   vendorSupplies?: Prisma.VendorItemUpdateManyWithoutItemNestedInput
   rabLines?: Prisma.RABLineUpdateManyWithoutItemNestedInput
+  partnerPrices?: Prisma.PartnerItemPriceUpdateManyWithoutItemNestedInput
+  warehouseStocks?: Prisma.WarehouseStockUpdateManyWithoutItemNestedInput
 }
 
 export type ItemUncheckedUpdateWithoutPriceHistoriesInput = {
@@ -1367,6 +1983,16 @@ export type ItemUncheckedUpdateWithoutPriceHistoriesInput = {
   maxStockLevel?: Prisma.IntFieldUpdateOperationsInput | number
   currentStock?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  imagePath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  weight?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  length?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  width?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  height?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  movementType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1379,6 +2005,8 @@ export type ItemUncheckedUpdateWithoutPriceHistoriesInput = {
   returnItems?: Prisma.ReturnItemUncheckedUpdateManyWithoutItemNestedInput
   vendorSupplies?: Prisma.VendorItemUncheckedUpdateManyWithoutItemNestedInput
   rabLines?: Prisma.RABLineUncheckedUpdateManyWithoutItemNestedInput
+  partnerPrices?: Prisma.PartnerItemPriceUncheckedUpdateManyWithoutItemNestedInput
+  warehouseStocks?: Prisma.WarehouseStockUncheckedUpdateManyWithoutItemNestedInput
 }
 
 export type ItemCreateWithoutRabLinesInput = {
@@ -1390,6 +2018,16 @@ export type ItemCreateWithoutRabLinesInput = {
   maxStockLevel?: number
   currentStock?: number
   isActive?: boolean
+  imagePath?: string | null
+  barcode?: string | null
+  brand?: string | null
+  type?: string | null
+  color?: string | null
+  weight?: number | null
+  length?: number | null
+  width?: number | null
+  height?: number | null
+  movementType?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   category: Prisma.CategoryCreateNestedOneWithoutItemsInput
@@ -1404,6 +2042,8 @@ export type ItemCreateWithoutRabLinesInput = {
   returnItems?: Prisma.ReturnItemCreateNestedManyWithoutItemInput
   priceHistories?: Prisma.ItemPriceHistoryCreateNestedManyWithoutItemInput
   vendorSupplies?: Prisma.VendorItemCreateNestedManyWithoutItemInput
+  partnerPrices?: Prisma.PartnerItemPriceCreateNestedManyWithoutItemInput
+  warehouseStocks?: Prisma.WarehouseStockCreateNestedManyWithoutItemInput
 }
 
 export type ItemUncheckedCreateWithoutRabLinesInput = {
@@ -1417,6 +2057,16 @@ export type ItemUncheckedCreateWithoutRabLinesInput = {
   maxStockLevel?: number
   currentStock?: number
   isActive?: boolean
+  imagePath?: string | null
+  barcode?: string | null
+  brand?: string | null
+  type?: string | null
+  color?: string | null
+  weight?: number | null
+  length?: number | null
+  width?: number | null
+  height?: number | null
+  movementType?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   createdById?: string | null
@@ -1429,6 +2079,8 @@ export type ItemUncheckedCreateWithoutRabLinesInput = {
   returnItems?: Prisma.ReturnItemUncheckedCreateNestedManyWithoutItemInput
   priceHistories?: Prisma.ItemPriceHistoryUncheckedCreateNestedManyWithoutItemInput
   vendorSupplies?: Prisma.VendorItemUncheckedCreateNestedManyWithoutItemInput
+  partnerPrices?: Prisma.PartnerItemPriceUncheckedCreateNestedManyWithoutItemInput
+  warehouseStocks?: Prisma.WarehouseStockUncheckedCreateNestedManyWithoutItemInput
 }
 
 export type ItemCreateOrConnectWithoutRabLinesInput = {
@@ -1456,6 +2108,16 @@ export type ItemUpdateWithoutRabLinesInput = {
   maxStockLevel?: Prisma.IntFieldUpdateOperationsInput | number
   currentStock?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  imagePath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  weight?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  length?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  width?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  height?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  movementType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   category?: Prisma.CategoryUpdateOneRequiredWithoutItemsNestedInput
@@ -1470,6 +2132,8 @@ export type ItemUpdateWithoutRabLinesInput = {
   returnItems?: Prisma.ReturnItemUpdateManyWithoutItemNestedInput
   priceHistories?: Prisma.ItemPriceHistoryUpdateManyWithoutItemNestedInput
   vendorSupplies?: Prisma.VendorItemUpdateManyWithoutItemNestedInput
+  partnerPrices?: Prisma.PartnerItemPriceUpdateManyWithoutItemNestedInput
+  warehouseStocks?: Prisma.WarehouseStockUpdateManyWithoutItemNestedInput
 }
 
 export type ItemUncheckedUpdateWithoutRabLinesInput = {
@@ -1483,6 +2147,16 @@ export type ItemUncheckedUpdateWithoutRabLinesInput = {
   maxStockLevel?: Prisma.IntFieldUpdateOperationsInput | number
   currentStock?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  imagePath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  weight?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  length?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  width?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  height?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  movementType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1495,6 +2169,8 @@ export type ItemUncheckedUpdateWithoutRabLinesInput = {
   returnItems?: Prisma.ReturnItemUncheckedUpdateManyWithoutItemNestedInput
   priceHistories?: Prisma.ItemPriceHistoryUncheckedUpdateManyWithoutItemNestedInput
   vendorSupplies?: Prisma.VendorItemUncheckedUpdateManyWithoutItemNestedInput
+  partnerPrices?: Prisma.PartnerItemPriceUncheckedUpdateManyWithoutItemNestedInput
+  warehouseStocks?: Prisma.WarehouseStockUncheckedUpdateManyWithoutItemNestedInput
 }
 
 export type ItemCreateWithoutPurchaseRequestItemsInput = {
@@ -1506,6 +2182,16 @@ export type ItemCreateWithoutPurchaseRequestItemsInput = {
   maxStockLevel?: number
   currentStock?: number
   isActive?: boolean
+  imagePath?: string | null
+  barcode?: string | null
+  brand?: string | null
+  type?: string | null
+  color?: string | null
+  weight?: number | null
+  length?: number | null
+  width?: number | null
+  height?: number | null
+  movementType?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   category: Prisma.CategoryCreateNestedOneWithoutItemsInput
@@ -1520,6 +2206,8 @@ export type ItemCreateWithoutPurchaseRequestItemsInput = {
   priceHistories?: Prisma.ItemPriceHistoryCreateNestedManyWithoutItemInput
   vendorSupplies?: Prisma.VendorItemCreateNestedManyWithoutItemInput
   rabLines?: Prisma.RABLineCreateNestedManyWithoutItemInput
+  partnerPrices?: Prisma.PartnerItemPriceCreateNestedManyWithoutItemInput
+  warehouseStocks?: Prisma.WarehouseStockCreateNestedManyWithoutItemInput
 }
 
 export type ItemUncheckedCreateWithoutPurchaseRequestItemsInput = {
@@ -1533,6 +2221,16 @@ export type ItemUncheckedCreateWithoutPurchaseRequestItemsInput = {
   maxStockLevel?: number
   currentStock?: number
   isActive?: boolean
+  imagePath?: string | null
+  barcode?: string | null
+  brand?: string | null
+  type?: string | null
+  color?: string | null
+  weight?: number | null
+  length?: number | null
+  width?: number | null
+  height?: number | null
+  movementType?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   createdById?: string | null
@@ -1545,6 +2243,8 @@ export type ItemUncheckedCreateWithoutPurchaseRequestItemsInput = {
   priceHistories?: Prisma.ItemPriceHistoryUncheckedCreateNestedManyWithoutItemInput
   vendorSupplies?: Prisma.VendorItemUncheckedCreateNestedManyWithoutItemInput
   rabLines?: Prisma.RABLineUncheckedCreateNestedManyWithoutItemInput
+  partnerPrices?: Prisma.PartnerItemPriceUncheckedCreateNestedManyWithoutItemInput
+  warehouseStocks?: Prisma.WarehouseStockUncheckedCreateNestedManyWithoutItemInput
 }
 
 export type ItemCreateOrConnectWithoutPurchaseRequestItemsInput = {
@@ -1572,6 +2272,16 @@ export type ItemUpdateWithoutPurchaseRequestItemsInput = {
   maxStockLevel?: Prisma.IntFieldUpdateOperationsInput | number
   currentStock?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  imagePath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  weight?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  length?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  width?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  height?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  movementType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   category?: Prisma.CategoryUpdateOneRequiredWithoutItemsNestedInput
@@ -1586,6 +2296,8 @@ export type ItemUpdateWithoutPurchaseRequestItemsInput = {
   priceHistories?: Prisma.ItemPriceHistoryUpdateManyWithoutItemNestedInput
   vendorSupplies?: Prisma.VendorItemUpdateManyWithoutItemNestedInput
   rabLines?: Prisma.RABLineUpdateManyWithoutItemNestedInput
+  partnerPrices?: Prisma.PartnerItemPriceUpdateManyWithoutItemNestedInput
+  warehouseStocks?: Prisma.WarehouseStockUpdateManyWithoutItemNestedInput
 }
 
 export type ItemUncheckedUpdateWithoutPurchaseRequestItemsInput = {
@@ -1599,6 +2311,16 @@ export type ItemUncheckedUpdateWithoutPurchaseRequestItemsInput = {
   maxStockLevel?: Prisma.IntFieldUpdateOperationsInput | number
   currentStock?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  imagePath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  weight?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  length?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  width?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  height?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  movementType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1611,6 +2333,8 @@ export type ItemUncheckedUpdateWithoutPurchaseRequestItemsInput = {
   priceHistories?: Prisma.ItemPriceHistoryUncheckedUpdateManyWithoutItemNestedInput
   vendorSupplies?: Prisma.VendorItemUncheckedUpdateManyWithoutItemNestedInput
   rabLines?: Prisma.RABLineUncheckedUpdateManyWithoutItemNestedInput
+  partnerPrices?: Prisma.PartnerItemPriceUncheckedUpdateManyWithoutItemNestedInput
+  warehouseStocks?: Prisma.WarehouseStockUncheckedUpdateManyWithoutItemNestedInput
 }
 
 export type ItemCreateWithoutInboundItemsInput = {
@@ -1622,6 +2346,16 @@ export type ItemCreateWithoutInboundItemsInput = {
   maxStockLevel?: number
   currentStock?: number
   isActive?: boolean
+  imagePath?: string | null
+  barcode?: string | null
+  brand?: string | null
+  type?: string | null
+  color?: string | null
+  weight?: number | null
+  length?: number | null
+  width?: number | null
+  height?: number | null
+  movementType?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   category: Prisma.CategoryCreateNestedOneWithoutItemsInput
@@ -1636,6 +2370,8 @@ export type ItemCreateWithoutInboundItemsInput = {
   priceHistories?: Prisma.ItemPriceHistoryCreateNestedManyWithoutItemInput
   vendorSupplies?: Prisma.VendorItemCreateNestedManyWithoutItemInput
   rabLines?: Prisma.RABLineCreateNestedManyWithoutItemInput
+  partnerPrices?: Prisma.PartnerItemPriceCreateNestedManyWithoutItemInput
+  warehouseStocks?: Prisma.WarehouseStockCreateNestedManyWithoutItemInput
 }
 
 export type ItemUncheckedCreateWithoutInboundItemsInput = {
@@ -1649,6 +2385,16 @@ export type ItemUncheckedCreateWithoutInboundItemsInput = {
   maxStockLevel?: number
   currentStock?: number
   isActive?: boolean
+  imagePath?: string | null
+  barcode?: string | null
+  brand?: string | null
+  type?: string | null
+  color?: string | null
+  weight?: number | null
+  length?: number | null
+  width?: number | null
+  height?: number | null
+  movementType?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   createdById?: string | null
@@ -1661,6 +2407,8 @@ export type ItemUncheckedCreateWithoutInboundItemsInput = {
   priceHistories?: Prisma.ItemPriceHistoryUncheckedCreateNestedManyWithoutItemInput
   vendorSupplies?: Prisma.VendorItemUncheckedCreateNestedManyWithoutItemInput
   rabLines?: Prisma.RABLineUncheckedCreateNestedManyWithoutItemInput
+  partnerPrices?: Prisma.PartnerItemPriceUncheckedCreateNestedManyWithoutItemInput
+  warehouseStocks?: Prisma.WarehouseStockUncheckedCreateNestedManyWithoutItemInput
 }
 
 export type ItemCreateOrConnectWithoutInboundItemsInput = {
@@ -1688,6 +2436,16 @@ export type ItemUpdateWithoutInboundItemsInput = {
   maxStockLevel?: Prisma.IntFieldUpdateOperationsInput | number
   currentStock?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  imagePath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  weight?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  length?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  width?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  height?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  movementType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   category?: Prisma.CategoryUpdateOneRequiredWithoutItemsNestedInput
@@ -1702,6 +2460,8 @@ export type ItemUpdateWithoutInboundItemsInput = {
   priceHistories?: Prisma.ItemPriceHistoryUpdateManyWithoutItemNestedInput
   vendorSupplies?: Prisma.VendorItemUpdateManyWithoutItemNestedInput
   rabLines?: Prisma.RABLineUpdateManyWithoutItemNestedInput
+  partnerPrices?: Prisma.PartnerItemPriceUpdateManyWithoutItemNestedInput
+  warehouseStocks?: Prisma.WarehouseStockUpdateManyWithoutItemNestedInput
 }
 
 export type ItemUncheckedUpdateWithoutInboundItemsInput = {
@@ -1715,6 +2475,16 @@ export type ItemUncheckedUpdateWithoutInboundItemsInput = {
   maxStockLevel?: Prisma.IntFieldUpdateOperationsInput | number
   currentStock?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  imagePath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  weight?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  length?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  width?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  height?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  movementType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1727,6 +2497,8 @@ export type ItemUncheckedUpdateWithoutInboundItemsInput = {
   priceHistories?: Prisma.ItemPriceHistoryUncheckedUpdateManyWithoutItemNestedInput
   vendorSupplies?: Prisma.VendorItemUncheckedUpdateManyWithoutItemNestedInput
   rabLines?: Prisma.RABLineUncheckedUpdateManyWithoutItemNestedInput
+  partnerPrices?: Prisma.PartnerItemPriceUncheckedUpdateManyWithoutItemNestedInput
+  warehouseStocks?: Prisma.WarehouseStockUncheckedUpdateManyWithoutItemNestedInput
 }
 
 export type ItemCreateWithoutOutboundItemsInput = {
@@ -1738,6 +2510,16 @@ export type ItemCreateWithoutOutboundItemsInput = {
   maxStockLevel?: number
   currentStock?: number
   isActive?: boolean
+  imagePath?: string | null
+  barcode?: string | null
+  brand?: string | null
+  type?: string | null
+  color?: string | null
+  weight?: number | null
+  length?: number | null
+  width?: number | null
+  height?: number | null
+  movementType?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   category: Prisma.CategoryCreateNestedOneWithoutItemsInput
@@ -1752,6 +2534,8 @@ export type ItemCreateWithoutOutboundItemsInput = {
   priceHistories?: Prisma.ItemPriceHistoryCreateNestedManyWithoutItemInput
   vendorSupplies?: Prisma.VendorItemCreateNestedManyWithoutItemInput
   rabLines?: Prisma.RABLineCreateNestedManyWithoutItemInput
+  partnerPrices?: Prisma.PartnerItemPriceCreateNestedManyWithoutItemInput
+  warehouseStocks?: Prisma.WarehouseStockCreateNestedManyWithoutItemInput
 }
 
 export type ItemUncheckedCreateWithoutOutboundItemsInput = {
@@ -1765,6 +2549,16 @@ export type ItemUncheckedCreateWithoutOutboundItemsInput = {
   maxStockLevel?: number
   currentStock?: number
   isActive?: boolean
+  imagePath?: string | null
+  barcode?: string | null
+  brand?: string | null
+  type?: string | null
+  color?: string | null
+  weight?: number | null
+  length?: number | null
+  width?: number | null
+  height?: number | null
+  movementType?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   createdById?: string | null
@@ -1777,6 +2571,8 @@ export type ItemUncheckedCreateWithoutOutboundItemsInput = {
   priceHistories?: Prisma.ItemPriceHistoryUncheckedCreateNestedManyWithoutItemInput
   vendorSupplies?: Prisma.VendorItemUncheckedCreateNestedManyWithoutItemInput
   rabLines?: Prisma.RABLineUncheckedCreateNestedManyWithoutItemInput
+  partnerPrices?: Prisma.PartnerItemPriceUncheckedCreateNestedManyWithoutItemInput
+  warehouseStocks?: Prisma.WarehouseStockUncheckedCreateNestedManyWithoutItemInput
 }
 
 export type ItemCreateOrConnectWithoutOutboundItemsInput = {
@@ -1804,6 +2600,16 @@ export type ItemUpdateWithoutOutboundItemsInput = {
   maxStockLevel?: Prisma.IntFieldUpdateOperationsInput | number
   currentStock?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  imagePath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  weight?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  length?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  width?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  height?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  movementType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   category?: Prisma.CategoryUpdateOneRequiredWithoutItemsNestedInput
@@ -1818,6 +2624,8 @@ export type ItemUpdateWithoutOutboundItemsInput = {
   priceHistories?: Prisma.ItemPriceHistoryUpdateManyWithoutItemNestedInput
   vendorSupplies?: Prisma.VendorItemUpdateManyWithoutItemNestedInput
   rabLines?: Prisma.RABLineUpdateManyWithoutItemNestedInput
+  partnerPrices?: Prisma.PartnerItemPriceUpdateManyWithoutItemNestedInput
+  warehouseStocks?: Prisma.WarehouseStockUpdateManyWithoutItemNestedInput
 }
 
 export type ItemUncheckedUpdateWithoutOutboundItemsInput = {
@@ -1831,6 +2639,16 @@ export type ItemUncheckedUpdateWithoutOutboundItemsInput = {
   maxStockLevel?: Prisma.IntFieldUpdateOperationsInput | number
   currentStock?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  imagePath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  weight?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  length?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  width?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  height?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  movementType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1843,6 +2661,172 @@ export type ItemUncheckedUpdateWithoutOutboundItemsInput = {
   priceHistories?: Prisma.ItemPriceHistoryUncheckedUpdateManyWithoutItemNestedInput
   vendorSupplies?: Prisma.VendorItemUncheckedUpdateManyWithoutItemNestedInput
   rabLines?: Prisma.RABLineUncheckedUpdateManyWithoutItemNestedInput
+  partnerPrices?: Prisma.PartnerItemPriceUncheckedUpdateManyWithoutItemNestedInput
+  warehouseStocks?: Prisma.WarehouseStockUncheckedUpdateManyWithoutItemNestedInput
+}
+
+export type ItemCreateWithoutPartnerPricesInput = {
+  id?: string
+  sku: string
+  name: string
+  description?: string | null
+  minStockLevel?: number
+  maxStockLevel?: number
+  currentStock?: number
+  isActive?: boolean
+  imagePath?: string | null
+  barcode?: string | null
+  brand?: string | null
+  type?: string | null
+  color?: string | null
+  weight?: number | null
+  length?: number | null
+  width?: number | null
+  height?: number | null
+  movementType?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  category: Prisma.CategoryCreateNestedOneWithoutItemsInput
+  uom: Prisma.UOMCreateNestedOneWithoutItemsInput
+  createdBy?: Prisma.UserCreateNestedOneWithoutCreatedItemsInput
+  purchaseRequestItems?: Prisma.PurchaseRequestItemCreateNestedManyWithoutItemInput
+  inboundItems?: Prisma.InboundItemCreateNestedManyWithoutItemInput
+  outboundItems?: Prisma.OutboundItemCreateNestedManyWithoutItemInput
+  stockCards?: Prisma.StockCardCreateNestedManyWithoutItemInput
+  stockOpnameCounts?: Prisma.StockOpnameCountCreateNestedManyWithoutItemInput
+  stockAdjustmentItems?: Prisma.StockAdjustmentItemCreateNestedManyWithoutItemInput
+  returnItems?: Prisma.ReturnItemCreateNestedManyWithoutItemInput
+  priceHistories?: Prisma.ItemPriceHistoryCreateNestedManyWithoutItemInput
+  vendorSupplies?: Prisma.VendorItemCreateNestedManyWithoutItemInput
+  rabLines?: Prisma.RABLineCreateNestedManyWithoutItemInput
+  warehouseStocks?: Prisma.WarehouseStockCreateNestedManyWithoutItemInput
+}
+
+export type ItemUncheckedCreateWithoutPartnerPricesInput = {
+  id?: string
+  sku: string
+  name: string
+  description?: string | null
+  categoryId: string
+  uomId: string
+  minStockLevel?: number
+  maxStockLevel?: number
+  currentStock?: number
+  isActive?: boolean
+  imagePath?: string | null
+  barcode?: string | null
+  brand?: string | null
+  type?: string | null
+  color?: string | null
+  weight?: number | null
+  length?: number | null
+  width?: number | null
+  height?: number | null
+  movementType?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  createdById?: string | null
+  purchaseRequestItems?: Prisma.PurchaseRequestItemUncheckedCreateNestedManyWithoutItemInput
+  inboundItems?: Prisma.InboundItemUncheckedCreateNestedManyWithoutItemInput
+  outboundItems?: Prisma.OutboundItemUncheckedCreateNestedManyWithoutItemInput
+  stockCards?: Prisma.StockCardUncheckedCreateNestedManyWithoutItemInput
+  stockOpnameCounts?: Prisma.StockOpnameCountUncheckedCreateNestedManyWithoutItemInput
+  stockAdjustmentItems?: Prisma.StockAdjustmentItemUncheckedCreateNestedManyWithoutItemInput
+  returnItems?: Prisma.ReturnItemUncheckedCreateNestedManyWithoutItemInput
+  priceHistories?: Prisma.ItemPriceHistoryUncheckedCreateNestedManyWithoutItemInput
+  vendorSupplies?: Prisma.VendorItemUncheckedCreateNestedManyWithoutItemInput
+  rabLines?: Prisma.RABLineUncheckedCreateNestedManyWithoutItemInput
+  warehouseStocks?: Prisma.WarehouseStockUncheckedCreateNestedManyWithoutItemInput
+}
+
+export type ItemCreateOrConnectWithoutPartnerPricesInput = {
+  where: Prisma.ItemWhereUniqueInput
+  create: Prisma.XOR<Prisma.ItemCreateWithoutPartnerPricesInput, Prisma.ItemUncheckedCreateWithoutPartnerPricesInput>
+}
+
+export type ItemUpsertWithoutPartnerPricesInput = {
+  update: Prisma.XOR<Prisma.ItemUpdateWithoutPartnerPricesInput, Prisma.ItemUncheckedUpdateWithoutPartnerPricesInput>
+  create: Prisma.XOR<Prisma.ItemCreateWithoutPartnerPricesInput, Prisma.ItemUncheckedCreateWithoutPartnerPricesInput>
+  where?: Prisma.ItemWhereInput
+}
+
+export type ItemUpdateToOneWithWhereWithoutPartnerPricesInput = {
+  where?: Prisma.ItemWhereInput
+  data: Prisma.XOR<Prisma.ItemUpdateWithoutPartnerPricesInput, Prisma.ItemUncheckedUpdateWithoutPartnerPricesInput>
+}
+
+export type ItemUpdateWithoutPartnerPricesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  sku?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  minStockLevel?: Prisma.IntFieldUpdateOperationsInput | number
+  maxStockLevel?: Prisma.IntFieldUpdateOperationsInput | number
+  currentStock?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  imagePath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  weight?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  length?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  width?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  height?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  movementType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  category?: Prisma.CategoryUpdateOneRequiredWithoutItemsNestedInput
+  uom?: Prisma.UOMUpdateOneRequiredWithoutItemsNestedInput
+  createdBy?: Prisma.UserUpdateOneWithoutCreatedItemsNestedInput
+  purchaseRequestItems?: Prisma.PurchaseRequestItemUpdateManyWithoutItemNestedInput
+  inboundItems?: Prisma.InboundItemUpdateManyWithoutItemNestedInput
+  outboundItems?: Prisma.OutboundItemUpdateManyWithoutItemNestedInput
+  stockCards?: Prisma.StockCardUpdateManyWithoutItemNestedInput
+  stockOpnameCounts?: Prisma.StockOpnameCountUpdateManyWithoutItemNestedInput
+  stockAdjustmentItems?: Prisma.StockAdjustmentItemUpdateManyWithoutItemNestedInput
+  returnItems?: Prisma.ReturnItemUpdateManyWithoutItemNestedInput
+  priceHistories?: Prisma.ItemPriceHistoryUpdateManyWithoutItemNestedInput
+  vendorSupplies?: Prisma.VendorItemUpdateManyWithoutItemNestedInput
+  rabLines?: Prisma.RABLineUpdateManyWithoutItemNestedInput
+  warehouseStocks?: Prisma.WarehouseStockUpdateManyWithoutItemNestedInput
+}
+
+export type ItemUncheckedUpdateWithoutPartnerPricesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  sku?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  categoryId?: Prisma.StringFieldUpdateOperationsInput | string
+  uomId?: Prisma.StringFieldUpdateOperationsInput | string
+  minStockLevel?: Prisma.IntFieldUpdateOperationsInput | number
+  maxStockLevel?: Prisma.IntFieldUpdateOperationsInput | number
+  currentStock?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  imagePath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  weight?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  length?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  width?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  height?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  movementType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  purchaseRequestItems?: Prisma.PurchaseRequestItemUncheckedUpdateManyWithoutItemNestedInput
+  inboundItems?: Prisma.InboundItemUncheckedUpdateManyWithoutItemNestedInput
+  outboundItems?: Prisma.OutboundItemUncheckedUpdateManyWithoutItemNestedInput
+  stockCards?: Prisma.StockCardUncheckedUpdateManyWithoutItemNestedInput
+  stockOpnameCounts?: Prisma.StockOpnameCountUncheckedUpdateManyWithoutItemNestedInput
+  stockAdjustmentItems?: Prisma.StockAdjustmentItemUncheckedUpdateManyWithoutItemNestedInput
+  returnItems?: Prisma.ReturnItemUncheckedUpdateManyWithoutItemNestedInput
+  priceHistories?: Prisma.ItemPriceHistoryUncheckedUpdateManyWithoutItemNestedInput
+  vendorSupplies?: Prisma.VendorItemUncheckedUpdateManyWithoutItemNestedInput
+  rabLines?: Prisma.RABLineUncheckedUpdateManyWithoutItemNestedInput
+  warehouseStocks?: Prisma.WarehouseStockUncheckedUpdateManyWithoutItemNestedInput
 }
 
 export type ItemCreateWithoutStockCardsInput = {
@@ -1854,6 +2838,16 @@ export type ItemCreateWithoutStockCardsInput = {
   maxStockLevel?: number
   currentStock?: number
   isActive?: boolean
+  imagePath?: string | null
+  barcode?: string | null
+  brand?: string | null
+  type?: string | null
+  color?: string | null
+  weight?: number | null
+  length?: number | null
+  width?: number | null
+  height?: number | null
+  movementType?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   category: Prisma.CategoryCreateNestedOneWithoutItemsInput
@@ -1868,6 +2862,8 @@ export type ItemCreateWithoutStockCardsInput = {
   priceHistories?: Prisma.ItemPriceHistoryCreateNestedManyWithoutItemInput
   vendorSupplies?: Prisma.VendorItemCreateNestedManyWithoutItemInput
   rabLines?: Prisma.RABLineCreateNestedManyWithoutItemInput
+  partnerPrices?: Prisma.PartnerItemPriceCreateNestedManyWithoutItemInput
+  warehouseStocks?: Prisma.WarehouseStockCreateNestedManyWithoutItemInput
 }
 
 export type ItemUncheckedCreateWithoutStockCardsInput = {
@@ -1881,6 +2877,16 @@ export type ItemUncheckedCreateWithoutStockCardsInput = {
   maxStockLevel?: number
   currentStock?: number
   isActive?: boolean
+  imagePath?: string | null
+  barcode?: string | null
+  brand?: string | null
+  type?: string | null
+  color?: string | null
+  weight?: number | null
+  length?: number | null
+  width?: number | null
+  height?: number | null
+  movementType?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   createdById?: string | null
@@ -1893,6 +2899,8 @@ export type ItemUncheckedCreateWithoutStockCardsInput = {
   priceHistories?: Prisma.ItemPriceHistoryUncheckedCreateNestedManyWithoutItemInput
   vendorSupplies?: Prisma.VendorItemUncheckedCreateNestedManyWithoutItemInput
   rabLines?: Prisma.RABLineUncheckedCreateNestedManyWithoutItemInput
+  partnerPrices?: Prisma.PartnerItemPriceUncheckedCreateNestedManyWithoutItemInput
+  warehouseStocks?: Prisma.WarehouseStockUncheckedCreateNestedManyWithoutItemInput
 }
 
 export type ItemCreateOrConnectWithoutStockCardsInput = {
@@ -1920,6 +2928,16 @@ export type ItemUpdateWithoutStockCardsInput = {
   maxStockLevel?: Prisma.IntFieldUpdateOperationsInput | number
   currentStock?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  imagePath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  weight?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  length?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  width?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  height?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  movementType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   category?: Prisma.CategoryUpdateOneRequiredWithoutItemsNestedInput
@@ -1934,6 +2952,8 @@ export type ItemUpdateWithoutStockCardsInput = {
   priceHistories?: Prisma.ItemPriceHistoryUpdateManyWithoutItemNestedInput
   vendorSupplies?: Prisma.VendorItemUpdateManyWithoutItemNestedInput
   rabLines?: Prisma.RABLineUpdateManyWithoutItemNestedInput
+  partnerPrices?: Prisma.PartnerItemPriceUpdateManyWithoutItemNestedInput
+  warehouseStocks?: Prisma.WarehouseStockUpdateManyWithoutItemNestedInput
 }
 
 export type ItemUncheckedUpdateWithoutStockCardsInput = {
@@ -1947,6 +2967,16 @@ export type ItemUncheckedUpdateWithoutStockCardsInput = {
   maxStockLevel?: Prisma.IntFieldUpdateOperationsInput | number
   currentStock?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  imagePath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  weight?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  length?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  width?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  height?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  movementType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1959,6 +2989,8 @@ export type ItemUncheckedUpdateWithoutStockCardsInput = {
   priceHistories?: Prisma.ItemPriceHistoryUncheckedUpdateManyWithoutItemNestedInput
   vendorSupplies?: Prisma.VendorItemUncheckedUpdateManyWithoutItemNestedInput
   rabLines?: Prisma.RABLineUncheckedUpdateManyWithoutItemNestedInput
+  partnerPrices?: Prisma.PartnerItemPriceUncheckedUpdateManyWithoutItemNestedInput
+  warehouseStocks?: Prisma.WarehouseStockUncheckedUpdateManyWithoutItemNestedInput
 }
 
 export type ItemCreateWithoutStockOpnameCountsInput = {
@@ -1970,6 +3002,16 @@ export type ItemCreateWithoutStockOpnameCountsInput = {
   maxStockLevel?: number
   currentStock?: number
   isActive?: boolean
+  imagePath?: string | null
+  barcode?: string | null
+  brand?: string | null
+  type?: string | null
+  color?: string | null
+  weight?: number | null
+  length?: number | null
+  width?: number | null
+  height?: number | null
+  movementType?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   category: Prisma.CategoryCreateNestedOneWithoutItemsInput
@@ -1984,6 +3026,8 @@ export type ItemCreateWithoutStockOpnameCountsInput = {
   priceHistories?: Prisma.ItemPriceHistoryCreateNestedManyWithoutItemInput
   vendorSupplies?: Prisma.VendorItemCreateNestedManyWithoutItemInput
   rabLines?: Prisma.RABLineCreateNestedManyWithoutItemInput
+  partnerPrices?: Prisma.PartnerItemPriceCreateNestedManyWithoutItemInput
+  warehouseStocks?: Prisma.WarehouseStockCreateNestedManyWithoutItemInput
 }
 
 export type ItemUncheckedCreateWithoutStockOpnameCountsInput = {
@@ -1997,6 +3041,16 @@ export type ItemUncheckedCreateWithoutStockOpnameCountsInput = {
   maxStockLevel?: number
   currentStock?: number
   isActive?: boolean
+  imagePath?: string | null
+  barcode?: string | null
+  brand?: string | null
+  type?: string | null
+  color?: string | null
+  weight?: number | null
+  length?: number | null
+  width?: number | null
+  height?: number | null
+  movementType?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   createdById?: string | null
@@ -2009,6 +3063,8 @@ export type ItemUncheckedCreateWithoutStockOpnameCountsInput = {
   priceHistories?: Prisma.ItemPriceHistoryUncheckedCreateNestedManyWithoutItemInput
   vendorSupplies?: Prisma.VendorItemUncheckedCreateNestedManyWithoutItemInput
   rabLines?: Prisma.RABLineUncheckedCreateNestedManyWithoutItemInput
+  partnerPrices?: Prisma.PartnerItemPriceUncheckedCreateNestedManyWithoutItemInput
+  warehouseStocks?: Prisma.WarehouseStockUncheckedCreateNestedManyWithoutItemInput
 }
 
 export type ItemCreateOrConnectWithoutStockOpnameCountsInput = {
@@ -2036,6 +3092,16 @@ export type ItemUpdateWithoutStockOpnameCountsInput = {
   maxStockLevel?: Prisma.IntFieldUpdateOperationsInput | number
   currentStock?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  imagePath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  weight?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  length?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  width?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  height?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  movementType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   category?: Prisma.CategoryUpdateOneRequiredWithoutItemsNestedInput
@@ -2050,6 +3116,8 @@ export type ItemUpdateWithoutStockOpnameCountsInput = {
   priceHistories?: Prisma.ItemPriceHistoryUpdateManyWithoutItemNestedInput
   vendorSupplies?: Prisma.VendorItemUpdateManyWithoutItemNestedInput
   rabLines?: Prisma.RABLineUpdateManyWithoutItemNestedInput
+  partnerPrices?: Prisma.PartnerItemPriceUpdateManyWithoutItemNestedInput
+  warehouseStocks?: Prisma.WarehouseStockUpdateManyWithoutItemNestedInput
 }
 
 export type ItemUncheckedUpdateWithoutStockOpnameCountsInput = {
@@ -2063,6 +3131,16 @@ export type ItemUncheckedUpdateWithoutStockOpnameCountsInput = {
   maxStockLevel?: Prisma.IntFieldUpdateOperationsInput | number
   currentStock?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  imagePath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  weight?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  length?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  width?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  height?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  movementType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2075,6 +3153,8 @@ export type ItemUncheckedUpdateWithoutStockOpnameCountsInput = {
   priceHistories?: Prisma.ItemPriceHistoryUncheckedUpdateManyWithoutItemNestedInput
   vendorSupplies?: Prisma.VendorItemUncheckedUpdateManyWithoutItemNestedInput
   rabLines?: Prisma.RABLineUncheckedUpdateManyWithoutItemNestedInput
+  partnerPrices?: Prisma.PartnerItemPriceUncheckedUpdateManyWithoutItemNestedInput
+  warehouseStocks?: Prisma.WarehouseStockUncheckedUpdateManyWithoutItemNestedInput
 }
 
 export type ItemCreateWithoutStockAdjustmentItemsInput = {
@@ -2086,6 +3166,16 @@ export type ItemCreateWithoutStockAdjustmentItemsInput = {
   maxStockLevel?: number
   currentStock?: number
   isActive?: boolean
+  imagePath?: string | null
+  barcode?: string | null
+  brand?: string | null
+  type?: string | null
+  color?: string | null
+  weight?: number | null
+  length?: number | null
+  width?: number | null
+  height?: number | null
+  movementType?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   category: Prisma.CategoryCreateNestedOneWithoutItemsInput
@@ -2100,6 +3190,8 @@ export type ItemCreateWithoutStockAdjustmentItemsInput = {
   priceHistories?: Prisma.ItemPriceHistoryCreateNestedManyWithoutItemInput
   vendorSupplies?: Prisma.VendorItemCreateNestedManyWithoutItemInput
   rabLines?: Prisma.RABLineCreateNestedManyWithoutItemInput
+  partnerPrices?: Prisma.PartnerItemPriceCreateNestedManyWithoutItemInput
+  warehouseStocks?: Prisma.WarehouseStockCreateNestedManyWithoutItemInput
 }
 
 export type ItemUncheckedCreateWithoutStockAdjustmentItemsInput = {
@@ -2113,6 +3205,16 @@ export type ItemUncheckedCreateWithoutStockAdjustmentItemsInput = {
   maxStockLevel?: number
   currentStock?: number
   isActive?: boolean
+  imagePath?: string | null
+  barcode?: string | null
+  brand?: string | null
+  type?: string | null
+  color?: string | null
+  weight?: number | null
+  length?: number | null
+  width?: number | null
+  height?: number | null
+  movementType?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   createdById?: string | null
@@ -2125,6 +3227,8 @@ export type ItemUncheckedCreateWithoutStockAdjustmentItemsInput = {
   priceHistories?: Prisma.ItemPriceHistoryUncheckedCreateNestedManyWithoutItemInput
   vendorSupplies?: Prisma.VendorItemUncheckedCreateNestedManyWithoutItemInput
   rabLines?: Prisma.RABLineUncheckedCreateNestedManyWithoutItemInput
+  partnerPrices?: Prisma.PartnerItemPriceUncheckedCreateNestedManyWithoutItemInput
+  warehouseStocks?: Prisma.WarehouseStockUncheckedCreateNestedManyWithoutItemInput
 }
 
 export type ItemCreateOrConnectWithoutStockAdjustmentItemsInput = {
@@ -2152,6 +3256,16 @@ export type ItemUpdateWithoutStockAdjustmentItemsInput = {
   maxStockLevel?: Prisma.IntFieldUpdateOperationsInput | number
   currentStock?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  imagePath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  weight?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  length?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  width?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  height?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  movementType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   category?: Prisma.CategoryUpdateOneRequiredWithoutItemsNestedInput
@@ -2166,6 +3280,8 @@ export type ItemUpdateWithoutStockAdjustmentItemsInput = {
   priceHistories?: Prisma.ItemPriceHistoryUpdateManyWithoutItemNestedInput
   vendorSupplies?: Prisma.VendorItemUpdateManyWithoutItemNestedInput
   rabLines?: Prisma.RABLineUpdateManyWithoutItemNestedInput
+  partnerPrices?: Prisma.PartnerItemPriceUpdateManyWithoutItemNestedInput
+  warehouseStocks?: Prisma.WarehouseStockUpdateManyWithoutItemNestedInput
 }
 
 export type ItemUncheckedUpdateWithoutStockAdjustmentItemsInput = {
@@ -2179,6 +3295,16 @@ export type ItemUncheckedUpdateWithoutStockAdjustmentItemsInput = {
   maxStockLevel?: Prisma.IntFieldUpdateOperationsInput | number
   currentStock?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  imagePath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  weight?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  length?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  width?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  height?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  movementType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2191,6 +3317,8 @@ export type ItemUncheckedUpdateWithoutStockAdjustmentItemsInput = {
   priceHistories?: Prisma.ItemPriceHistoryUncheckedUpdateManyWithoutItemNestedInput
   vendorSupplies?: Prisma.VendorItemUncheckedUpdateManyWithoutItemNestedInput
   rabLines?: Prisma.RABLineUncheckedUpdateManyWithoutItemNestedInput
+  partnerPrices?: Prisma.PartnerItemPriceUncheckedUpdateManyWithoutItemNestedInput
+  warehouseStocks?: Prisma.WarehouseStockUncheckedUpdateManyWithoutItemNestedInput
 }
 
 export type ItemCreateWithoutReturnItemsInput = {
@@ -2202,6 +3330,16 @@ export type ItemCreateWithoutReturnItemsInput = {
   maxStockLevel?: number
   currentStock?: number
   isActive?: boolean
+  imagePath?: string | null
+  barcode?: string | null
+  brand?: string | null
+  type?: string | null
+  color?: string | null
+  weight?: number | null
+  length?: number | null
+  width?: number | null
+  height?: number | null
+  movementType?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   category: Prisma.CategoryCreateNestedOneWithoutItemsInput
@@ -2216,6 +3354,8 @@ export type ItemCreateWithoutReturnItemsInput = {
   priceHistories?: Prisma.ItemPriceHistoryCreateNestedManyWithoutItemInput
   vendorSupplies?: Prisma.VendorItemCreateNestedManyWithoutItemInput
   rabLines?: Prisma.RABLineCreateNestedManyWithoutItemInput
+  partnerPrices?: Prisma.PartnerItemPriceCreateNestedManyWithoutItemInput
+  warehouseStocks?: Prisma.WarehouseStockCreateNestedManyWithoutItemInput
 }
 
 export type ItemUncheckedCreateWithoutReturnItemsInput = {
@@ -2229,6 +3369,16 @@ export type ItemUncheckedCreateWithoutReturnItemsInput = {
   maxStockLevel?: number
   currentStock?: number
   isActive?: boolean
+  imagePath?: string | null
+  barcode?: string | null
+  brand?: string | null
+  type?: string | null
+  color?: string | null
+  weight?: number | null
+  length?: number | null
+  width?: number | null
+  height?: number | null
+  movementType?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   createdById?: string | null
@@ -2241,6 +3391,8 @@ export type ItemUncheckedCreateWithoutReturnItemsInput = {
   priceHistories?: Prisma.ItemPriceHistoryUncheckedCreateNestedManyWithoutItemInput
   vendorSupplies?: Prisma.VendorItemUncheckedCreateNestedManyWithoutItemInput
   rabLines?: Prisma.RABLineUncheckedCreateNestedManyWithoutItemInput
+  partnerPrices?: Prisma.PartnerItemPriceUncheckedCreateNestedManyWithoutItemInput
+  warehouseStocks?: Prisma.WarehouseStockUncheckedCreateNestedManyWithoutItemInput
 }
 
 export type ItemCreateOrConnectWithoutReturnItemsInput = {
@@ -2268,6 +3420,16 @@ export type ItemUpdateWithoutReturnItemsInput = {
   maxStockLevel?: Prisma.IntFieldUpdateOperationsInput | number
   currentStock?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  imagePath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  weight?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  length?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  width?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  height?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  movementType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   category?: Prisma.CategoryUpdateOneRequiredWithoutItemsNestedInput
@@ -2282,6 +3444,8 @@ export type ItemUpdateWithoutReturnItemsInput = {
   priceHistories?: Prisma.ItemPriceHistoryUpdateManyWithoutItemNestedInput
   vendorSupplies?: Prisma.VendorItemUpdateManyWithoutItemNestedInput
   rabLines?: Prisma.RABLineUpdateManyWithoutItemNestedInput
+  partnerPrices?: Prisma.PartnerItemPriceUpdateManyWithoutItemNestedInput
+  warehouseStocks?: Prisma.WarehouseStockUpdateManyWithoutItemNestedInput
 }
 
 export type ItemUncheckedUpdateWithoutReturnItemsInput = {
@@ -2295,6 +3459,16 @@ export type ItemUncheckedUpdateWithoutReturnItemsInput = {
   maxStockLevel?: Prisma.IntFieldUpdateOperationsInput | number
   currentStock?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  imagePath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  weight?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  length?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  width?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  height?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  movementType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2307,6 +3481,8 @@ export type ItemUncheckedUpdateWithoutReturnItemsInput = {
   priceHistories?: Prisma.ItemPriceHistoryUncheckedUpdateManyWithoutItemNestedInput
   vendorSupplies?: Prisma.VendorItemUncheckedUpdateManyWithoutItemNestedInput
   rabLines?: Prisma.RABLineUncheckedUpdateManyWithoutItemNestedInput
+  partnerPrices?: Prisma.PartnerItemPriceUncheckedUpdateManyWithoutItemNestedInput
+  warehouseStocks?: Prisma.WarehouseStockUncheckedUpdateManyWithoutItemNestedInput
 }
 
 export type ItemCreateManyCreatedByInput = {
@@ -2320,6 +3496,16 @@ export type ItemCreateManyCreatedByInput = {
   maxStockLevel?: number
   currentStock?: number
   isActive?: boolean
+  imagePath?: string | null
+  barcode?: string | null
+  brand?: string | null
+  type?: string | null
+  color?: string | null
+  weight?: number | null
+  length?: number | null
+  width?: number | null
+  height?: number | null
+  movementType?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -2333,6 +3519,16 @@ export type ItemUpdateWithoutCreatedByInput = {
   maxStockLevel?: Prisma.IntFieldUpdateOperationsInput | number
   currentStock?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  imagePath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  weight?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  length?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  width?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  height?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  movementType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   category?: Prisma.CategoryUpdateOneRequiredWithoutItemsNestedInput
@@ -2347,6 +3543,8 @@ export type ItemUpdateWithoutCreatedByInput = {
   priceHistories?: Prisma.ItemPriceHistoryUpdateManyWithoutItemNestedInput
   vendorSupplies?: Prisma.VendorItemUpdateManyWithoutItemNestedInput
   rabLines?: Prisma.RABLineUpdateManyWithoutItemNestedInput
+  partnerPrices?: Prisma.PartnerItemPriceUpdateManyWithoutItemNestedInput
+  warehouseStocks?: Prisma.WarehouseStockUpdateManyWithoutItemNestedInput
 }
 
 export type ItemUncheckedUpdateWithoutCreatedByInput = {
@@ -2360,6 +3558,16 @@ export type ItemUncheckedUpdateWithoutCreatedByInput = {
   maxStockLevel?: Prisma.IntFieldUpdateOperationsInput | number
   currentStock?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  imagePath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  weight?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  length?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  width?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  height?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  movementType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   purchaseRequestItems?: Prisma.PurchaseRequestItemUncheckedUpdateManyWithoutItemNestedInput
@@ -2372,6 +3580,8 @@ export type ItemUncheckedUpdateWithoutCreatedByInput = {
   priceHistories?: Prisma.ItemPriceHistoryUncheckedUpdateManyWithoutItemNestedInput
   vendorSupplies?: Prisma.VendorItemUncheckedUpdateManyWithoutItemNestedInput
   rabLines?: Prisma.RABLineUncheckedUpdateManyWithoutItemNestedInput
+  partnerPrices?: Prisma.PartnerItemPriceUncheckedUpdateManyWithoutItemNestedInput
+  warehouseStocks?: Prisma.WarehouseStockUncheckedUpdateManyWithoutItemNestedInput
 }
 
 export type ItemUncheckedUpdateManyWithoutCreatedByInput = {
@@ -2385,6 +3595,16 @@ export type ItemUncheckedUpdateManyWithoutCreatedByInput = {
   maxStockLevel?: Prisma.IntFieldUpdateOperationsInput | number
   currentStock?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  imagePath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  weight?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  length?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  width?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  height?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  movementType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -2399,6 +3619,16 @@ export type ItemCreateManyCategoryInput = {
   maxStockLevel?: number
   currentStock?: number
   isActive?: boolean
+  imagePath?: string | null
+  barcode?: string | null
+  brand?: string | null
+  type?: string | null
+  color?: string | null
+  weight?: number | null
+  length?: number | null
+  width?: number | null
+  height?: number | null
+  movementType?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   createdById?: string | null
@@ -2413,6 +3643,16 @@ export type ItemUpdateWithoutCategoryInput = {
   maxStockLevel?: Prisma.IntFieldUpdateOperationsInput | number
   currentStock?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  imagePath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  weight?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  length?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  width?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  height?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  movementType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   uom?: Prisma.UOMUpdateOneRequiredWithoutItemsNestedInput
@@ -2427,6 +3667,8 @@ export type ItemUpdateWithoutCategoryInput = {
   priceHistories?: Prisma.ItemPriceHistoryUpdateManyWithoutItemNestedInput
   vendorSupplies?: Prisma.VendorItemUpdateManyWithoutItemNestedInput
   rabLines?: Prisma.RABLineUpdateManyWithoutItemNestedInput
+  partnerPrices?: Prisma.PartnerItemPriceUpdateManyWithoutItemNestedInput
+  warehouseStocks?: Prisma.WarehouseStockUpdateManyWithoutItemNestedInput
 }
 
 export type ItemUncheckedUpdateWithoutCategoryInput = {
@@ -2439,6 +3681,16 @@ export type ItemUncheckedUpdateWithoutCategoryInput = {
   maxStockLevel?: Prisma.IntFieldUpdateOperationsInput | number
   currentStock?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  imagePath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  weight?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  length?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  width?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  height?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  movementType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2452,6 +3704,8 @@ export type ItemUncheckedUpdateWithoutCategoryInput = {
   priceHistories?: Prisma.ItemPriceHistoryUncheckedUpdateManyWithoutItemNestedInput
   vendorSupplies?: Prisma.VendorItemUncheckedUpdateManyWithoutItemNestedInput
   rabLines?: Prisma.RABLineUncheckedUpdateManyWithoutItemNestedInput
+  partnerPrices?: Prisma.PartnerItemPriceUncheckedUpdateManyWithoutItemNestedInput
+  warehouseStocks?: Prisma.WarehouseStockUncheckedUpdateManyWithoutItemNestedInput
 }
 
 export type ItemUncheckedUpdateManyWithoutCategoryInput = {
@@ -2464,6 +3718,16 @@ export type ItemUncheckedUpdateManyWithoutCategoryInput = {
   maxStockLevel?: Prisma.IntFieldUpdateOperationsInput | number
   currentStock?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  imagePath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  weight?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  length?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  width?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  height?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  movementType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2479,6 +3743,16 @@ export type ItemCreateManyUomInput = {
   maxStockLevel?: number
   currentStock?: number
   isActive?: boolean
+  imagePath?: string | null
+  barcode?: string | null
+  brand?: string | null
+  type?: string | null
+  color?: string | null
+  weight?: number | null
+  length?: number | null
+  width?: number | null
+  height?: number | null
+  movementType?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   createdById?: string | null
@@ -2493,6 +3767,16 @@ export type ItemUpdateWithoutUomInput = {
   maxStockLevel?: Prisma.IntFieldUpdateOperationsInput | number
   currentStock?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  imagePath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  weight?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  length?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  width?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  height?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  movementType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   category?: Prisma.CategoryUpdateOneRequiredWithoutItemsNestedInput
@@ -2507,6 +3791,8 @@ export type ItemUpdateWithoutUomInput = {
   priceHistories?: Prisma.ItemPriceHistoryUpdateManyWithoutItemNestedInput
   vendorSupplies?: Prisma.VendorItemUpdateManyWithoutItemNestedInput
   rabLines?: Prisma.RABLineUpdateManyWithoutItemNestedInput
+  partnerPrices?: Prisma.PartnerItemPriceUpdateManyWithoutItemNestedInput
+  warehouseStocks?: Prisma.WarehouseStockUpdateManyWithoutItemNestedInput
 }
 
 export type ItemUncheckedUpdateWithoutUomInput = {
@@ -2519,6 +3805,16 @@ export type ItemUncheckedUpdateWithoutUomInput = {
   maxStockLevel?: Prisma.IntFieldUpdateOperationsInput | number
   currentStock?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  imagePath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  weight?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  length?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  width?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  height?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  movementType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2532,6 +3828,8 @@ export type ItemUncheckedUpdateWithoutUomInput = {
   priceHistories?: Prisma.ItemPriceHistoryUncheckedUpdateManyWithoutItemNestedInput
   vendorSupplies?: Prisma.VendorItemUncheckedUpdateManyWithoutItemNestedInput
   rabLines?: Prisma.RABLineUncheckedUpdateManyWithoutItemNestedInput
+  partnerPrices?: Prisma.PartnerItemPriceUncheckedUpdateManyWithoutItemNestedInput
+  warehouseStocks?: Prisma.WarehouseStockUncheckedUpdateManyWithoutItemNestedInput
 }
 
 export type ItemUncheckedUpdateManyWithoutUomInput = {
@@ -2544,6 +3842,16 @@ export type ItemUncheckedUpdateManyWithoutUomInput = {
   maxStockLevel?: Prisma.IntFieldUpdateOperationsInput | number
   currentStock?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  imagePath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  barcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  brand?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  weight?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  length?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  width?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  height?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  movementType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2565,6 +3873,8 @@ export type ItemCountOutputType = {
   priceHistories: number
   vendorSupplies: number
   rabLines: number
+  partnerPrices: number
+  warehouseStocks: number
 }
 
 export type ItemCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2578,6 +3888,8 @@ export type ItemCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   priceHistories?: boolean | ItemCountOutputTypeCountPriceHistoriesArgs
   vendorSupplies?: boolean | ItemCountOutputTypeCountVendorSuppliesArgs
   rabLines?: boolean | ItemCountOutputTypeCountRabLinesArgs
+  partnerPrices?: boolean | ItemCountOutputTypeCountPartnerPricesArgs
+  warehouseStocks?: boolean | ItemCountOutputTypeCountWarehouseStocksArgs
 }
 
 /**
@@ -2660,6 +3972,20 @@ export type ItemCountOutputTypeCountRabLinesArgs<ExtArgs extends runtime.Types.E
   where?: Prisma.RABLineWhereInput
 }
 
+/**
+ * ItemCountOutputType without action
+ */
+export type ItemCountOutputTypeCountPartnerPricesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PartnerItemPriceWhereInput
+}
+
+/**
+ * ItemCountOutputType without action
+ */
+export type ItemCountOutputTypeCountWarehouseStocksArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.WarehouseStockWhereInput
+}
+
 
 export type ItemSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -2672,6 +3998,16 @@ export type ItemSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   maxStockLevel?: boolean
   currentStock?: boolean
   isActive?: boolean
+  imagePath?: boolean
+  barcode?: boolean
+  brand?: boolean
+  type?: boolean
+  color?: boolean
+  weight?: boolean
+  length?: boolean
+  width?: boolean
+  height?: boolean
+  movementType?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   createdById?: boolean
@@ -2688,6 +4024,8 @@ export type ItemSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   priceHistories?: boolean | Prisma.Item$priceHistoriesArgs<ExtArgs>
   vendorSupplies?: boolean | Prisma.Item$vendorSuppliesArgs<ExtArgs>
   rabLines?: boolean | Prisma.Item$rabLinesArgs<ExtArgs>
+  partnerPrices?: boolean | Prisma.Item$partnerPricesArgs<ExtArgs>
+  warehouseStocks?: boolean | Prisma.Item$warehouseStocksArgs<ExtArgs>
   _count?: boolean | Prisma.ItemCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["item"]>
 
@@ -2702,6 +4040,16 @@ export type ItemSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   maxStockLevel?: boolean
   currentStock?: boolean
   isActive?: boolean
+  imagePath?: boolean
+  barcode?: boolean
+  brand?: boolean
+  type?: boolean
+  color?: boolean
+  weight?: boolean
+  length?: boolean
+  width?: boolean
+  height?: boolean
+  movementType?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   createdById?: boolean
@@ -2721,6 +4069,16 @@ export type ItemSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   maxStockLevel?: boolean
   currentStock?: boolean
   isActive?: boolean
+  imagePath?: boolean
+  barcode?: boolean
+  brand?: boolean
+  type?: boolean
+  color?: boolean
+  weight?: boolean
+  length?: boolean
+  width?: boolean
+  height?: boolean
+  movementType?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   createdById?: boolean
@@ -2740,12 +4098,22 @@ export type ItemSelectScalar = {
   maxStockLevel?: boolean
   currentStock?: boolean
   isActive?: boolean
+  imagePath?: boolean
+  barcode?: boolean
+  brand?: boolean
+  type?: boolean
+  color?: boolean
+  weight?: boolean
+  length?: boolean
+  width?: boolean
+  height?: boolean
+  movementType?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   createdById?: boolean
 }
 
-export type ItemOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "sku" | "name" | "description" | "categoryId" | "uomId" | "minStockLevel" | "maxStockLevel" | "currentStock" | "isActive" | "createdAt" | "updatedAt" | "createdById", ExtArgs["result"]["item"]>
+export type ItemOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "sku" | "name" | "description" | "categoryId" | "uomId" | "minStockLevel" | "maxStockLevel" | "currentStock" | "isActive" | "imagePath" | "barcode" | "brand" | "type" | "color" | "weight" | "length" | "width" | "height" | "movementType" | "createdAt" | "updatedAt" | "createdById", ExtArgs["result"]["item"]>
 export type ItemInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   category?: boolean | Prisma.CategoryDefaultArgs<ExtArgs>
   uom?: boolean | Prisma.UOMDefaultArgs<ExtArgs>
@@ -2760,6 +4128,8 @@ export type ItemInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   priceHistories?: boolean | Prisma.Item$priceHistoriesArgs<ExtArgs>
   vendorSupplies?: boolean | Prisma.Item$vendorSuppliesArgs<ExtArgs>
   rabLines?: boolean | Prisma.Item$rabLinesArgs<ExtArgs>
+  partnerPrices?: boolean | Prisma.Item$partnerPricesArgs<ExtArgs>
+  warehouseStocks?: boolean | Prisma.Item$warehouseStocksArgs<ExtArgs>
   _count?: boolean | Prisma.ItemCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ItemIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2789,6 +4159,8 @@ export type $ItemPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     priceHistories: Prisma.$ItemPriceHistoryPayload<ExtArgs>[]
     vendorSupplies: Prisma.$VendorItemPayload<ExtArgs>[]
     rabLines: Prisma.$RABLinePayload<ExtArgs>[]
+    partnerPrices: Prisma.$PartnerItemPricePayload<ExtArgs>[]
+    warehouseStocks: Prisma.$WarehouseStockPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -2801,6 +4173,16 @@ export type $ItemPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     maxStockLevel: number
     currentStock: number
     isActive: boolean
+    imagePath: string | null
+    barcode: string | null
+    brand: string | null
+    type: string | null
+    color: string | null
+    weight: number | null
+    length: number | null
+    width: number | null
+    height: number | null
+    movementType: string | null
     createdAt: Date
     updatedAt: Date
     createdById: string | null
@@ -3211,6 +4593,8 @@ export interface Prisma__ItemClient<T, Null = never, ExtArgs extends runtime.Typ
   priceHistories<T extends Prisma.Item$priceHistoriesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Item$priceHistoriesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ItemPriceHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   vendorSupplies<T extends Prisma.Item$vendorSuppliesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Item$vendorSuppliesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VendorItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   rabLines<T extends Prisma.Item$rabLinesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Item$rabLinesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RABLinePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  partnerPrices<T extends Prisma.Item$partnerPricesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Item$partnerPricesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PartnerItemPricePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  warehouseStocks<T extends Prisma.Item$warehouseStocksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Item$warehouseStocksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WarehouseStockPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3250,6 +4634,16 @@ export interface ItemFieldRefs {
   readonly maxStockLevel: Prisma.FieldRef<"Item", 'Int'>
   readonly currentStock: Prisma.FieldRef<"Item", 'Int'>
   readonly isActive: Prisma.FieldRef<"Item", 'Boolean'>
+  readonly imagePath: Prisma.FieldRef<"Item", 'String'>
+  readonly barcode: Prisma.FieldRef<"Item", 'String'>
+  readonly brand: Prisma.FieldRef<"Item", 'String'>
+  readonly type: Prisma.FieldRef<"Item", 'String'>
+  readonly color: Prisma.FieldRef<"Item", 'String'>
+  readonly weight: Prisma.FieldRef<"Item", 'Float'>
+  readonly length: Prisma.FieldRef<"Item", 'Float'>
+  readonly width: Prisma.FieldRef<"Item", 'Float'>
+  readonly height: Prisma.FieldRef<"Item", 'Float'>
+  readonly movementType: Prisma.FieldRef<"Item", 'String'>
   readonly createdAt: Prisma.FieldRef<"Item", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Item", 'DateTime'>
   readonly createdById: Prisma.FieldRef<"Item", 'String'>
@@ -3905,6 +5299,54 @@ export type Item$rabLinesArgs<ExtArgs extends runtime.Types.Extensions.InternalA
   take?: number
   skip?: number
   distinct?: Prisma.RABLineScalarFieldEnum | Prisma.RABLineScalarFieldEnum[]
+}
+
+/**
+ * Item.partnerPrices
+ */
+export type Item$partnerPricesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PartnerItemPrice
+   */
+  select?: Prisma.PartnerItemPriceSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the PartnerItemPrice
+   */
+  omit?: Prisma.PartnerItemPriceOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PartnerItemPriceInclude<ExtArgs> | null
+  where?: Prisma.PartnerItemPriceWhereInput
+  orderBy?: Prisma.PartnerItemPriceOrderByWithRelationInput | Prisma.PartnerItemPriceOrderByWithRelationInput[]
+  cursor?: Prisma.PartnerItemPriceWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PartnerItemPriceScalarFieldEnum | Prisma.PartnerItemPriceScalarFieldEnum[]
+}
+
+/**
+ * Item.warehouseStocks
+ */
+export type Item$warehouseStocksArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the WarehouseStock
+   */
+  select?: Prisma.WarehouseStockSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the WarehouseStock
+   */
+  omit?: Prisma.WarehouseStockOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.WarehouseStockInclude<ExtArgs> | null
+  where?: Prisma.WarehouseStockWhereInput
+  orderBy?: Prisma.WarehouseStockOrderByWithRelationInput | Prisma.WarehouseStockOrderByWithRelationInput[]
+  cursor?: Prisma.WarehouseStockWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.WarehouseStockScalarFieldEnum | Prisma.WarehouseStockScalarFieldEnum[]
 }
 
 /**

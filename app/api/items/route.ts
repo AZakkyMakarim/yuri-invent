@@ -21,6 +21,7 @@ export async function GET(request: Request) {
         const skip = (page - 1) * limit;
 
         // Filter params
+        const search = searchParams.get('search') || '';
         const sku = searchParams.get('sku') || '';
         const name = searchParams.get('name') || '';
         const categoryIds = searchParams.get('categoryIds')?.split(',').filter(Boolean) || [];
@@ -36,6 +37,13 @@ export async function GET(request: Request) {
 
         // Build where clause
         const where: Prisma.ItemWhereInput = {};
+
+        if (search) {
+            where.OR = [
+                { sku: { contains: search, mode: 'insensitive' } },
+                { name: { contains: search, mode: 'insensitive' } }
+            ];
+        }
 
         if (sku) {
             where.sku = { contains: sku, mode: 'insensitive' };
@@ -88,7 +96,13 @@ export async function GET(request: Request) {
                 include: {
                     category: { select: { id: true, name: true, code: true } },
                     uom: { select: { id: true, name: true, symbol: true } },
-                    createdBy: { select: { id: true, name: true } },
+                    createdBy: {
+                        select: {
+                            id: true,
+                            name: true,
+                            role: { select: { name: true } }
+                        }
+                    },
                 },
             }),
             prisma.item.count({ where }),
@@ -126,6 +140,19 @@ export async function POST(request: Request) {
             );
         }
 
+        if (!categoryId || !uomId) {
+            return NextResponse.json(
+                { error: 'Category and UOM are required' },
+                { status: 400 }
+            );
+        }
+
+        const parseNumber = (value: any) => {
+            if (value === null || value === undefined || value === '') return null;
+            const num = Number(value);
+            return isNaN(num) ? null : num;
+        };
+
         const item = await prisma.item.create({
             data: {
                 sku: sku.toUpperCase(),
@@ -136,12 +163,28 @@ export async function POST(request: Request) {
                 minStockLevel: minStockLevel || 0,
                 maxStockLevel: maxStockLevel || 0,
                 isActive,
+                imagePath: body.imagePath,
+                barcode: body.barcode,
+                brand: body.brand,
+                type: body.type,
+                color: body.color,
+                weight: parseNumber(body.weight),
+                length: parseNumber(body.length),
+                width: parseNumber(body.width),
+                height: parseNumber(body.height),
+                movementType: body.movementType,
                 ...(createdById && { createdById }),
             },
             include: {
                 category: { select: { id: true, name: true, code: true } },
                 uom: { select: { id: true, name: true, symbol: true } },
-                createdBy: { select: { id: true, name: true } },
+                createdBy: {
+                    select: {
+                        id: true,
+                        name: true,
+                        role: { select: { name: true } }
+                    }
+                },
             },
         });
 

@@ -33,6 +33,10 @@ enum POStatus {
   PENDING_MANAGER_APPROVAL
   PENDING_PURCHASING_APPROVAL
   APPROVED
+  CONFIRMED // Purchasing confirms intent
+  WAITING_PAYMENT // Non-SPK waiting for finance
+  PAYMENT_RELEASED // Finance processed payment
+  PO_ISSUED // Final PO generated
   SENT_TO_VENDOR
   PARTIALLY_RECEIVED
   FULLY_RECEIVED
@@ -229,6 +233,43 @@ model UOM {
   @@map("uoms")
 }
 
+model Warehouse {
+  id        String   @id @default(cuid())
+  code      String   @unique
+  name      String
+  type      String   @default("MAIN") // MAIN, BRANCH
+  address   String?
+  isActive  Boolean  @default(true)
+  isDefault Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  warehouseStocks  WarehouseStock[]
+  purchaseRequests PurchaseRequest[]
+  inbounds         Inbound[]
+  outbounds        Outbound[]
+  stockCards       StockCard[]
+  stockOpnames     StockOpname[]
+  
+  @@map("warehouses")
+}
+
+model WarehouseStock {
+  id           String   @id @default(cuid())
+  warehouseId  String
+  itemId       String
+  quantity     Int      @default(0)
+  reorderLevel Int?
+  updatedAt    DateTime @updatedAt
+
+  warehouse Warehouse @relation(fields: [warehouseId], references: [id])
+  item      Item      @relation(fields: [itemId], references: [id])
+
+  @@unique([warehouseId, itemId])
+  @@map("warehouse_stocks")
+}
+
 model Vendor {
   id              String     @id @default(cuid())
   code            String     @unique
@@ -243,6 +284,7 @@ model Vendor {
   vendorType      VendorType @default(NON_SPK)
   bank            BankName?
   bankBranch      String?
+  link            String?    // Link/Website URL
   spkDocumentPath String? // Path to uploaded SPK document for SPK vendors
   createdById     String?
   createdBy       User?      @relation("VendorCreatedBy", fields: [createdById], references: [id])
@@ -267,6 +309,7 @@ model VendorItem {
   itemId     String
   item       Item     @relation("ItemVendorSupplies", fields: [itemId], references: [id], onDelete: Cascade)
   cogsPerUom Float // Cost of Goods Sold per Unit of Measure
+  link       String? // Link/Website URL for this specific item from this vendor
   isActive   Boolean  @default(true)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
@@ -275,25 +318,6 @@ model VendorItem {
   @@map("vendor_items")
 }
 
-model Mitra {
-  id          String   @id @default(cuid())
-  code        String   @unique
-  name        String
-  address     String?
-  phone       String?
-  email       String?
-  contactName String?
-  bankName    String?
-  bankAccount String?
-  isActive    Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  // Relations
-  outbounds Outbound[]
-
-  @@map("mitras")
-}
 
 model Item {
   id            String   @id @default(cuid())
@@ -306,6 +330,19 @@ model Item {
   maxStockLevel Int      @default(0)
   currentStock  Int      @default(0)
   isActive      Boolean  @default(true)
+  imagePath     String?  // URL/Path to product image
+  barcode       String?  // Barcode/UPC/EAN
+  
+  // New Fields (2026-01-26)
+  brand         String?
+  type          String?
+  color         String?
+  weight        Float?     // In Grams
+  length        Float?     // In cm (implied)
+  width         Float?
+  height        Float?
+  movementType  String? // 'FAST', 'MEDIUM', 'SLOW'
+
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
   createdById   String?
@@ -324,6 +361,8 @@ model Item {
   priceHistories       ItemPriceHistory[]
   vendorSupplies       VendorItem[]          @relation("ItemVendorSupplies")
   rabLines             RABLine[]
+  partnerPrices        PartnerItemPrice[]
+  warehouseStocks      WarehouseStock[]
 
   @@map("items")
 }
@@ -419,6 +458,7 @@ model PurchaseRequest {
   prNumber    String   @unique
   vendorId    String
   rabId       String?
+  targetWarehouseId String? // Added relation
   totalAmount Decimal  @db.Decimal(18, 2)
   currency    String   @default("IDR")
   status      POStatus @default(DRAFT)
@@ -431,11 +471,14 @@ model PurchaseRequest {
   managerApprovedAt     DateTime?
   managerNotes          String?
 
-  // Purchasing Staff Acceptance
+  // Purchasing Staff Acceptance (Confirmation - Step 1)
   purchasingAcceptedById String?
   purchasingAcceptedAt   DateTime?
   purchasingNotes        String?
-  poNumber               String? // Generated when accepted by purchasing
+  paymentType            String? // SPK | NON_SPK (or reuse VendorType enum)
+
+  // PO Processing (Step 2)
+  poNumber               String? // Generated when accepted by purchasing (Step 2)
   poSentAt               DateTime?
   poDocumentPath         String? // Uploaded PO document
   shippingTrackingNumber String? // Optional shipping tracking number
@@ -453,6 +496,7 @@ model PurchaseRequest {
   // Relations
   vendor               Vendor                @relation(fields: [vendorId], references: [id])
   rab                  RAB?                  @relation(fields: [rabId], references: [id])
+  targetWarehouse      Warehouse?            @relation(fields: [targetWarehouseId], references: [id])
   createdBy            User                  @relation("PRCreatedBy", fields: [createdById], references: [id])
   managerApprovedBy    User?                 @relation("PRApprovedByManager", fields: [managerApprovedById], references: [id])
   purchasingAcceptedBy User?                 @relation("PRAcceptedByPurchasing", fields: [purchasingAcceptedById], references: [id])
@@ -508,6 +552,7 @@ model Inbound {
   grnNumber         String        @unique // Goods Received Note Number
   purchaseRequestId String
   vendorId          String
+  warehouseId       String?       // Added relation
   receiveDate       DateTime      @default(now())
   status            InboundStatus @default(PENDING_VERIFICATION)
   notes             String?
@@ -521,13 +566,19 @@ model Inbound {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  parentInboundId   String? // For split shipments (Shortage)
+  parentInbound     Inbound?      @relation("InboundSplit", fields: [parentInboundId], references: [id])
+  childInbounds     Inbound[]     @relation("InboundSplit")
+  
   // Relations
   purchaseRequest PurchaseRequest @relation(fields: [purchaseRequestId], references: [id])
   vendor          Vendor          @relation(fields: [vendorId], references: [id])
+  warehouse       Warehouse?      @relation(fields: [warehouseId], references: [id])
   createdBy       User            @relation("InboundCreatedBy", fields: [createdById], references: [id])
   verifiedBy      User?           @relation("InboundVerifiedBy", fields: [verifiedById], references: [id])
   items           InboundItem[]
   stockCards      StockCard[]
+  returns         Return[]        @relation("InboundReturns")
 
   @@map("inbounds")
 }
@@ -562,7 +613,8 @@ model InboundItem {
 model Outbound {
   id           String         @id @default(cuid())
   outboundCode String         @unique
-  mitraId      String?
+  warehouseId  String?        // Added relation
+  partnerId    String?
   requestDate  DateTime       @default(now())
   releaseDate  DateTime?
   status       OutboundStatus @default(DRAFT)
@@ -578,7 +630,9 @@ model Outbound {
   updatedAt DateTime @updatedAt
 
   // Relations
-  mitra      Mitra?         @relation(fields: [mitraId], references: [id])
+  // Relations
+  warehouse  Warehouse?     @relation(fields: [warehouseId], references: [id])
+  partner    Partner?       @relation(fields: [partnerId], references: [id])
   createdBy  User           @relation("OutboundCreatedBy", fields: [createdById], references: [id])
   approvedBy User?          @relation("OutboundApprovedBy", fields: [approvedById], references: [id])
   items      OutboundItem[]
@@ -602,6 +656,42 @@ model OutboundItem {
   @@map("outbound_items")
 }
 
+model Partner {
+  id          String   @id @default(cuid())
+  code        String   @unique
+  name        String
+  address     String?
+  phone       String?
+  email       String?
+  contactName String?
+  bankName    String?
+  bankAccount String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  outbounds      Outbound[]
+  itemPrices     PartnerItemPrice[]
+
+  @@map("partners")
+}
+
+model PartnerItemPrice {
+  id        String   @id @default(cuid())
+  partnerId String
+  itemId    String
+  price     Decimal  @db.Decimal(18, 2)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  partner Partner @relation(fields: [partnerId], references: [id], onDelete: Cascade)
+  item    Item    @relation(fields: [itemId], references: [id], onDelete: Cascade)
+
+  @@unique([partnerId, itemId])
+  @@map("partner_item_prices")
+}
+
 // =============================================================================
 // STOCK CARD (KARTU STOK)
 // =============================================================================
@@ -609,6 +699,7 @@ model OutboundItem {
 model StockCard {
   id              String            @id @default(cuid())
   itemId          String
+  warehouseId     String?           // Added relation
   movementType    StockMovementType
   referenceType   String // "INBOUND", "OUTBOUND", "ADJUSTMENT", "RETURN"
   referenceId     String
@@ -627,6 +718,7 @@ model StockCard {
 
   // Relations
   item            Item             @relation(fields: [itemId], references: [id])
+  warehouse       Warehouse?       @relation(fields: [warehouseId], references: [id])
   inbound         Inbound?         @relation(fields: [inboundId], references: [id])
   outbound        Outbound?        @relation(fields: [outboundId], references: [id])
   stockAdjustment StockAdjustment? @relation(fields: [stockAdjustmentId], references: [id])
@@ -643,6 +735,7 @@ model StockCard {
 model StockOpname {
   id            String            @id @default(cuid())
   opnameCode    String            @unique
+  warehouseId   String?           // Added relation
   scheduledDate DateTime
   startedAt     DateTime?
   completedAt   DateTime?
@@ -652,6 +745,7 @@ model StockOpname {
   updatedAt     DateTime          @updatedAt
 
   // Relations
+  warehouse  Warehouse?         @relation(fields: [warehouseId], references: [id])
   counts     StockOpnameCount[]
   adjustment StockAdjustment?
 
@@ -748,6 +842,7 @@ model Return {
   id                String       @id @default(cuid())
   returnCode        String       @unique
   purchaseRequestId String
+  inboundId         String?      // Link to source GRN
   vendorId          String
   returnDate        DateTime     @default(now())
   reason            ReturnReason
@@ -766,6 +861,7 @@ model Return {
 
   // Relations
   purchaseRequest PurchaseRequest @relation(fields: [purchaseRequestId], references: [id])
+  inbound         Inbound?        @relation("InboundReturns", fields: [inboundId], references: [id])
   vendor          Vendor          @relation(fields: [vendorId], references: [id])
   createdBy       User            @relation("ReturnCreatedBy", fields: [createdById], references: [id])
   approvedBy      User?           @relation("ReturnApprovedBy", fields: [approvedById], references: [id])

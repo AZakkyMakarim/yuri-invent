@@ -6,8 +6,10 @@ import { useRouter } from 'next/navigation';
 import { Plus, Search, FileText, Loader2, Eye, Trash2 } from 'lucide-react';
 import { formatCurrency } from '@/lib/utils';
 import { getRABList, deleteRAB } from '@/app/actions/rab';
+import { useTranslations } from 'next-intl';
 
 export default function RABListPage() {
+    const t = useTranslations('budget');
     const router = useRouter();
     const [rabs, setRabs] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -27,7 +29,7 @@ export default function RABListPage() {
     };
 
     const handleDelete = async (id: string) => {
-        if (!confirm('Are you sure you want to delete this Budget Plan?')) return;
+        if (!confirm(t('deleteConfirm'))) return;
         const result = await deleteRAB(id);
         if (result.success) {
             loadRABs();
@@ -47,16 +49,16 @@ export default function RABListPage() {
                 <div>
                     <h1 className="text-2xl font-bold flex items-center gap-2">
                         <FileText className="text-(--color-primary)" />
-                        Budget Plan (RAB)
+                        {t('title')}
                     </h1>
-                    <p className="text-(--color-text-secondary)">Manage monthly budget plans</p>
+                    <p className="text-(--color-text-secondary)">{t('description')}</p>
                 </div>
                 <Link
                     href="/budget/input"
                     className="flex items-center gap-2 bg-(--color-primary) text-white px-4 py-2 rounded-lg hover:bg-(--color-primary)/90 transition-colors"
                 >
                     <Plus size={18} />
-                    Create New RAB
+                    {t('createNew')}
                 </Link>
             </div>
 
@@ -66,7 +68,7 @@ export default function RABListPage() {
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-(--color-text-muted)" size={18} />
                     <input
                         type="text"
-                        placeholder="Search by Code or Name..."
+                        placeholder={t('searchPlaceholder')}
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         className="w-full pl-10 pr-4 py-2 rounded-lg border border-(--color-border) bg-(--color-bg-card) focus:ring-2 focus:ring-(--color-primary) outline-none"
@@ -80,13 +82,13 @@ export default function RABListPage() {
                     <table className="w-full">
                         <thead className="bg-(--color-bg-tertiary) text-left">
                             <tr>
-                                <th className="px-6 py-3 font-semibold text-sm text-(--color-text-secondary)">RAB Code</th>
-                                <th className="px-6 py-3 font-semibold text-sm text-(--color-text-secondary)">Period</th>
-                                <th className="px-6 py-3 font-semibold text-sm text-(--color-text-secondary)">Total Budget</th>
-                                <th className="px-6 py-3 font-semibold text-sm text-(--color-text-secondary)">Remaining</th>
-                                <th className="px-6 py-3 font-semibold text-sm text-(--color-text-secondary)">Status</th>
-                                <th className="px-6 py-3 font-semibold text-sm text-(--color-text-secondary)">Created By</th>
-                                <th className="px-6 py-3 text-right font-semibold text-sm text-(--color-text-secondary)">Actions</th>
+                                <th className="px-6 py-3 font-semibold text-sm text-(--color-text-secondary)">{t('table.code')}</th>
+                                <th className="px-6 py-3 font-semibold text-sm text-(--color-text-secondary)">{t('table.period')}</th>
+                                <th className="px-6 py-3 font-semibold text-sm text-(--color-text-secondary)">{t('table.totalBudget')}</th>
+                                <th className="px-6 py-3 font-semibold text-sm text-(--color-text-secondary)">{t('table.remaining')}</th>
+                                <th className="px-6 py-3 font-semibold text-sm text-(--color-text-secondary)">{t('table.status')}</th>
+                                <th className="px-6 py-3 font-semibold text-sm text-(--color-text-secondary)">{t('table.createdBy')}</th>
+                                <th className="px-6 py-3 text-right font-semibold text-sm text-(--color-text-secondary)">{t('table.actions')}</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-(--color-border)">
@@ -94,13 +96,13 @@ export default function RABListPage() {
                                 <tr>
                                     <td colSpan={7} className="px-6 py-8 text-center text-(--color-text-secondary)">
                                         <Loader2 className="animate-spin inline-block mb-2" />
-                                        <p>Loading Budget Plans...</p>
+                                        <p>{t('table.loading')}</p>
                                     </td>
                                 </tr>
                             ) : filteredRabs.length === 0 ? (
                                 <tr>
                                     <td colSpan={7} className="px-6 py-8 text-center text-(--color-text-muted)">
-                                        No Budget Plans found.
+                                        {t('table.noData')}
                                     </td>
                                 </tr>
                             ) : (
@@ -127,7 +129,7 @@ export default function RABListPage() {
                                             <button
                                                 onClick={() => router.push(`/budget/${rab.id}`)}
                                                 className="p-1.5 hover:bg-(--color-bg-tertiary) rounded text-(--color-text-secondary)"
-                                                title="View Details"
+                                                title={t('table.viewDetails')}
                                             >
                                                 <Eye size={18} />
                                             </button>
@@ -135,7 +137,7 @@ export default function RABListPage() {
                                                 <button
                                                     onClick={() => handleDelete(rab.id)}
                                                     className="p-1.5 hover:bg-red-100 dark:hover:bg-red-900/30 rounded text-red-500"
-                                                    title="Delete"
+                                                    title={t('table.delete')}
                                                 >
                                                     <Trash2 size={18} />
                                                 </button>

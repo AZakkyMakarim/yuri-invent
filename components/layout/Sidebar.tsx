@@ -63,7 +63,6 @@ const navItems: NavItem[] = [
         icon: <Package size={20} />,
         children: [
             { key: 'stockCard', href: '/stock/card', permission: 'stock_card' },
-            { key: 'items', href: '/stock/items', permission: 'items' },
             { key: 'itemsStock', href: '/stock/items-stock', permission: 'items_stock' },
         ],
     },
@@ -74,6 +73,7 @@ const navItems: NavItem[] = [
             { key: 'prList', href: '/purchase', permission: 'pr_list' },
             { key: 'prInput', href: '/purchase/input', permission: 'pr_input' },
             { key: 'prVerification', href: '/purchase/manager-verification', permission: 'pr_verification' },
+            { key: 'prConfirmation', href: '/purchase/confirmation', permission: 'pr_verification' }, // Should use distinct permission in real app
             { key: 'poVerification', href: '/purchase/purchasing-verification', permission: 'po_verification' },
         ],
     },
@@ -97,8 +97,8 @@ const navItems: NavItem[] = [
         key: 'return',
         icon: <RotateCcw size={20} />,
         children: [
-            { key: 'returnList', href: '/return', permission: 'return_list_input' },
-            { key: 'returnVerification', href: '/return/verification', permission: 'return_verification' },
+            { key: 'returnList', href: '/returns', permission: 'return_list_input' },
+            { key: 'returnVerification', href: '/returns/verification', permission: 'return_verification' },
         ],
     },
     {
@@ -127,8 +127,9 @@ const navItems: NavItem[] = [
         children: [
             { key: 'category', href: '/master/category', permission: 'categories_uom' },
             { key: 'itemMaster', href: '/master/items', permission: 'items' },
+            { key: 'warehouses', href: '/master/warehouses', permission: 'warehouses' },
             { key: 'vendor', href: '/master/vendor', permission: 'vendors' },
-            { key: 'mitra', href: '/master/mitra', permission: 'partners_mitra_' },
+            { key: 'partners', href: '/master/partners', permission: 'partners_mitra_' },
             { key: 'users', href: '/master/users', permission: 'users_roles' },
         ],
     },
@@ -243,7 +244,7 @@ export default function Sidebar() {
                                 >
                                     <div className="flex items-center gap-3">
                                         {item.icon}
-                                        <span className="font-medium">{t(item.key)}</span>
+                                        <span className="font-medium text-left">{t(item.key)}</span>
                                     </div>
                                     {expandedMenus.includes(item.key) ? (
                                         <ChevronDown size={16} />

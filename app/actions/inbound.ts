@@ -8,7 +8,8 @@ import {
     Prisma,
     StockMovementType,
     InboundDiscrepancyType,
-    DiscrepancyResolution
+    DiscrepancyResolution,
+    Warehouse
 } from '@prisma/client';
 
 export type InboundVerificationItem = {
@@ -148,7 +149,7 @@ export async function verifyInbound(input: VerifyInboundInput): Promise<ActionRe
         // Verify Inbound exists and is pending
         const existingInbound = await prisma.inbound.findUnique({
             where: { id },
-            include: { items: true }
+            include: { items: true, vendor: true }
         });
 
         if (!existingInbound) throw new Error('Inbound not found');
@@ -157,7 +158,7 @@ export async function verifyInbound(input: VerifyInboundInput): Promise<ActionRe
         }
 
         const result = await prisma.$transaction(async (tx) => {
-            // 1. Update Inbound Status
+            // 1. Update Inbound Status -> VERIFIED
             const verifiedInbound = await tx.inbound.update({
                 where: { id },
                 data: {
@@ -169,6 +170,10 @@ export async function verifyInbound(input: VerifyInboundInput): Promise<ActionRe
                     updatedAt: new Date()
                 }
             });
+
+            // Prepare Action Lists
+            const shortageItems: { itemId: string, qty: number }[] = [];
+            const returnItems: { itemId: string, qty: number, reason: string, type: 'OVERAGE' | 'WRONG_ITEM' | 'DAMAGED' }[] = [];
 
             // 2. Process Items
             for (const itemInput of items) {
@@ -184,14 +189,42 @@ export async function verifyInbound(input: VerifyInboundInput): Promise<ActionRe
                             rejectedQuantity: itemInput.rejectedQty,
                             notes: itemInput.notes,
                             discrepancyType: itemInput.discrepancyType || 'NONE',
-                            discrepancyAction: itemInput.discrepancyAction || (itemInput.discrepancyType && itemInput.discrepancyType !== 'NONE' ? 'PENDING' : null),
                             discrepancyReason: itemInput.discrepancyReason
                         }
                     });
 
-                    // 3. Update Stock (Only for ACCEPTED Quantity)
+                    // 3. Update Stock (WarehouseStock + Item Total)
                     if (itemInput.acceptedQty > 0) {
-                        // Update stock atomically and get new value
+                        // A. Determine Warehouse (Use Inbound specific or fallback to Main)
+                        let targetWarehouseId = existingInbound.warehouseId;
+                        if (!targetWarehouseId) {
+                            const mainWh = await tx.warehouse.findFirst({ where: { isDefault: true } });
+                            targetWarehouseId = mainWh?.id ?? null;
+                        }
+
+                        if (!targetWarehouseId) {
+                            throw new Error("No warehouse specified and no default warehouse found.");
+                        }
+
+                        // B. Update/Create WarehouseStock
+                        await tx.warehouseStock.upsert({
+                            where: {
+                                warehouseId_itemId: {
+                                    warehouseId: targetWarehouseId!,
+                                    itemId: itemInput.itemId
+                                }
+                            },
+                            create: {
+                                warehouseId: targetWarehouseId!,
+                                itemId: itemInput.itemId,
+                                quantity: itemInput.acceptedQty
+                            },
+                            update: {
+                                quantity: { increment: itemInput.acceptedQty }
+                            }
+                        });
+
+                        // C. Update Total Item Stock (Cached Sum)
                         const updatedItem = await tx.item.update({
                             where: { id: itemInput.itemId },
                             data: {
@@ -201,26 +234,131 @@ export async function verifyInbound(input: VerifyInboundInput): Promise<ActionRe
                             }
                         });
 
-                        const qtyAfter = updatedItem.currentStock;
-                        const qtyBefore = qtyAfter - itemInput.acceptedQty;
+                        const qtyAfter = updatedItem.currentStock; // This is total stock level
+                        // Calculate specific warehouse stock after?
+                        // For Stock Card, we usually track specific warehouse balance.
+                        // Let's resolve the warehouse balance for the card.
+                        const whStock = await tx.warehouseStock.findUnique({
+                            where: {
+                                warehouseId_itemId: {
+                                    warehouseId: targetWarehouseId,
+                                    itemId: itemInput.itemId
+                                }
+                            }
+                        });
+                        const whQtyAfter = whStock?.quantity || 0;
+                        const whQtyBefore = whQtyAfter - itemInput.acceptedQty;
 
                         // Create Stock Card
                         await tx.stockCard.create({
                             data: {
                                 itemId: itemInput.itemId,
+                                warehouseId: targetWarehouseId, // Add warehouse context
                                 movementType: 'INBOUND',
                                 referenceType: 'INBOUND',
                                 referenceId: id,
                                 inboundId: id,
-                                quantityBefore: qtyBefore,
+                                quantityBefore: whQtyBefore,
                                 quantityChange: itemInput.acceptedQty,
-                                quantityAfter: qtyAfter,
+                                quantityAfter: whQtyAfter,
                                 notes: `Inbound ${verifiedInbound.grnNumber}: Accepted ${itemInput.acceptedQty} / Received ${itemInput.receivedQty}`,
                                 transactionDate: new Date()
                             }
                         });
                     }
+
+                    // 4. Detect Shortage (Expected > Received)
+                    if (itemInput.receivedQty < itemInput.expectedQty) {
+                        shortageItems.push({
+                            itemId: itemInput.itemId,
+                            qty: itemInput.expectedQty - itemInput.receivedQty
+                        });
+                    }
+
+                    // 5. Detect Overage (Received > Expected)
+                    if (itemInput.receivedQty > itemInput.expectedQty) {
+                        returnItems.push({
+                            itemId: itemInput.itemId,
+                            qty: itemInput.receivedQty - itemInput.expectedQty,
+                            reason: 'Overage received',
+                            type: 'OVERAGE'
+                        });
+                    }
+
+                    // 6. Detect Rejected (Wrong/Damaged)
+                    if (itemInput.rejectedQty > 0) {
+                        returnItems.push({
+                            itemId: itemInput.itemId,
+                            qty: itemInput.rejectedQty,
+                            reason: itemInput.discrepancyReason || (itemInput.discrepancyType === 'WRONG_ITEM' ? 'Wrong Item' : 'Damaged'),
+                            type: itemInput.discrepancyType as any
+                        });
+                    }
                 }
+            }
+
+            // 7. Handle Shortage -> Create Child GRN
+            if (shortageItems.length > 0) {
+                // Generate Child GRN Number (e.g., GRN-XXX-A)
+                // Simplified logic: Append suffix based on existing children count?
+                // For now, let's just append a random suffix or use a timestamp to ensure uniqueness, or better, query children.
+                const childCount = await tx.inbound.count({ where: { parentInboundId: id } });
+                const suffix = String.fromCharCode(65 + childCount); // A, B, C...
+                const childGrnNumber = `${existingInbound.grnNumber}-${suffix}`;
+
+                await tx.inbound.create({
+                    data: {
+                        grnNumber: childGrnNumber, // Note: This might collide if not careful, but good enough for MVP
+                        purchaseRequestId: existingInbound.purchaseRequestId,
+                        vendorId: existingInbound.vendorId,
+                        parentInboundId: id,
+                        receiveDate: new Date(), // Reset receive date? Or keep original?
+                        status: 'PENDING_VERIFICATION', // Ready to be verified when they arrive
+                        notes: `Partial delivery balance from ${existingInbound.grnNumber}`,
+                        createdById: userId,
+                        items: {
+                            create: shortageItems.map(s => ({
+                                itemId: s.itemId,
+                                expectedQuantity: s.qty,
+                                receivedQuantity: 0
+                            }))
+                        }
+                    }
+                });
+            }
+
+            // 8. Handle Returns -> Create Return Record
+            if (returnItems.length > 0) {
+                // Generate Return Code
+                const year = new Date().getFullYear();
+                const month = String(new Date().getMonth() + 1).padStart(2, '0');
+                const returnCount = await tx.return.count({
+                    where: { returnCode: { startsWith: `RET/${year}/${month}` } }
+                });
+                const returnCode = `RET/${year}/${month}/${String(returnCount + 1).padStart(4, '0')}`;
+
+                await tx.return.create({
+                    data: {
+                        returnCode,
+                        purchaseRequestId: existingInbound.purchaseRequestId,
+                        inboundId: id,
+                        vendorId: existingInbound.vendorId,
+                        returnDate: new Date(),
+                        reason: 'OTHER', // Default, lines have specifics
+                        status: 'DRAFT', // Needs resolution input
+                        notes: `Generated from Inbound ${existingInbound.grnNumber} discrepancies`,
+                        createdById: userId,
+                        items: {
+                            create: returnItems.map(r => ({
+                                itemId: r.itemId,
+                                quantity: r.qty,
+                                unitPrice: new Prisma.Decimal(0), // Placeholder, need to fetch price?
+                                totalPrice: new Prisma.Decimal(0),
+                                reason: `${r.type}: ${r.reason}`
+                            }))
+                        }
+                    }
+                });
             }
 
             return verifiedInbound;
@@ -229,6 +367,7 @@ export async function verifyInbound(input: VerifyInboundInput): Promise<ActionRe
         revalidatePath('/inbound');
         revalidatePath('/inbound/verification');
         revalidatePath('/stock');
+        revalidatePath('/inbound/issues');
 
         return { success: true };
 
@@ -293,9 +432,81 @@ export async function getInboundIssues(
                 totalPages: Math.ceil(total / limit)
             }
         };
-
     } catch (error: any) {
-        console.error('Failed to fetch inbound issues:', error);
+        console.error('Failed to fetch inbounds:', error);
+        return { success: false, error: error.message };
+    }
+}
+
+export async function getPendingShortages(
+    page = 1,
+    limit = 10,
+    search = ''
+): Promise<ActionResponse> {
+    try {
+        const skip = (page - 1) * limit;
+        const where: Prisma.InboundWhereInput = {
+            status: 'PENDING_VERIFICATION',
+            parentInboundId: { not: null }
+        };
+
+        if (search) {
+            where.OR = [
+                { grnNumber: { contains: search, mode: 'insensitive' } },
+                { vendor: { name: { contains: search, mode: 'insensitive' } } }
+            ];
+        }
+
+        const [data, total] = await Promise.all([
+            prisma.inbound.findMany({
+                where,
+                skip,
+                take: limit,
+                orderBy: { createdAt: 'desc' },
+                include: {
+                    vendor: true,
+                    parentInbound: { select: { grnNumber: true } },
+                    _count: { select: { items: true } }
+                }
+            }),
+            prisma.inbound.count({ where })
+        ]);
+
+        return {
+            success: true,
+            data: serializeDecimal(data),
+            pagination: {
+                total,
+                page,
+                limit,
+                totalPages: Math.ceil(total / limit)
+            }
+        };
+    } catch (error: any) {
+        return { success: false, error: error.message };
+    }
+}
+
+export async function closeShortage(inboundId: string, notes?: string) {
+    try {
+        // "Closing" a shortage means we are not expecting the goods anymore.
+        // We can either DELETE the child inbound or mark it as REJECTED.
+        // REJECTED is safer for history.
+
+        await prisma.inbound.update({
+            where: { id: inboundId },
+            data: {
+                status: 'REJECTED',
+                notes: notes ? `Shortage Closed: ${notes}` : 'Shortage Closed',
+                updatedAt: new Date()
+            }
+        });
+
+        revalidatePath('/inbound/issues');
+        revalidatePath('/inbound');
+
+        return { success: true };
+    } catch (error: any) {
         return { success: false, error: error.message };
     }
 }

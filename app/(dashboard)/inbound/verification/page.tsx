@@ -22,7 +22,15 @@ import {
     TableRow,
 } from "@/components/ui/Table";
 import { getInbounds, getInboundById } from '@/app/actions/inbound';
-import InboundVerificationModal from '@/components/inbound/InboundVerificationModal';
+import dynamic from 'next/dynamic';
+
+const InboundVerificationModal = dynamic(
+    () => import('@/components/inbound/InboundVerificationModal'),
+    {
+        loading: () => <></>,
+        ssr: false
+    }
+);
 
 export default function InboundVerificationPage() {
     const [data, setData] = useState<any[]>([]);

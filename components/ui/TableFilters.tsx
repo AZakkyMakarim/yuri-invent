@@ -3,6 +3,7 @@
 import { ReactNode, useState } from 'react';
 import { Filter, X, ChevronDown, ChevronUp, Search, RotateCcw } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useTranslations } from 'next-intl';
 
 interface TableFiltersProps {
     children: ReactNode;
@@ -19,6 +20,7 @@ export function TableFilters({
     onReset,
     hasActiveFilters = false,
 }: TableFiltersProps) {
+    const t = useTranslations('common');
     const [isExpanded, setIsExpanded] = useState(false);
 
     const handleApply = () => {
@@ -40,7 +42,7 @@ export function TableFilters({
                 )}
             >
                 <Filter size={14} />
-                <span>Filters</span>
+                <span>{t('filter')}</span>
                 {hasActiveFilters && (
                     <span className="w-2 h-2 rounded-full bg-(--color-primary)" />
                 )}
@@ -64,7 +66,7 @@ export function TableFilters({
                             )}
                         >
                             <Search size={14} />
-                            Apply Filters
+                            {t('applyFilters', { defaultValue: 'Apply Filters' })}
                         </button>
                         <button
                             onClick={onReset}
@@ -75,7 +77,7 @@ export function TableFilters({
                             )}
                         >
                             <RotateCcw size={14} />
-                            Reset
+                            {t('reset')}
                         </button>
                     </div>
                 </div>

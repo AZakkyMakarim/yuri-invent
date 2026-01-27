@@ -39,6 +39,7 @@ export type VendorItemMinAggregateOutputType = {
   vendorId: string | null
   itemId: string | null
   cogsPerUom: number | null
+  link: string | null
   isActive: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -49,6 +50,7 @@ export type VendorItemMaxAggregateOutputType = {
   vendorId: string | null
   itemId: string | null
   cogsPerUom: number | null
+  link: string | null
   isActive: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -59,6 +61,7 @@ export type VendorItemCountAggregateOutputType = {
   vendorId: number
   itemId: number
   cogsPerUom: number
+  link: number
   isActive: number
   createdAt: number
   updatedAt: number
@@ -79,6 +82,7 @@ export type VendorItemMinAggregateInputType = {
   vendorId?: true
   itemId?: true
   cogsPerUom?: true
+  link?: true
   isActive?: true
   createdAt?: true
   updatedAt?: true
@@ -89,6 +93,7 @@ export type VendorItemMaxAggregateInputType = {
   vendorId?: true
   itemId?: true
   cogsPerUom?: true
+  link?: true
   isActive?: true
   createdAt?: true
   updatedAt?: true
@@ -99,6 +104,7 @@ export type VendorItemCountAggregateInputType = {
   vendorId?: true
   itemId?: true
   cogsPerUom?: true
+  link?: true
   isActive?: true
   createdAt?: true
   updatedAt?: true
@@ -196,6 +202,7 @@ export type VendorItemGroupByOutputType = {
   vendorId: string
   itemId: string
   cogsPerUom: number
+  link: string | null
   isActive: boolean
   createdAt: Date
   updatedAt: Date
@@ -229,6 +236,7 @@ export type VendorItemWhereInput = {
   vendorId?: Prisma.StringFilter<"VendorItem"> | string
   itemId?: Prisma.StringFilter<"VendorItem"> | string
   cogsPerUom?: Prisma.FloatFilter<"VendorItem"> | number
+  link?: Prisma.StringNullableFilter<"VendorItem"> | string | null
   isActive?: Prisma.BoolFilter<"VendorItem"> | boolean
   createdAt?: Prisma.DateTimeFilter<"VendorItem"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"VendorItem"> | Date | string
@@ -241,6 +249,7 @@ export type VendorItemOrderByWithRelationInput = {
   vendorId?: Prisma.SortOrder
   itemId?: Prisma.SortOrder
   cogsPerUom?: Prisma.SortOrder
+  link?: Prisma.SortOrderInput | Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -257,6 +266,7 @@ export type VendorItemWhereUniqueInput = Prisma.AtLeast<{
   vendorId?: Prisma.StringFilter<"VendorItem"> | string
   itemId?: Prisma.StringFilter<"VendorItem"> | string
   cogsPerUom?: Prisma.FloatFilter<"VendorItem"> | number
+  link?: Prisma.StringNullableFilter<"VendorItem"> | string | null
   isActive?: Prisma.BoolFilter<"VendorItem"> | boolean
   createdAt?: Prisma.DateTimeFilter<"VendorItem"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"VendorItem"> | Date | string
@@ -269,6 +279,7 @@ export type VendorItemOrderByWithAggregationInput = {
   vendorId?: Prisma.SortOrder
   itemId?: Prisma.SortOrder
   cogsPerUom?: Prisma.SortOrder
+  link?: Prisma.SortOrderInput | Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -287,6 +298,7 @@ export type VendorItemScalarWhereWithAggregatesInput = {
   vendorId?: Prisma.StringWithAggregatesFilter<"VendorItem"> | string
   itemId?: Prisma.StringWithAggregatesFilter<"VendorItem"> | string
   cogsPerUom?: Prisma.FloatWithAggregatesFilter<"VendorItem"> | number
+  link?: Prisma.StringNullableWithAggregatesFilter<"VendorItem"> | string | null
   isActive?: Prisma.BoolWithAggregatesFilter<"VendorItem"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"VendorItem"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"VendorItem"> | Date | string
@@ -295,6 +307,7 @@ export type VendorItemScalarWhereWithAggregatesInput = {
 export type VendorItemCreateInput = {
   id?: string
   cogsPerUom: number
+  link?: string | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -307,6 +320,7 @@ export type VendorItemUncheckedCreateInput = {
   vendorId: string
   itemId: string
   cogsPerUom: number
+  link?: string | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -315,6 +329,7 @@ export type VendorItemUncheckedCreateInput = {
 export type VendorItemUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   cogsPerUom?: Prisma.FloatFieldUpdateOperationsInput | number
+  link?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -327,6 +342,7 @@ export type VendorItemUncheckedUpdateInput = {
   vendorId?: Prisma.StringFieldUpdateOperationsInput | string
   itemId?: Prisma.StringFieldUpdateOperationsInput | string
   cogsPerUom?: Prisma.FloatFieldUpdateOperationsInput | number
+  link?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -337,6 +353,7 @@ export type VendorItemCreateManyInput = {
   vendorId: string
   itemId: string
   cogsPerUom: number
+  link?: string | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -345,6 +362,7 @@ export type VendorItemCreateManyInput = {
 export type VendorItemUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   cogsPerUom?: Prisma.FloatFieldUpdateOperationsInput | number
+  link?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -355,6 +373,7 @@ export type VendorItemUncheckedUpdateManyInput = {
   vendorId?: Prisma.StringFieldUpdateOperationsInput | string
   itemId?: Prisma.StringFieldUpdateOperationsInput | string
   cogsPerUom?: Prisma.FloatFieldUpdateOperationsInput | number
+  link?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -380,6 +399,7 @@ export type VendorItemCountOrderByAggregateInput = {
   vendorId?: Prisma.SortOrder
   itemId?: Prisma.SortOrder
   cogsPerUom?: Prisma.SortOrder
+  link?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -394,6 +414,7 @@ export type VendorItemMaxOrderByAggregateInput = {
   vendorId?: Prisma.SortOrder
   itemId?: Prisma.SortOrder
   cogsPerUom?: Prisma.SortOrder
+  link?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -404,6 +425,7 @@ export type VendorItemMinOrderByAggregateInput = {
   vendorId?: Prisma.SortOrder
   itemId?: Prisma.SortOrder
   cogsPerUom?: Prisma.SortOrder
+  link?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -508,6 +530,7 @@ export type VendorItemUncheckedUpdateManyWithoutItemNestedInput = {
 export type VendorItemCreateWithoutVendorInput = {
   id?: string
   cogsPerUom: number
+  link?: string | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -518,6 +541,7 @@ export type VendorItemUncheckedCreateWithoutVendorInput = {
   id?: string
   itemId: string
   cogsPerUom: number
+  link?: string | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -557,6 +581,7 @@ export type VendorItemScalarWhereInput = {
   vendorId?: Prisma.StringFilter<"VendorItem"> | string
   itemId?: Prisma.StringFilter<"VendorItem"> | string
   cogsPerUom?: Prisma.FloatFilter<"VendorItem"> | number
+  link?: Prisma.StringNullableFilter<"VendorItem"> | string | null
   isActive?: Prisma.BoolFilter<"VendorItem"> | boolean
   createdAt?: Prisma.DateTimeFilter<"VendorItem"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"VendorItem"> | Date | string
@@ -565,6 +590,7 @@ export type VendorItemScalarWhereInput = {
 export type VendorItemCreateWithoutItemInput = {
   id?: string
   cogsPerUom: number
+  link?: string | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -575,6 +601,7 @@ export type VendorItemUncheckedCreateWithoutItemInput = {
   id?: string
   vendorId: string
   cogsPerUom: number
+  link?: string | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -610,6 +637,7 @@ export type VendorItemCreateManyVendorInput = {
   id?: string
   itemId: string
   cogsPerUom: number
+  link?: string | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -618,6 +646,7 @@ export type VendorItemCreateManyVendorInput = {
 export type VendorItemUpdateWithoutVendorInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   cogsPerUom?: Prisma.FloatFieldUpdateOperationsInput | number
+  link?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -628,6 +657,7 @@ export type VendorItemUncheckedUpdateWithoutVendorInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   itemId?: Prisma.StringFieldUpdateOperationsInput | string
   cogsPerUom?: Prisma.FloatFieldUpdateOperationsInput | number
+  link?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -637,6 +667,7 @@ export type VendorItemUncheckedUpdateManyWithoutVendorInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   itemId?: Prisma.StringFieldUpdateOperationsInput | string
   cogsPerUom?: Prisma.FloatFieldUpdateOperationsInput | number
+  link?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -646,6 +677,7 @@ export type VendorItemCreateManyItemInput = {
   id?: string
   vendorId: string
   cogsPerUom: number
+  link?: string | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -654,6 +686,7 @@ export type VendorItemCreateManyItemInput = {
 export type VendorItemUpdateWithoutItemInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   cogsPerUom?: Prisma.FloatFieldUpdateOperationsInput | number
+  link?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -664,6 +697,7 @@ export type VendorItemUncheckedUpdateWithoutItemInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   vendorId?: Prisma.StringFieldUpdateOperationsInput | string
   cogsPerUom?: Prisma.FloatFieldUpdateOperationsInput | number
+  link?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -673,6 +707,7 @@ export type VendorItemUncheckedUpdateManyWithoutItemInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   vendorId?: Prisma.StringFieldUpdateOperationsInput | string
   cogsPerUom?: Prisma.FloatFieldUpdateOperationsInput | number
+  link?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -685,6 +720,7 @@ export type VendorItemSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   vendorId?: boolean
   itemId?: boolean
   cogsPerUom?: boolean
+  link?: boolean
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -697,6 +733,7 @@ export type VendorItemSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ex
   vendorId?: boolean
   itemId?: boolean
   cogsPerUom?: boolean
+  link?: boolean
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -709,6 +746,7 @@ export type VendorItemSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ex
   vendorId?: boolean
   itemId?: boolean
   cogsPerUom?: boolean
+  link?: boolean
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -721,12 +759,13 @@ export type VendorItemSelectScalar = {
   vendorId?: boolean
   itemId?: boolean
   cogsPerUom?: boolean
+  link?: boolean
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type VendorItemOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "vendorId" | "itemId" | "cogsPerUom" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["vendorItem"]>
+export type VendorItemOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "vendorId" | "itemId" | "cogsPerUom" | "link" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["vendorItem"]>
 export type VendorItemInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   vendor?: boolean | Prisma.VendorDefaultArgs<ExtArgs>
   item?: boolean | Prisma.ItemDefaultArgs<ExtArgs>
@@ -751,6 +790,7 @@ export type $VendorItemPayload<ExtArgs extends runtime.Types.Extensions.Internal
     vendorId: string
     itemId: string
     cogsPerUom: number
+    link: string | null
     isActive: boolean
     createdAt: Date
     updatedAt: Date
@@ -1183,6 +1223,7 @@ export interface VendorItemFieldRefs {
   readonly vendorId: Prisma.FieldRef<"VendorItem", 'String'>
   readonly itemId: Prisma.FieldRef<"VendorItem", 'String'>
   readonly cogsPerUom: Prisma.FieldRef<"VendorItem", 'Float'>
+  readonly link: Prisma.FieldRef<"VendorItem", 'String'>
   readonly isActive: Prisma.FieldRef<"VendorItem", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"VendorItem", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"VendorItem", 'DateTime'>

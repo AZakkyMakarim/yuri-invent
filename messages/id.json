@@ -9,6 +9,7 @@
         "search": "Cari",
         "filter": "Filter",
         "actions": "Aksi",
+        "applyFilters": "Terapkan Filter",
         "status": "Status",
         "loading": "Memuat...",
         "noData": "Tidak ada data",
@@ -26,7 +27,12 @@
         "export": "Ekspor",
         "import": "Impor",
         "selectAll": "Pilih Semua",
-        "deselectAll": "Batal Pilih Semua"
+        "deselectAll": "Batal Pilih Semua",
+        "active": "Aktif",
+        "inactive": "Non-Aktif",
+        "all": "Semua",
+        "created": "Dibuat",
+        "createdBy": "Dibuat Oleh"
     },
     "nav": {
         "dashboard": "Dasbor",
@@ -39,12 +45,12 @@
         "outboundVerification": "Verifikasi Permintaan",
         "stock": "Stok",
         "stockCard": "Kartu Stok",
-        "items": "Barang",
         "itemsStock": "Barang & Stok",
         "purchaseRequest": "Pengajuan Pembelian",
         "prList": "Daftar Pengajuan",
         "prInput": "Buat Pengajuan",
         "prVerification": "Verifikasi Pengajuan (Manager)",
+        "prConfirmation": "Konfirmasi Pengajuan (Purchasing)",
         "poVerification": "Verifikasi Pembelian (Purchasing)",
         "stockOpname": "Stock Opname",
         "opnameList": "Rekap Stock Opname",
@@ -68,8 +74,9 @@
         "master": "Master Data",
         "category": "Kategori & Satuan",
         "itemMaster": "Barang & Stok",
+        "warehouses": "Gudang",
         "vendor": "Vendor",
-        "mitra": "Mitra",
+        "partners": "Mitra",
         "users": "Pengguna & Peran"
     },
     "status": {
@@ -94,37 +101,268 @@
         "recentActivity": "Aktivitas Terbaru"
     },
     "master": {
-        "category": {
-            "title": "Kategori",
-            "name": "Nama Kategori",
-            "code": "Kode Kategori",
-            "addNew": "Tambah Kategori Baru"
-        },
-        "uom": {
-            "title": "Satuan Barang",
-            "name": "Nama Satuan",
-            "symbol": "Simbol",
-            "addNew": "Tambah Satuan Baru"
-        },
         "item": {
-            "title": "Barang",
-            "sku": "SKU",
-            "name": "Nama Barang",
-            "category": "Kategori",
-            "uom": "Satuan",
-            "currentStock": "Stok Saat Ini",
-            "minStock": "Stok Minimum",
-            "addNew": "Tambah Barang Baru"
+            "title": "Master Item",
+            "addNew": "Item Baru",
+            "searchPlaceholder": "Cari item...",
+            "table": {
+                "sku": "SKU",
+                "name": "Nama",
+                "category": "Kategori",
+                "uom": "Satuan",
+                "minStock": "Min Stok",
+                "maxStock": "Max Stok",
+                "stock": "Stok Saat Ini",
+                "created": "Dibuat",
+                "creator": "Pembuat"
+            },
+            "form": {
+                "createTitle": "Buat Item",
+                "editTitle": "Edit Item",
+                "sku": "SKU",
+                "name": "Nama Item",
+                "description": "Deskripsi",
+                "category": "Kategori",
+                "uom": "Satuan",
+                "minStock": "Level Stok Min",
+                "maxStock": "Level Stok Max",
+                "status": "Status Item",
+                "image": "Gambar Item",
+                "barcode": "Barcode",
+                "scanBarcode": "Scan barcode...",
+                "selectCategory": "Pilih Kategori",
+                "selectUom": "Pilih Satuan",
+                "imageHint": "Klik untuk unggah gambar",
+                "imageChange": "Klik untuk ubah",
+                "imageFormat": "Mendukung JPG, PNG, WEBP (Maks 5MB)"
+            },
+            "deleteConfirm": "Apakah Anda yakin ingin menghapus item ini?",
+            "filters": {
+                "search": "Cari",
+                "category": "Kategori",
+                "uom": "Satuan",
+                "status": "Status",
+                "creator": "Dibuat Oleh",
+                "date": "Tanggal Dibuat"
+            },
+            "placeholders": {
+                "sku": "cth., ITM-001",
+                "name": "cth., Laptop Dell XPS 15",
+                "description": "Deskripsi opsional...",
+                "all": "Semua"
+            },
+            "statusLabel": {
+                "active": "Aktif",
+                "inactive": "Tidak Aktif"
+            },
+            "errors": {
+                "uploadImage": "Gagal mengunggah gambar",
+                "saveItem": "Gagal menyimpan item"
+            }
+        },
+        "user": {
+            "title": "Pengguna & Peran",
+            "description": "Pengguna baru mendaftar melalui halaman pendaftaran publik. Mereka muncul di sini sebagai Tidak Aktif sampai Anda memverifikasi mereka dengan memberikan peran dan mengaturnya menjadi Aktif.",
+            "tabs": {
+                "users": "Pengguna",
+                "roles": "Peran"
+            },
+            "table": {
+                "name": "Nama",
+                "email": "Email",
+                "role": "Peran",
+                "created": "Dibuat Pada",
+                "status": "Status",
+                "actions": "Aksi"
+            },
+            "filter": {
+                "role": "Filter Peran",
+                "status": "Filter Status",
+                "search": "Cari pengguna..."
+            },
+            "form": {
+                "createTitle": "Tambah Pengguna Baru",
+                "editTitle": "Edit Pengguna",
+                "name": "Nama",
+                "email": "Email",
+                "password": "Kata Sandi",
+                "passwordHint": "Biarkan kosong jika tidak ingin mengubah kata sandi",
+                "role": "Peran",
+                "status": "Status Aktif",
+                "namePlaceholder": "John Doe",
+                "emailPlaceholder": "john@contoh.com",
+                "passwordPlaceholder": "******"
+            },
+            "messages": {
+                "createSuccess": "Pengguna berhasil dibuat",
+                "updateSuccess": "Pengguna berhasil diperbarui",
+                "deleteConfirm": "Apakah Anda yakin ingin menghapus pengguna ini? Tindakan ini tidak dapat dibatalkan.",
+                "deleteSuccess": "Pengguna berhasil dihapus"
+            }
+        },
+        "role": {
+            "title": "Manajemen Peran",
+            "listTitle": "Daftar Peran",
+            "permissionsTitle": "Izin {role}",
+            "addNew": "Tambah Peran",
+            "searchPlaceholder": "Cari izin...",
+            "saveChanges": "Simpan Perubahan",
+            "discardChanges": "Buang Perubahan",
+            "noChanges": "Tidak ada perubahan untuk disimpan",
+            "form": {
+                "createTitle": "Buat Peran Baru",
+                "name": "Nama Peran",
+                "description": "Deskripsi",
+                "namePlaceholder": "cth. Staf Gudang",
+                "descriptionPlaceholder": "Deskripsi..."
+            },
+            "table": {
+                "module": "Modul",
+                "view": "Lihat",
+                "create": "Buat",
+                "edit": "Edit",
+                "delete": "Hapus",
+                "verify": "Verifikasi/Setujui"
+            },
+            "messages": {
+                "createSuccess": "Peran berhasil dibuat",
+                "updateSuccess": "Izin berhasil diperbarui",
+                "noChanges": "Pilih peran untuk mengelola izin"
+            },
+            "modules": {
+                "inbound_list": "Daftar Barang Masuk",
+                "inbound_verification": "Verifikasi Barang Masuk",
+                "outbound_list_request": "Daftar & Permintaan Keluar",
+                "outbound_verification": "Verifikasi Keluar",
+                "stock_card": "Kartu Stok",
+                "items": "Barang",
+                "pr_list": "Daftar PR",
+                "pr_input": "Buat PR",
+                "pr_verification": "Verifikasi PR (Manajer)",
+                "po_verification": "Verifikasi PO (Purchasing)",
+                "opname_list": "Daftar Opname",
+                "opname_schedule": "Jadwal Opname",
+                "adjustment_list_input": "Daftar & Input Penyesuaian",
+                "adjustment_verification": "Verifikasi Penyesuaian",
+                "return_list_input": "Daftar & Input Retur",
+                "return_verification": "Verifikasi Retur",
+                "bill_list_input": "Daftar & Input Tagihan",
+                "bill_verification": "Verifikasi Tagihan",
+                "payment_realization": "Realisasi Pembayaran",
+                "payment_validation": "Validasi Pembayaran",
+                "rab_list": "Daftar RAB",
+                "rab_input": "Input RAB",
+                "rab_verification": "Verifikasi RAB",
+                "rab_realization": "Realisasi RAB",
+                "categories_uom": "Kategori & Satuan",
+                "items_stock": "Barang & Stok",
+                "vendors": "Vendor",
+                "partners_mitra_": "Mitra",
+                "users_roles": "Pengguna & Peran"
+            }
         },
         "vendor": {
-            "title": "Vendor",
-            "code": "Kode Vendor",
-            "name": "Nama Vendor",
-            "contact": "Kontak",
-            "phone": "Telepon",
-            "email": "Email",
-            "address": "Alamat",
-            "addNew": "Tambah Vendor Baru"
+            "title": "Master Vendor",
+            "addNew": "Vendor Baru",
+            "searchPlaceholder": "Cari Nama, Bank, atau Telepon...",
+            "tabs": {
+                "all": "Semua Vendor",
+                "spk": "Vendor SPK",
+                "nonSpk": "Vendor Non SPK"
+            },
+            "table": {
+                "date": "Tgl Bergabung",
+                "vendor": "Nama Vendor",
+                "type": "Tipe",
+                "bank": "Info Bank",
+                "contact": "Telepon / Alamat"
+            },
+            "form": {
+                "createTitle": "Buat Vendor",
+                "editTitle": "Edit Vendor",
+                "name": "Nama Vendor",
+                "type": "Tipe Vendor",
+                "phone": "Nomor Telepon",
+                "address": "Alamat",
+                "bank": "Nama Bank",
+                "branch": "Cabang Bank",
+                "account": "Rekening Bank",
+                "spk": "Dokumen SPK",
+                "link": "Link / Peta",
+                "status": "Status",
+                "uploadSpk": "Unggah Dokumen SPK",
+                "acceptedFormats": "Format: Hanya PDF (Maks 5MB)",
+                "clickToSelect": "Klik untuk memilih dokumen PDF",
+                "selected": "Terpilih",
+                "fileUploaded": "Dokumen terunggah",
+                "viewCurrent": "Lihat dokumen saat ini",
+                "item": "Barang",
+                "cogs": "HPP per Satuan"
+            },
+            "sections": {
+                "basic": "Informasi Dasar",
+                "contact": "Informasi Kontak",
+                "items": "Barang Vendor",
+                "optional": "(Opsional)",
+                "required": "(Wajib untuk vendor SPK)"
+            },
+            "messages": {
+                "deleteConfirm": "Apakah Anda yakin ingin menghapus vendor ini?",
+                "uploadFailed": "Gagal mengunggah dokumen SPK",
+                "saveFailed": "Gagal menyimpan vendor",
+                "fileSizeError": "Ukuran file melebihi batas 5MB",
+                "fileTypeError": "Hanya file PDF yang diperbolehkan"
+            },
+            "view": {
+                "title": "Detail Vendor",
+                "contactPath": "Jalur Kontak"
+            }
+        },
+        "category": {
+            "title": "Master Kategori",
+            "addNew": "Kategori Baru",
+            "deleteConfirm": "Apakah Anda yakin ingin menghapus kategori ini?",
+            "table": {
+                "code": "Kode",
+                "name": "Nama",
+                "created": "Dibuat",
+                "creator": "Pembuat"
+            },
+            "filter": {
+                "code": "Filter kode...",
+                "name": "Filter nama..."
+            },
+            "form": {
+                "createTitle": "Buat Kategori",
+                "editTitle": "Edit Kategori",
+                "code": "Kode",
+                "name": "Nama",
+                "codePlaceholder": "Contoh: ELEC",
+                "namePlaceholder": "Contoh: Elektronik"
+            }
+        },
+        "uom": {
+            "title": "Master Satuan",
+            "addNew": "Satuan Baru",
+            "deleteConfirm": "Apakah Anda yakin ingin menghapus satuan ini?",
+            "table": {
+                "symbol": "Simbol",
+                "name": "Nama",
+                "created": "Dibuat",
+                "creator": "Pembuat"
+            },
+            "filter": {
+                "symbol": "Filter simbol...",
+                "name": "Filter nama..."
+            },
+            "form": {
+                "createTitle": "Buat Satuan",
+                "editTitle": "Edit Satuan",
+                "symbol": "Simbol",
+                "name": "Nama",
+                "symbolPlaceholder": "Contoh: pcs",
+                "namePlaceholder": "Contoh: Buah"
+            }
         },
         "mitra": {
             "title": "Mitra",
@@ -135,32 +373,81 @@
             "email": "Email",
             "address": "Alamat",
             "addNew": "Tambah Mitra Baru"
-        },
-        "user": {
-            "title": "Pengguna & Peran",
-            "name": "Nama",
-            "email": "Email",
-            "role": "Peran"
         }
     },
     "budget": {
         "title": "Rencana Anggaran Biaya (RAB)",
-        "fiscalYear": "Tahun Anggaran",
-        "fiscalMonth": "Bulan",
-        "totalBudget": "Total Anggaran",
-        "usedBudget": "Anggaran Terpakai",
-        "remainingBudget": "Sisa Anggaran",
-        "exceedWarning": "Aksi ini akan melebihi anggaran bulanan!"
-    },
-    "purchase": {
-        "title": "Pengajuan Pembelian",
-        "prNumber": "Nomor PR",
-        "poNumber": "Nomor PO",
-        "vendor": "Vendor",
-        "requestDate": "Tanggal Pengajuan",
-        "totalAmount": "Total Nilai",
-        "managerApproval": "Persetujuan Manager",
-        "purchasingApproval": "Persetujuan Purchasing"
+        "description": "Kelola rencana anggaran bulanan",
+        "createNew": "Buat RAB Baru",
+        "searchPlaceholder": "Cari Kode RAB atau Periode...",
+        "deleteConfirm": "Apakah Anda yakin ingin menghapus RAB ini?",
+        "table": {
+            "code": "Kode RAB",
+            "period": "Periode",
+            "totalBudget": "Total Anggaran",
+            "remaining": "Sisa",
+            "status": "Status",
+            "createdBy": "Dibuat Oleh",
+            "actions": "Aksi",
+            "loading": "Memuat data...",
+            "noData": "Tidak ada data RAB",
+            "viewDetails": "Lihat Detail",
+            "delete": "Hapus"
+        },
+        "form": {
+            "createTitle": "Buat Rencana Anggaran",
+            "description": "Buat rencana anggaran bulanan baru",
+            "saving": "Menyimpan...",
+            "save": "Simpan Rencana",
+            "sections": {
+                "period": "Periode Fiskal",
+                "fiscalYear": "Tahun Anggaran",
+                "selectYear": "Pilih Tahun",
+                "fiscalMonth": "Bulan Fiskal",
+                "selectMonth": "Pilih Bulan",
+                "currency": "Mata Uang"
+            },
+            "itemModal": {
+                "editTitle": "Edit Item",
+                "addTitle": "Tambah Item",
+                "itemLabel": "Item",
+                "selectItemPlaceholder": "Pilih item...",
+                "requiredStockLabel": "Stok Dibutuhkan",
+                "cancel": "Batal",
+                "update": "Perbarui Item",
+                "add": "Tambah Item",
+                "alertSelect": "Silakan pilih item"
+            },
+            "alerts": {
+                "userAuth": "Pengguna tidak terautentikasi",
+                "noItems": "Harap tambahkan setidaknya satu item.",
+                "allItems": "Silakan pilih Item untuk semua baris.",
+                "success": "Rencana Anggaran Berhasil Dibuat!",
+                "failed": "Gagal: "
+            },
+            "table": {
+                "no": "No",
+                "itemName": "Nama Item",
+                "required": "Dibutuhkan",
+                "lastStock": "Stok Akhir",
+                "replenish": "Pengadaan",
+                "unitPrice": "Harga Satuan",
+                "totalCost": "Total Biaya",
+                "addItem": "Tambah Item",
+                "total": "Total",
+                "loading": "Memuat..."
+            }
+        },
+        "verification": {
+            "title": "Verifikasi Anggaran",
+            "description": "Verifikasi dan setujui rencana anggaran yang diajukan",
+            "loading": "Memuat verifikasi tertunda...",
+            "noData": "Tidak ada verifikasi tertunda",
+            "approve": "Setujui",
+            "reject": "Tolak",
+            "approveConfirm": "Apakah Anda yakin ingin menyetujui RAB ini?",
+            "rejectConfirm": "Apakah Anda yakin ingin menolak RAB ini?"
+        }
     },
     "stockOpname": {
         "title": "Stock Opname",
@@ -172,5 +459,244 @@
         "variance": "Selisih",
         "recount": "Perlu Hitung Ulang",
         "finalize": "Finalisasi Opname"
+    },
+    "inbound": {
+        "title": "Daftar Barang Masuk",
+        "description": "Lacak barang masuk dan riwayat GRN",
+        "searchPlaceholder": "Cari GRN, PO, atau Vendor...",
+        "allStatus": "Semua Status",
+        "pendingVerification": "Menunggu Verifikasi",
+        "verified": "Terverifikasi",
+        "rejected": "Ditolak",
+        "table": {
+            "grn": "Nomor GRN",
+            "date": "Tanggal Terima",
+            "po": "Referensi PO",
+            "vendor": "Vendor",
+            "items": "Barang",
+            "status": "Status",
+            "actions": "Aksi",
+            "noData": "Tidak ada data barang masuk.",
+            "loading": "Memuat data..."
+        },
+        "issues": {
+            "title": "Pusat Resolusi",
+            "description": "Kelola Pengiriman Parsial, Retur, dan Selisih Barang Masuk",
+            "tabs": {
+                "shortages": "Kekurangan Pending",
+                "returns": "Retur Pending",
+                "history": "Riwayat Selisih"
+            },
+            "table": {
+                "childGrn": "GRN Anak",
+                "parentGrn": "GRN Induk",
+                "returnId": "ID Retur",
+                "reason": "Alasan",
+                "issueStatus": "Status Masalah",
+                "notes": "Catatan"
+            },
+            "actions": {
+                "wait": "Tunggu (Lihat)",
+                "closeShort": "Tutup Kekurangan",
+                "processReturn": "Proses Retur",
+                "keepItems": "Simpan Barang",
+                "resolve": "Selesaikan",
+                "resolved": "Terselesaikan"
+            }
+        },
+        "verification": {
+            "modalTitle": "Verifikasi Barang Masuk",
+            "vendor": "Vendor",
+            "po": "Nomor PO",
+            "pr": "Nomor PR",
+            "proofDoc": "Bukti Pengiriman (Surat Jalan)",
+            "upload": "Unggah Dokumen",
+            "table": {
+                "item": "Barang",
+                "exp": "Eks",
+                "rcv": "Trm",
+                "acc": "Acc",
+                "rej": "Tlk",
+                "status": "Status & Aksi"
+            },
+            "confirm": "Konfirmasi Verifikasi"
+        }
+    },
+    "purchase": {
+        "title": "Pengajuan Pembelian",
+        "description": "Kelola pengajuan pembelian material",
+        "createRequest": "Buat Pengajuan",
+        "searchPlaceholder": "Cari Nomor PR atau Catatan...",
+        "allStatus": "Semua Status",
+        "status": {
+            "DRAFT": "Draf",
+            "PENDING_MANAGER_APPROVAL": "Menunggu Manager",
+            "PENDING_PURCHASING_APPROVAL": "Menunggu Purchasing",
+            "PAYMENT_RELEASED": "Pembayaran Dikeluarkan",
+            "APPROVED": "Disetujui",
+            "REJECTED": "Ditolak",
+            "CANCELLED": "Dibatalkan"
+        },
+        "table": {
+            "prNumber": "Nomor PR",
+            "date": "Tanggal",
+            "vendor": "Vendor",
+            "createdBy": "Dibuat Oleh",
+            "approvedBy": "Disetujui Oleh",
+            "totalAmount": "Total Nilai",
+            "status": "Status",
+            "actions": "Aksi",
+            "loading": "Memuat data...",
+            "noData": "Tidak ada Pengajuan Pembelian."
+        },
+        "deleteConfirm": "Apakah Anda yakin ingin menghapus PR ini? Tindakan ini tidak dapat dibatalkan.",
+        "managerVerification": {
+            "title": "Verifikasi Manager",
+            "description": "Tinjau dan setujui Pengajuan Pembelian",
+            "searchPlaceholder": "Cari Nomor PR...",
+            "loading": "Memuat pengajuan tertunda...",
+            "noData": "Tidak ada tugas verifikasi.",
+            "actions": {
+                "approve": "Setujui",
+                "reject": "Tolak",
+                "viewDetails": "Lihat Detail",
+                "approveConfirm": "Setujui Pengajuan Pembelian ini?"
+            },
+            "modal": {
+                "title": "Tolak Pengajuan Pembelian",
+                "description": "Mohon berikan alasan penolakan. Ini akan terlihat oleh pemohon.",
+                "placeholder": "Catatan penolakan...",
+                "cancel": "Batal",
+                "confirmReject": "Tolak Pengajuan",
+                "emptyReason": "Mohon berikan alasan penolakan."
+            }
+        },
+        "form": {
+            "createTitle": "Buat Pengajuan Pembelian",
+            "editTitle": "Ubah Pengajuan Pembelian",
+            "createDescription": "Permintaan baru untuk pembelian material",
+            "editDescription": "Ubah pengajuan yang ada",
+            "buttons": {
+                "cancel": "Batal",
+                "saveDraft": "Simpan Draf",
+                "submitApproval": "Kirim Persetujuan",
+                "resubmitApproval": "Kirim Ulang Persetujuan",
+                "addItem": "Tambah Barang"
+            },
+            "sections": {
+                "generalInfo": "Informasi Umum",
+                "sourceVendor": "Sumber & Vendor",
+                "requestItems": "Item Permintaan"
+            },
+            "fields": {
+                "requestDate": "Tanggal Pengajuan",
+                "description": "Deskripsi / Catatan",
+                "descriptionPlaceholder": "Masukkan tujuan pengajuan...",
+                "vendor": "Vendor",
+                "vendorPlaceholder": "Pilih Vendor",
+                "vendorHelp": "Hanya barang yang disuplai oleh vendor ini yang akan tersedia.",
+                "sourceRab": "Sumber RAB (Opsional)",
+                "rabPlaceholder": "Pilih RAB Disetujui...",
+                "rabHelp": "Opsional: Pilih RAB untuk menambahkan barang yang sudah dianggarkan.",
+                "rabSelected": "✓ RAB terpilih. Gunakan tombol 'Tambah Barang' untuk menambah item dari RAB ini.",
+                "rabNoVendor": "Pilih vendor terlebih dahulu untuk memfilter item RAB."
+            },
+            "warnings": {
+                "changeVendor": "Mengganti vendor akan menghapus item saat ini. Lanjutkan?",
+                "itemExists": "Item ini sudah ada dalam pengajuan",
+                "noVendor": "Vendor wajib diisi",
+                "noItems": "Mohon tambahkan minimal satu item",
+                "unsupplied": "⚠️ Peringatan: {count} item berikut biasanya tidak disuplai oleh vendor ini:\n\n{items}\n\nHarga mungkin perlu diverifikasi. Lanjutkan pengajuan?"
+            },
+            "itemsTable": {
+                "code": "Kode Item",
+                "description": "Deskripsi",
+                "source": "Sumber",
+                "qty": "Jml",
+                "uom": "Satuan",
+                "estPrice": "Est. Harga",
+                "total": "Total",
+                "action": "Aksi",
+                "noItems": "Belum ada item. Klik 'Tambah Barang' untuk menambahkan.",
+                "grandTotal": "Total Keseluruhan"
+            },
+            "badges": {
+                "rab": "RAB",
+                "supplied": "Disuplai",
+                "unsupplied": "Tidak Disuplai",
+                "verifyPricing": "Cek Harga"
+            },
+            "messages": {
+                "successCreated": "PR Berhasil Dibuat! Nomor: {number}",
+                "successUpdated": "PR Berhasil Diubah! Nomor: {number}"
+            }
+        },
+        "purchasingVerification": {
+            "title": "Verifikasi Pembelian",
+            "description": "Ubah pengajuan yang disetujui menjadi Pesanan Pembelian (PO)",
+            "searchPlaceholder": "Cari Nomor PR...",
+            "loading": "Memuat pengajuan yang disetujui...",
+            "noData": "Tidak ada pengajuan yang menunggu pembuatan PO.",
+            "actions": {
+                "viewDetails": "Lihat Detail",
+                "verifyAndCreate": "Verifikasi & Buat PO"
+            },
+            "alerts": {
+                "success": "Pesanan Pembelian Berhasil Dibuat!",
+                "poNumber": "Nomor PO",
+                "grnNumber": "Nomor GRN",
+                "inboundCreated": "Entri barang masuk telah dibuat dan siap untuk penerimaan barang.",
+                "failed": "Gagal membuat PO"
+            }
+        },
+        "itemPicker": {
+            "title": "Pilih Item",
+            "searchPlaceholder": "Cari item...",
+            "filters": {
+                "all": "Semua",
+                "rab": "Dari RAB",
+                "catalog": "Katalog"
+            },
+            "loading": "Memuat item...",
+            "noItemsFound": "Item tidak ditemukan",
+            "tryAdjustingSearch": "Coba ubah pencarian atau filter Anda",
+            "badges": {
+                "rab": "RAB",
+                "catalog": "Katalog"
+            },
+            "uom": "Satuan",
+            "rabQty": "Jml RAB",
+            "notSupplied": "Tidak disuplai oleh vendor",
+            "estPrice": "Est. Harga",
+            "add": "Tambah",
+            "showing": "Menampilkan",
+            "items": "item"
+        },
+        "justification": {
+            "title": "Justifikasi Anggaran",
+            "warningTitle": "Terdeteksi Variansi Anggaran",
+            "warningDescription": "Item berikut melebihi rencana anggaran (RAB) atau tidak ada dalam anggaran yang disetujui:",
+            "warningDescriptionGeneral": "Permintaan ini mencakup item yang berbeda dari rencana anggaran.",
+            "reasonNotInRab": "Item tidak ada di RAB",
+            "reasonExceedsRab": "Diminta: {requested}, Anggaran: {budget}",
+            "fields": {
+                "reason": "Alasan Justifikasi",
+                "reasonPlaceholder": "Jelaskan mengapa pembelian ini diperlukan meskipun ada variansi anggaran...",
+                "supportingDoc": "Dokumen Pendukung (Opsional)"
+            },
+            "errors": {
+                "invalidType": "Jenis file tidak valid. Diizinkan: PDF, JPG, PNG",
+                "fileTooLarge": "File terlalu besar (maks 10MB)",
+                "reasonRequired": "Alasan justifikasi wajib diisi",
+                "uploadFailed": "Gagal mengunggah dokumen",
+                "submissionFailed": "Pengajuan gagal"
+            },
+            "removeFile": "Hapus File",
+            "uploadText": "Unggah file",
+            "dragDropText": "atau seret dan lepas",
+            "fileConstraints": "PDF, PNG, JPG hingga 10MB",
+            "cancel": "Batal",
+            "submit": "Kirim Pengajuan"
+        }
     }
 }

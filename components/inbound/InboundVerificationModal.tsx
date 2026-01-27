@@ -6,9 +6,10 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Textarea } from '@/components/ui/Textarea';
 import { Loader2, Check, AlertTriangle, Upload, FileText, X } from 'lucide-react';
-import { verifyInbound, InboundVerificationItem } from '@/app/actions/inbound';
+import { verifyInbound } from '@/app/actions/inbound';
+import type { InboundVerificationItem } from '@/app/actions/inbound';
 import { useAuth } from '@/contexts/AuthContext';
-import { InboundDiscrepancyType } from '@prisma/client';
+import type { InboundDiscrepancyType } from '@prisma/client';
 import { supabase } from '@/lib/supabase'; // Using client for auth session retrieval
 
 interface InboundVerificationModalProps {
@@ -305,7 +306,7 @@ export default function InboundVerificationModal({
                                         <td className="px-4 py-3 space-y-2">
                                             {/* Discrepancy Status Indicators */}
                                             {isShortage && (
-                                                <div className="flex items-center gap-2 text-xs font-semibold text-amber-600 bg-amber-50 dark:bg-amber-900/20 px-2 py-1 rounded">
+                                                <div className="flex items-center gap-2 text-xs font-semibold text-orange-600 bg-orange-50 dark:bg-orange-900/20 px-2 py-1 rounded">
                                                     <AlertTriangle size={14} />
                                                     <span>Shortage: {item.expectedQuantity - stateItem.receivedQty}</span>
                                                 </div>

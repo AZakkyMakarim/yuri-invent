@@ -9,9 +9,9 @@ export async function PUT(
     try {
         const { id: vendorId, itemId } = await params;
         const body = await request.json();
-        const { cogsPerUom } = body;
+        const { cogsPerUom, link } = body;
 
-        // Validate COGS
+        // Validate required fields
         if (cogsPerUom === undefined || cogsPerUom === null) {
             return NextResponse.json(
                 { error: 'COGS per UOM is required' },
@@ -19,6 +19,7 @@ export async function PUT(
             );
         }
 
+        // Validate COGS is positive
         if (cogsPerUom < 0) {
             return NextResponse.json(
                 { error: 'COGS per UOM must be a positive number' },
@@ -26,22 +27,34 @@ export async function PUT(
             );
         }
 
-        // Find the vendor-item relationship
-        const vendorItem = await prisma.vendorItem.findFirst({
-            where: { vendorId, itemId },
-        });
-
-        if (!vendorItem) {
+        // Check if vendor exists
+        const vendor = await prisma.vendor.findUnique({ where: { id: vendorId } });
+        if (!vendor) {
             return NextResponse.json(
-                { error: 'Vendor-item relationship not found' },
+                { error: 'Vendor not found' },
                 { status: 404 }
             );
         }
 
-        // Update COGS
+        // Check for existing relationship
+        const existing = await prisma.vendorItem.findFirst({
+            where: { vendorId, itemId },
+        });
+
+        if (!existing) {
+            return NextResponse.json(
+                { error: 'Item not found for this vendor' },
+                { status: 404 }
+            );
+        }
+
+        // Update relationship
         const updated = await prisma.vendorItem.update({
-            where: { id: vendorItem.id },
-            data: { cogsPerUom },
+            where: { id: existing.id },
+            data: {
+                cogsPerUom,
+                link: link !== undefined ? link : existing.link
+            },
             include: {
                 item: {
                     include: {

@@ -13,29 +13,19 @@ export async function POST(request: Request) {
             );
         }
 
-        // Validate file type (PDF only)
-        const allowedTypes = [
-            'application/pdf',
-        ];
+        // Get bucket from form data
+        const bucket = formData.get('bucket') as string;
 
-        if (!allowedTypes.includes(file.type)) {
+        if (!bucket) {
             return NextResponse.json(
-                { error: 'Invalid file type. Only PDF files are allowed.' },
+                { error: 'Bucket name is required' },
                 { status: 400 }
             );
         }
 
-        // Validate file size (max 5MB)
-        const maxSize = 5 * 1024 * 1024; // 5MB
-        if (file.size > maxSize) {
-            return NextResponse.json(
-                { error: 'File size exceeds 5MB limit' },
-                { status: 400 }
-            );
-        }
-
-        // Upload to Supabase Storage
-        const publicUrl = await uploadFile(file);
+        // Upload to Supabase Storage using generic uploadFile
+        // Note: Specific validation should be done by the client or specific route wrapper
+        const publicUrl = await uploadFile(file, bucket);
 
         return NextResponse.json({
             success: true,

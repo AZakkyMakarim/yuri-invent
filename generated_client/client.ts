@@ -65,6 +65,16 @@ export type Category = Prisma.CategoryModel
  */
 export type UOM = Prisma.UOMModel
 /**
+ * Model Warehouse
+ * 
+ */
+export type Warehouse = Prisma.WarehouseModel
+/**
+ * Model WarehouseStock
+ * 
+ */
+export type WarehouseStock = Prisma.WarehouseStockModel
+/**
  * Model Vendor
  * 
  */
@@ -74,11 +84,6 @@ export type Vendor = Prisma.VendorModel
  * 
  */
 export type VendorItem = Prisma.VendorItemModel
-/**
- * Model Mitra
- * 
- */
-export type Mitra = Prisma.MitraModel
 /**
  * Model Item
  * 
@@ -134,6 +139,16 @@ export type Outbound = Prisma.OutboundModel
  * 
  */
 export type OutboundItem = Prisma.OutboundItemModel
+/**
+ * Model Partner
+ * 
+ */
+export type Partner = Prisma.PartnerModel
+/**
+ * Model PartnerItemPrice
+ * 
+ */
+export type PartnerItemPrice = Prisma.PartnerItemPriceModel
 /**
  * Model StockCard
  * 

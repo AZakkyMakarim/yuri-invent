@@ -100,6 +100,11 @@ export default async function PRDetailPage({ params }: PageProps) {
                                             <TableCell>
                                                 <div className="font-medium text-(--color-text-primary)">{item.item.name}</div>
                                                 <div className="text-xs text-(--color-text-muted)">{item.item.sku}</div>
+                                                <div className="text-[10px] text-(--color-text-muted) mt-0.5 flex flex-wrap gap-x-2">
+                                                    {(item.item as any).brand && <span>B: {(item.item as any).brand}</span>}
+                                                    {(item.item as any).type && <span>T: {(item.item as any).type}</span>}
+                                                    {(item.item as any).movementType && <span>M: {(item.item as any).movementType}</span>}
+                                                </div>
                                                 {item.notes && <div className="text-xs italic text-(--color-text-muted) mt-1">{item.notes}</div>}
                                             </TableCell>
                                             <TableCell className="text-right">{item.quantity}</TableCell>
@@ -131,28 +136,28 @@ export default async function PRDetailPage({ params }: PageProps) {
 
                     {/* Justification Section */}
                     {pr.requiresJustification && (
-                        <Card className="border-amber-300 bg-amber-50 dark:bg-amber-900/20">
+                        <Card className="border-orange-300 bg-orange-50 dark:bg-orange-900/20">
                             <CardHeader className="py-3">
-                                <CardTitle className="text-base flex items-center gap-2 text-amber-900 dark:text-amber-100">
+                                <CardTitle className="text-base flex items-center gap-2 text-orange-900 dark:text-orange-100">
                                     <AlertTriangle className="w-5 h-5" />
                                     Budget Variance Justification
                                 </CardTitle>
                             </CardHeader>
                             <CardContent className="py-3 space-y-3">
-                                <div className="p-2 bg-amber-100 dark:bg-amber-800/30 border border-amber-200 dark:border-amber-700 rounded text-xs text-amber-900 dark:text-amber-100">
+                                <div className="p-2 bg-orange-100 dark:bg-orange-800/30 border border-orange-200 dark:border-orange-700 rounded text-xs text-orange-900 dark:text-orange-100">
                                     ⚠️ This PR contains items that exceed the RAB budget or are not included in the RAB.
                                 </div>
 
                                 <div>
-                                    <div className="text-xs font-medium text-amber-800 dark:text-amber-200 mb-1">Reason:</div>
-                                    <div className="text-sm text-(--color-text-primary) whitespace-pre-wrap bg-white dark:bg-gray-800 p-2 rounded border border-amber-200 dark:border-amber-700">
+                                    <div className="text-xs font-medium text-orange-800 dark:text-orange-200 mb-1">Reason:</div>
+                                    <div className="text-sm text-(--color-text-primary) whitespace-pre-wrap bg-white dark:bg-gray-800 p-2 rounded border border-orange-200 dark:border-orange-700">
                                         {pr.justificationReason}
                                     </div>
                                 </div>
 
                                 {pr.justificationDocument && (
                                     <div>
-                                        <div className="text-xs font-medium text-amber-800 dark:text-amber-200 mb-1">
+                                        <div className="text-xs font-medium text-orange-800 dark:text-orange-200 mb-1">
                                             Supporting Document:
                                         </div>
                                         <a

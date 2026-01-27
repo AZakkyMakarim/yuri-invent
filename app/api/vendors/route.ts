@@ -77,7 +77,13 @@ export async function GET(request: Request) {
                 skip,
                 take: limit,
                 include: {
-                    // createdBy: { select: { id: true, name: true } },
+                    createdBy: {
+                        select: {
+                            id: true,
+                            name: true,
+                            role: { select: { name: true } }
+                        }
+                    },
                 },
             }),
             prisma.vendor.count({ where }),
@@ -125,20 +131,21 @@ export async function POST(request: Request) {
                     bank: bank || null,
                     bankBranch,
                     bankAccount,
+                    link: body.link || null,
                     spkDocumentPath: spkDocumentPath || null,
                     isActive: isActive ?? true,
-                    // In a real app, we'd get the user ID from the session
-                    // createdById: session.user.id
+                    createdById: body.createdById || null,
                 },
             });
 
             // Create vendor items if provided
             if (vendorItems && Array.isArray(vendorItems) && vendorItems.length > 0) {
                 await tx.vendorItem.createMany({
-                    data: vendorItems.map((vi: { itemId: string; cogsPerUom: number }) => ({
+                    data: vendorItems.map((vi: { itemId: string; cogsPerUom: number; link?: string }) => ({
                         vendorId: newVendor.id,
                         itemId: vi.itemId,
                         cogsPerUom: vi.cogsPerUom,
+                        link: vi.link || null,
                     }))
                 });
             }

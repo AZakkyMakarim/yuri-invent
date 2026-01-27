@@ -41,6 +41,7 @@ export type StockCardSumAggregateOutputType = {
 export type StockCardMinAggregateOutputType = {
   id: string | null
   itemId: string | null
+  warehouseId: string | null
   movementType: $Enums.StockMovementType | null
   referenceType: string | null
   referenceId: string | null
@@ -59,6 +60,7 @@ export type StockCardMinAggregateOutputType = {
 export type StockCardMaxAggregateOutputType = {
   id: string | null
   itemId: string | null
+  warehouseId: string | null
   movementType: $Enums.StockMovementType | null
   referenceType: string | null
   referenceId: string | null
@@ -77,6 +79,7 @@ export type StockCardMaxAggregateOutputType = {
 export type StockCardCountAggregateOutputType = {
   id: number
   itemId: number
+  warehouseId: number
   movementType: number
   referenceType: number
   referenceId: number
@@ -109,6 +112,7 @@ export type StockCardSumAggregateInputType = {
 export type StockCardMinAggregateInputType = {
   id?: true
   itemId?: true
+  warehouseId?: true
   movementType?: true
   referenceType?: true
   referenceId?: true
@@ -127,6 +131,7 @@ export type StockCardMinAggregateInputType = {
 export type StockCardMaxAggregateInputType = {
   id?: true
   itemId?: true
+  warehouseId?: true
   movementType?: true
   referenceType?: true
   referenceId?: true
@@ -145,6 +150,7 @@ export type StockCardMaxAggregateInputType = {
 export type StockCardCountAggregateInputType = {
   id?: true
   itemId?: true
+  warehouseId?: true
   movementType?: true
   referenceType?: true
   referenceId?: true
@@ -250,6 +256,7 @@ export type StockCardGroupByArgs<ExtArgs extends runtime.Types.Extensions.Intern
 export type StockCardGroupByOutputType = {
   id: string
   itemId: string
+  warehouseId: string | null
   movementType: $Enums.StockMovementType
   referenceType: string
   referenceId: string
@@ -291,6 +298,7 @@ export type StockCardWhereInput = {
   NOT?: Prisma.StockCardWhereInput | Prisma.StockCardWhereInput[]
   id?: Prisma.StringFilter<"StockCard"> | string
   itemId?: Prisma.StringFilter<"StockCard"> | string
+  warehouseId?: Prisma.StringNullableFilter<"StockCard"> | string | null
   movementType?: Prisma.EnumStockMovementTypeFilter<"StockCard"> | $Enums.StockMovementType
   referenceType?: Prisma.StringFilter<"StockCard"> | string
   referenceId?: Prisma.StringFilter<"StockCard"> | string
@@ -305,6 +313,7 @@ export type StockCardWhereInput = {
   stockAdjustmentId?: Prisma.StringNullableFilter<"StockCard"> | string | null
   returnId?: Prisma.StringNullableFilter<"StockCard"> | string | null
   item?: Prisma.XOR<Prisma.ItemScalarRelationFilter, Prisma.ItemWhereInput>
+  warehouse?: Prisma.XOR<Prisma.WarehouseNullableScalarRelationFilter, Prisma.WarehouseWhereInput> | null
   inbound?: Prisma.XOR<Prisma.InboundNullableScalarRelationFilter, Prisma.InboundWhereInput> | null
   outbound?: Prisma.XOR<Prisma.OutboundNullableScalarRelationFilter, Prisma.OutboundWhereInput> | null
   stockAdjustment?: Prisma.XOR<Prisma.StockAdjustmentNullableScalarRelationFilter, Prisma.StockAdjustmentWhereInput> | null
@@ -314,6 +323,7 @@ export type StockCardWhereInput = {
 export type StockCardOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   itemId?: Prisma.SortOrder
+  warehouseId?: Prisma.SortOrderInput | Prisma.SortOrder
   movementType?: Prisma.SortOrder
   referenceType?: Prisma.SortOrder
   referenceId?: Prisma.SortOrder
@@ -328,6 +338,7 @@ export type StockCardOrderByWithRelationInput = {
   stockAdjustmentId?: Prisma.SortOrderInput | Prisma.SortOrder
   returnId?: Prisma.SortOrderInput | Prisma.SortOrder
   item?: Prisma.ItemOrderByWithRelationInput
+  warehouse?: Prisma.WarehouseOrderByWithRelationInput
   inbound?: Prisma.InboundOrderByWithRelationInput
   outbound?: Prisma.OutboundOrderByWithRelationInput
   stockAdjustment?: Prisma.StockAdjustmentOrderByWithRelationInput
@@ -340,6 +351,7 @@ export type StockCardWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.StockCardWhereInput[]
   NOT?: Prisma.StockCardWhereInput | Prisma.StockCardWhereInput[]
   itemId?: Prisma.StringFilter<"StockCard"> | string
+  warehouseId?: Prisma.StringNullableFilter<"StockCard"> | string | null
   movementType?: Prisma.EnumStockMovementTypeFilter<"StockCard"> | $Enums.StockMovementType
   referenceType?: Prisma.StringFilter<"StockCard"> | string
   referenceId?: Prisma.StringFilter<"StockCard"> | string
@@ -354,6 +366,7 @@ export type StockCardWhereUniqueInput = Prisma.AtLeast<{
   stockAdjustmentId?: Prisma.StringNullableFilter<"StockCard"> | string | null
   returnId?: Prisma.StringNullableFilter<"StockCard"> | string | null
   item?: Prisma.XOR<Prisma.ItemScalarRelationFilter, Prisma.ItemWhereInput>
+  warehouse?: Prisma.XOR<Prisma.WarehouseNullableScalarRelationFilter, Prisma.WarehouseWhereInput> | null
   inbound?: Prisma.XOR<Prisma.InboundNullableScalarRelationFilter, Prisma.InboundWhereInput> | null
   outbound?: Prisma.XOR<Prisma.OutboundNullableScalarRelationFilter, Prisma.OutboundWhereInput> | null
   stockAdjustment?: Prisma.XOR<Prisma.StockAdjustmentNullableScalarRelationFilter, Prisma.StockAdjustmentWhereInput> | null
@@ -363,6 +376,7 @@ export type StockCardWhereUniqueInput = Prisma.AtLeast<{
 export type StockCardOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   itemId?: Prisma.SortOrder
+  warehouseId?: Prisma.SortOrderInput | Prisma.SortOrder
   movementType?: Prisma.SortOrder
   referenceType?: Prisma.SortOrder
   referenceId?: Prisma.SortOrder
@@ -389,6 +403,7 @@ export type StockCardScalarWhereWithAggregatesInput = {
   NOT?: Prisma.StockCardScalarWhereWithAggregatesInput | Prisma.StockCardScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"StockCard"> | string
   itemId?: Prisma.StringWithAggregatesFilter<"StockCard"> | string
+  warehouseId?: Prisma.StringNullableWithAggregatesFilter<"StockCard"> | string | null
   movementType?: Prisma.EnumStockMovementTypeWithAggregatesFilter<"StockCard"> | $Enums.StockMovementType
   referenceType?: Prisma.StringWithAggregatesFilter<"StockCard"> | string
   referenceId?: Prisma.StringWithAggregatesFilter<"StockCard"> | string
@@ -416,6 +431,7 @@ export type StockCardCreateInput = {
   transactionDate?: Date | string
   createdAt?: Date | string
   item: Prisma.ItemCreateNestedOneWithoutStockCardsInput
+  warehouse?: Prisma.WarehouseCreateNestedOneWithoutStockCardsInput
   inbound?: Prisma.InboundCreateNestedOneWithoutStockCardsInput
   outbound?: Prisma.OutboundCreateNestedOneWithoutStockCardsInput
   stockAdjustment?: Prisma.StockAdjustmentCreateNestedOneWithoutStockCardsInput
@@ -425,6 +441,7 @@ export type StockCardCreateInput = {
 export type StockCardUncheckedCreateInput = {
   id?: string
   itemId: string
+  warehouseId?: string | null
   movementType: $Enums.StockMovementType
   referenceType: string
   referenceId: string
@@ -452,6 +469,7 @@ export type StockCardUpdateInput = {
   transactionDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   item?: Prisma.ItemUpdateOneRequiredWithoutStockCardsNestedInput
+  warehouse?: Prisma.WarehouseUpdateOneWithoutStockCardsNestedInput
   inbound?: Prisma.InboundUpdateOneWithoutStockCardsNestedInput
   outbound?: Prisma.OutboundUpdateOneWithoutStockCardsNestedInput
   stockAdjustment?: Prisma.StockAdjustmentUpdateOneWithoutStockCardsNestedInput
@@ -461,6 +479,7 @@ export type StockCardUpdateInput = {
 export type StockCardUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   itemId?: Prisma.StringFieldUpdateOperationsInput | string
+  warehouseId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   movementType?: Prisma.EnumStockMovementTypeFieldUpdateOperationsInput | $Enums.StockMovementType
   referenceType?: Prisma.StringFieldUpdateOperationsInput | string
   referenceId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -479,6 +498,7 @@ export type StockCardUncheckedUpdateInput = {
 export type StockCardCreateManyInput = {
   id?: string
   itemId: string
+  warehouseId?: string | null
   movementType: $Enums.StockMovementType
   referenceType: string
   referenceId: string
@@ -510,6 +530,7 @@ export type StockCardUpdateManyMutationInput = {
 export type StockCardUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   itemId?: Prisma.StringFieldUpdateOperationsInput | string
+  warehouseId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   movementType?: Prisma.EnumStockMovementTypeFieldUpdateOperationsInput | $Enums.StockMovementType
   referenceType?: Prisma.StringFieldUpdateOperationsInput | string
   referenceId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -538,6 +559,7 @@ export type StockCardOrderByRelationAggregateInput = {
 export type StockCardCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   itemId?: Prisma.SortOrder
+  warehouseId?: Prisma.SortOrder
   movementType?: Prisma.SortOrder
   referenceType?: Prisma.SortOrder
   referenceId?: Prisma.SortOrder
@@ -562,6 +584,7 @@ export type StockCardAvgOrderByAggregateInput = {
 export type StockCardMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   itemId?: Prisma.SortOrder
+  warehouseId?: Prisma.SortOrder
   movementType?: Prisma.SortOrder
   referenceType?: Prisma.SortOrder
   referenceId?: Prisma.SortOrder
@@ -580,6 +603,7 @@ export type StockCardMaxOrderByAggregateInput = {
 export type StockCardMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   itemId?: Prisma.SortOrder
+  warehouseId?: Prisma.SortOrder
   movementType?: Prisma.SortOrder
   referenceType?: Prisma.SortOrder
   referenceId?: Prisma.SortOrder
@@ -599,6 +623,48 @@ export type StockCardSumOrderByAggregateInput = {
   quantityBefore?: Prisma.SortOrder
   quantityChange?: Prisma.SortOrder
   quantityAfter?: Prisma.SortOrder
+}
+
+export type StockCardCreateNestedManyWithoutWarehouseInput = {
+  create?: Prisma.XOR<Prisma.StockCardCreateWithoutWarehouseInput, Prisma.StockCardUncheckedCreateWithoutWarehouseInput> | Prisma.StockCardCreateWithoutWarehouseInput[] | Prisma.StockCardUncheckedCreateWithoutWarehouseInput[]
+  connectOrCreate?: Prisma.StockCardCreateOrConnectWithoutWarehouseInput | Prisma.StockCardCreateOrConnectWithoutWarehouseInput[]
+  createMany?: Prisma.StockCardCreateManyWarehouseInputEnvelope
+  connect?: Prisma.StockCardWhereUniqueInput | Prisma.StockCardWhereUniqueInput[]
+}
+
+export type StockCardUncheckedCreateNestedManyWithoutWarehouseInput = {
+  create?: Prisma.XOR<Prisma.StockCardCreateWithoutWarehouseInput, Prisma.StockCardUncheckedCreateWithoutWarehouseInput> | Prisma.StockCardCreateWithoutWarehouseInput[] | Prisma.StockCardUncheckedCreateWithoutWarehouseInput[]
+  connectOrCreate?: Prisma.StockCardCreateOrConnectWithoutWarehouseInput | Prisma.StockCardCreateOrConnectWithoutWarehouseInput[]
+  createMany?: Prisma.StockCardCreateManyWarehouseInputEnvelope
+  connect?: Prisma.StockCardWhereUniqueInput | Prisma.StockCardWhereUniqueInput[]
+}
+
+export type StockCardUpdateManyWithoutWarehouseNestedInput = {
+  create?: Prisma.XOR<Prisma.StockCardCreateWithoutWarehouseInput, Prisma.StockCardUncheckedCreateWithoutWarehouseInput> | Prisma.StockCardCreateWithoutWarehouseInput[] | Prisma.StockCardUncheckedCreateWithoutWarehouseInput[]
+  connectOrCreate?: Prisma.StockCardCreateOrConnectWithoutWarehouseInput | Prisma.StockCardCreateOrConnectWithoutWarehouseInput[]
+  upsert?: Prisma.StockCardUpsertWithWhereUniqueWithoutWarehouseInput | Prisma.StockCardUpsertWithWhereUniqueWithoutWarehouseInput[]
+  createMany?: Prisma.StockCardCreateManyWarehouseInputEnvelope
+  set?: Prisma.StockCardWhereUniqueInput | Prisma.StockCardWhereUniqueInput[]
+  disconnect?: Prisma.StockCardWhereUniqueInput | Prisma.StockCardWhereUniqueInput[]
+  delete?: Prisma.StockCardWhereUniqueInput | Prisma.StockCardWhereUniqueInput[]
+  connect?: Prisma.StockCardWhereUniqueInput | Prisma.StockCardWhereUniqueInput[]
+  update?: Prisma.StockCardUpdateWithWhereUniqueWithoutWarehouseInput | Prisma.StockCardUpdateWithWhereUniqueWithoutWarehouseInput[]
+  updateMany?: Prisma.StockCardUpdateManyWithWhereWithoutWarehouseInput | Prisma.StockCardUpdateManyWithWhereWithoutWarehouseInput[]
+  deleteMany?: Prisma.StockCardScalarWhereInput | Prisma.StockCardScalarWhereInput[]
+}
+
+export type StockCardUncheckedUpdateManyWithoutWarehouseNestedInput = {
+  create?: Prisma.XOR<Prisma.StockCardCreateWithoutWarehouseInput, Prisma.StockCardUncheckedCreateWithoutWarehouseInput> | Prisma.StockCardCreateWithoutWarehouseInput[] | Prisma.StockCardUncheckedCreateWithoutWarehouseInput[]
+  connectOrCreate?: Prisma.StockCardCreateOrConnectWithoutWarehouseInput | Prisma.StockCardCreateOrConnectWithoutWarehouseInput[]
+  upsert?: Prisma.StockCardUpsertWithWhereUniqueWithoutWarehouseInput | Prisma.StockCardUpsertWithWhereUniqueWithoutWarehouseInput[]
+  createMany?: Prisma.StockCardCreateManyWarehouseInputEnvelope
+  set?: Prisma.StockCardWhereUniqueInput | Prisma.StockCardWhereUniqueInput[]
+  disconnect?: Prisma.StockCardWhereUniqueInput | Prisma.StockCardWhereUniqueInput[]
+  delete?: Prisma.StockCardWhereUniqueInput | Prisma.StockCardWhereUniqueInput[]
+  connect?: Prisma.StockCardWhereUniqueInput | Prisma.StockCardWhereUniqueInput[]
+  update?: Prisma.StockCardUpdateWithWhereUniqueWithoutWarehouseInput | Prisma.StockCardUpdateWithWhereUniqueWithoutWarehouseInput[]
+  updateMany?: Prisma.StockCardUpdateManyWithWhereWithoutWarehouseInput | Prisma.StockCardUpdateManyWithWhereWithoutWarehouseInput[]
+  deleteMany?: Prisma.StockCardScalarWhereInput | Prisma.StockCardScalarWhereInput[]
 }
 
 export type StockCardCreateNestedManyWithoutItemInput = {
@@ -815,6 +881,90 @@ export type StockCardUncheckedUpdateManyWithoutReturnNestedInput = {
   deleteMany?: Prisma.StockCardScalarWhereInput | Prisma.StockCardScalarWhereInput[]
 }
 
+export type StockCardCreateWithoutWarehouseInput = {
+  id?: string
+  movementType: $Enums.StockMovementType
+  referenceType: string
+  referenceId: string
+  quantityBefore: number
+  quantityChange: number
+  quantityAfter: number
+  notes?: string | null
+  transactionDate?: Date | string
+  createdAt?: Date | string
+  item: Prisma.ItemCreateNestedOneWithoutStockCardsInput
+  inbound?: Prisma.InboundCreateNestedOneWithoutStockCardsInput
+  outbound?: Prisma.OutboundCreateNestedOneWithoutStockCardsInput
+  stockAdjustment?: Prisma.StockAdjustmentCreateNestedOneWithoutStockCardsInput
+  return?: Prisma.ReturnCreateNestedOneWithoutStockCardsInput
+}
+
+export type StockCardUncheckedCreateWithoutWarehouseInput = {
+  id?: string
+  itemId: string
+  movementType: $Enums.StockMovementType
+  referenceType: string
+  referenceId: string
+  quantityBefore: number
+  quantityChange: number
+  quantityAfter: number
+  notes?: string | null
+  transactionDate?: Date | string
+  createdAt?: Date | string
+  inboundId?: string | null
+  outboundId?: string | null
+  stockAdjustmentId?: string | null
+  returnId?: string | null
+}
+
+export type StockCardCreateOrConnectWithoutWarehouseInput = {
+  where: Prisma.StockCardWhereUniqueInput
+  create: Prisma.XOR<Prisma.StockCardCreateWithoutWarehouseInput, Prisma.StockCardUncheckedCreateWithoutWarehouseInput>
+}
+
+export type StockCardCreateManyWarehouseInputEnvelope = {
+  data: Prisma.StockCardCreateManyWarehouseInput | Prisma.StockCardCreateManyWarehouseInput[]
+  skipDuplicates?: boolean
+}
+
+export type StockCardUpsertWithWhereUniqueWithoutWarehouseInput = {
+  where: Prisma.StockCardWhereUniqueInput
+  update: Prisma.XOR<Prisma.StockCardUpdateWithoutWarehouseInput, Prisma.StockCardUncheckedUpdateWithoutWarehouseInput>
+  create: Prisma.XOR<Prisma.StockCardCreateWithoutWarehouseInput, Prisma.StockCardUncheckedCreateWithoutWarehouseInput>
+}
+
+export type StockCardUpdateWithWhereUniqueWithoutWarehouseInput = {
+  where: Prisma.StockCardWhereUniqueInput
+  data: Prisma.XOR<Prisma.StockCardUpdateWithoutWarehouseInput, Prisma.StockCardUncheckedUpdateWithoutWarehouseInput>
+}
+
+export type StockCardUpdateManyWithWhereWithoutWarehouseInput = {
+  where: Prisma.StockCardScalarWhereInput
+  data: Prisma.XOR<Prisma.StockCardUpdateManyMutationInput, Prisma.StockCardUncheckedUpdateManyWithoutWarehouseInput>
+}
+
+export type StockCardScalarWhereInput = {
+  AND?: Prisma.StockCardScalarWhereInput | Prisma.StockCardScalarWhereInput[]
+  OR?: Prisma.StockCardScalarWhereInput[]
+  NOT?: Prisma.StockCardScalarWhereInput | Prisma.StockCardScalarWhereInput[]
+  id?: Prisma.StringFilter<"StockCard"> | string
+  itemId?: Prisma.StringFilter<"StockCard"> | string
+  warehouseId?: Prisma.StringNullableFilter<"StockCard"> | string | null
+  movementType?: Prisma.EnumStockMovementTypeFilter<"StockCard"> | $Enums.StockMovementType
+  referenceType?: Prisma.StringFilter<"StockCard"> | string
+  referenceId?: Prisma.StringFilter<"StockCard"> | string
+  quantityBefore?: Prisma.IntFilter<"StockCard"> | number
+  quantityChange?: Prisma.IntFilter<"StockCard"> | number
+  quantityAfter?: Prisma.IntFilter<"StockCard"> | number
+  notes?: Prisma.StringNullableFilter<"StockCard"> | string | null
+  transactionDate?: Prisma.DateTimeFilter<"StockCard"> | Date | string
+  createdAt?: Prisma.DateTimeFilter<"StockCard"> | Date | string
+  inboundId?: Prisma.StringNullableFilter<"StockCard"> | string | null
+  outboundId?: Prisma.StringNullableFilter<"StockCard"> | string | null
+  stockAdjustmentId?: Prisma.StringNullableFilter<"StockCard"> | string | null
+  returnId?: Prisma.StringNullableFilter<"StockCard"> | string | null
+}
+
 export type StockCardCreateWithoutItemInput = {
   id?: string
   movementType: $Enums.StockMovementType
@@ -826,6 +976,7 @@ export type StockCardCreateWithoutItemInput = {
   notes?: string | null
   transactionDate?: Date | string
   createdAt?: Date | string
+  warehouse?: Prisma.WarehouseCreateNestedOneWithoutStockCardsInput
   inbound?: Prisma.InboundCreateNestedOneWithoutStockCardsInput
   outbound?: Prisma.OutboundCreateNestedOneWithoutStockCardsInput
   stockAdjustment?: Prisma.StockAdjustmentCreateNestedOneWithoutStockCardsInput
@@ -834,6 +985,7 @@ export type StockCardCreateWithoutItemInput = {
 
 export type StockCardUncheckedCreateWithoutItemInput = {
   id?: string
+  warehouseId?: string | null
   movementType: $Enums.StockMovementType
   referenceType: string
   referenceId: string
@@ -875,27 +1027,6 @@ export type StockCardUpdateManyWithWhereWithoutItemInput = {
   data: Prisma.XOR<Prisma.StockCardUpdateManyMutationInput, Prisma.StockCardUncheckedUpdateManyWithoutItemInput>
 }
 
-export type StockCardScalarWhereInput = {
-  AND?: Prisma.StockCardScalarWhereInput | Prisma.StockCardScalarWhereInput[]
-  OR?: Prisma.StockCardScalarWhereInput[]
-  NOT?: Prisma.StockCardScalarWhereInput | Prisma.StockCardScalarWhereInput[]
-  id?: Prisma.StringFilter<"StockCard"> | string
-  itemId?: Prisma.StringFilter<"StockCard"> | string
-  movementType?: Prisma.EnumStockMovementTypeFilter<"StockCard"> | $Enums.StockMovementType
-  referenceType?: Prisma.StringFilter<"StockCard"> | string
-  referenceId?: Prisma.StringFilter<"StockCard"> | string
-  quantityBefore?: Prisma.IntFilter<"StockCard"> | number
-  quantityChange?: Prisma.IntFilter<"StockCard"> | number
-  quantityAfter?: Prisma.IntFilter<"StockCard"> | number
-  notes?: Prisma.StringNullableFilter<"StockCard"> | string | null
-  transactionDate?: Prisma.DateTimeFilter<"StockCard"> | Date | string
-  createdAt?: Prisma.DateTimeFilter<"StockCard"> | Date | string
-  inboundId?: Prisma.StringNullableFilter<"StockCard"> | string | null
-  outboundId?: Prisma.StringNullableFilter<"StockCard"> | string | null
-  stockAdjustmentId?: Prisma.StringNullableFilter<"StockCard"> | string | null
-  returnId?: Prisma.StringNullableFilter<"StockCard"> | string | null
-}
-
 export type StockCardCreateWithoutInboundInput = {
   id?: string
   movementType: $Enums.StockMovementType
@@ -908,6 +1039,7 @@ export type StockCardCreateWithoutInboundInput = {
   transactionDate?: Date | string
   createdAt?: Date | string
   item: Prisma.ItemCreateNestedOneWithoutStockCardsInput
+  warehouse?: Prisma.WarehouseCreateNestedOneWithoutStockCardsInput
   outbound?: Prisma.OutboundCreateNestedOneWithoutStockCardsInput
   stockAdjustment?: Prisma.StockAdjustmentCreateNestedOneWithoutStockCardsInput
   return?: Prisma.ReturnCreateNestedOneWithoutStockCardsInput
@@ -916,6 +1048,7 @@ export type StockCardCreateWithoutInboundInput = {
 export type StockCardUncheckedCreateWithoutInboundInput = {
   id?: string
   itemId: string
+  warehouseId?: string | null
   movementType: $Enums.StockMovementType
   referenceType: string
   referenceId: string
@@ -968,6 +1101,7 @@ export type StockCardCreateWithoutOutboundInput = {
   transactionDate?: Date | string
   createdAt?: Date | string
   item: Prisma.ItemCreateNestedOneWithoutStockCardsInput
+  warehouse?: Prisma.WarehouseCreateNestedOneWithoutStockCardsInput
   inbound?: Prisma.InboundCreateNestedOneWithoutStockCardsInput
   stockAdjustment?: Prisma.StockAdjustmentCreateNestedOneWithoutStockCardsInput
   return?: Prisma.ReturnCreateNestedOneWithoutStockCardsInput
@@ -976,6 +1110,7 @@ export type StockCardCreateWithoutOutboundInput = {
 export type StockCardUncheckedCreateWithoutOutboundInput = {
   id?: string
   itemId: string
+  warehouseId?: string | null
   movementType: $Enums.StockMovementType
   referenceType: string
   referenceId: string
@@ -1028,6 +1163,7 @@ export type StockCardCreateWithoutStockAdjustmentInput = {
   transactionDate?: Date | string
   createdAt?: Date | string
   item: Prisma.ItemCreateNestedOneWithoutStockCardsInput
+  warehouse?: Prisma.WarehouseCreateNestedOneWithoutStockCardsInput
   inbound?: Prisma.InboundCreateNestedOneWithoutStockCardsInput
   outbound?: Prisma.OutboundCreateNestedOneWithoutStockCardsInput
   return?: Prisma.ReturnCreateNestedOneWithoutStockCardsInput
@@ -1036,6 +1172,7 @@ export type StockCardCreateWithoutStockAdjustmentInput = {
 export type StockCardUncheckedCreateWithoutStockAdjustmentInput = {
   id?: string
   itemId: string
+  warehouseId?: string | null
   movementType: $Enums.StockMovementType
   referenceType: string
   referenceId: string
@@ -1088,6 +1225,7 @@ export type StockCardCreateWithoutReturnInput = {
   transactionDate?: Date | string
   createdAt?: Date | string
   item: Prisma.ItemCreateNestedOneWithoutStockCardsInput
+  warehouse?: Prisma.WarehouseCreateNestedOneWithoutStockCardsInput
   inbound?: Prisma.InboundCreateNestedOneWithoutStockCardsInput
   outbound?: Prisma.OutboundCreateNestedOneWithoutStockCardsInput
   stockAdjustment?: Prisma.StockAdjustmentCreateNestedOneWithoutStockCardsInput
@@ -1096,6 +1234,7 @@ export type StockCardCreateWithoutReturnInput = {
 export type StockCardUncheckedCreateWithoutReturnInput = {
   id?: string
   itemId: string
+  warehouseId?: string | null
   movementType: $Enums.StockMovementType
   referenceType: string
   referenceId: string
@@ -1136,8 +1275,81 @@ export type StockCardUpdateManyWithWhereWithoutReturnInput = {
   data: Prisma.XOR<Prisma.StockCardUpdateManyMutationInput, Prisma.StockCardUncheckedUpdateManyWithoutReturnInput>
 }
 
+export type StockCardCreateManyWarehouseInput = {
+  id?: string
+  itemId: string
+  movementType: $Enums.StockMovementType
+  referenceType: string
+  referenceId: string
+  quantityBefore: number
+  quantityChange: number
+  quantityAfter: number
+  notes?: string | null
+  transactionDate?: Date | string
+  createdAt?: Date | string
+  inboundId?: string | null
+  outboundId?: string | null
+  stockAdjustmentId?: string | null
+  returnId?: string | null
+}
+
+export type StockCardUpdateWithoutWarehouseInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  movementType?: Prisma.EnumStockMovementTypeFieldUpdateOperationsInput | $Enums.StockMovementType
+  referenceType?: Prisma.StringFieldUpdateOperationsInput | string
+  referenceId?: Prisma.StringFieldUpdateOperationsInput | string
+  quantityBefore?: Prisma.IntFieldUpdateOperationsInput | number
+  quantityChange?: Prisma.IntFieldUpdateOperationsInput | number
+  quantityAfter?: Prisma.IntFieldUpdateOperationsInput | number
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  transactionDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  item?: Prisma.ItemUpdateOneRequiredWithoutStockCardsNestedInput
+  inbound?: Prisma.InboundUpdateOneWithoutStockCardsNestedInput
+  outbound?: Prisma.OutboundUpdateOneWithoutStockCardsNestedInput
+  stockAdjustment?: Prisma.StockAdjustmentUpdateOneWithoutStockCardsNestedInput
+  return?: Prisma.ReturnUpdateOneWithoutStockCardsNestedInput
+}
+
+export type StockCardUncheckedUpdateWithoutWarehouseInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  itemId?: Prisma.StringFieldUpdateOperationsInput | string
+  movementType?: Prisma.EnumStockMovementTypeFieldUpdateOperationsInput | $Enums.StockMovementType
+  referenceType?: Prisma.StringFieldUpdateOperationsInput | string
+  referenceId?: Prisma.StringFieldUpdateOperationsInput | string
+  quantityBefore?: Prisma.IntFieldUpdateOperationsInput | number
+  quantityChange?: Prisma.IntFieldUpdateOperationsInput | number
+  quantityAfter?: Prisma.IntFieldUpdateOperationsInput | number
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  transactionDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  inboundId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  outboundId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stockAdjustmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  returnId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+}
+
+export type StockCardUncheckedUpdateManyWithoutWarehouseInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  itemId?: Prisma.StringFieldUpdateOperationsInput | string
+  movementType?: Prisma.EnumStockMovementTypeFieldUpdateOperationsInput | $Enums.StockMovementType
+  referenceType?: Prisma.StringFieldUpdateOperationsInput | string
+  referenceId?: Prisma.StringFieldUpdateOperationsInput | string
+  quantityBefore?: Prisma.IntFieldUpdateOperationsInput | number
+  quantityChange?: Prisma.IntFieldUpdateOperationsInput | number
+  quantityAfter?: Prisma.IntFieldUpdateOperationsInput | number
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  transactionDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  inboundId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  outboundId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stockAdjustmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  returnId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+}
+
 export type StockCardCreateManyItemInput = {
   id?: string
+  warehouseId?: string | null
   movementType: $Enums.StockMovementType
   referenceType: string
   referenceId: string
@@ -1164,6 +1376,7 @@ export type StockCardUpdateWithoutItemInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   transactionDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  warehouse?: Prisma.WarehouseUpdateOneWithoutStockCardsNestedInput
   inbound?: Prisma.InboundUpdateOneWithoutStockCardsNestedInput
   outbound?: Prisma.OutboundUpdateOneWithoutStockCardsNestedInput
   stockAdjustment?: Prisma.StockAdjustmentUpdateOneWithoutStockCardsNestedInput
@@ -1172,6 +1385,7 @@ export type StockCardUpdateWithoutItemInput = {
 
 export type StockCardUncheckedUpdateWithoutItemInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  warehouseId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   movementType?: Prisma.EnumStockMovementTypeFieldUpdateOperationsInput | $Enums.StockMovementType
   referenceType?: Prisma.StringFieldUpdateOperationsInput | string
   referenceId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1189,6 +1403,7 @@ export type StockCardUncheckedUpdateWithoutItemInput = {
 
 export type StockCardUncheckedUpdateManyWithoutItemInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  warehouseId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   movementType?: Prisma.EnumStockMovementTypeFieldUpdateOperationsInput | $Enums.StockMovementType
   referenceType?: Prisma.StringFieldUpdateOperationsInput | string
   referenceId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1207,6 +1422,7 @@ export type StockCardUncheckedUpdateManyWithoutItemInput = {
 export type StockCardCreateManyInboundInput = {
   id?: string
   itemId: string
+  warehouseId?: string | null
   movementType: $Enums.StockMovementType
   referenceType: string
   referenceId: string
@@ -1233,6 +1449,7 @@ export type StockCardUpdateWithoutInboundInput = {
   transactionDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   item?: Prisma.ItemUpdateOneRequiredWithoutStockCardsNestedInput
+  warehouse?: Prisma.WarehouseUpdateOneWithoutStockCardsNestedInput
   outbound?: Prisma.OutboundUpdateOneWithoutStockCardsNestedInput
   stockAdjustment?: Prisma.StockAdjustmentUpdateOneWithoutStockCardsNestedInput
   return?: Prisma.ReturnUpdateOneWithoutStockCardsNestedInput
@@ -1241,6 +1458,7 @@ export type StockCardUpdateWithoutInboundInput = {
 export type StockCardUncheckedUpdateWithoutInboundInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   itemId?: Prisma.StringFieldUpdateOperationsInput | string
+  warehouseId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   movementType?: Prisma.EnumStockMovementTypeFieldUpdateOperationsInput | $Enums.StockMovementType
   referenceType?: Prisma.StringFieldUpdateOperationsInput | string
   referenceId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1258,6 +1476,7 @@ export type StockCardUncheckedUpdateWithoutInboundInput = {
 export type StockCardUncheckedUpdateManyWithoutInboundInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   itemId?: Prisma.StringFieldUpdateOperationsInput | string
+  warehouseId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   movementType?: Prisma.EnumStockMovementTypeFieldUpdateOperationsInput | $Enums.StockMovementType
   referenceType?: Prisma.StringFieldUpdateOperationsInput | string
   referenceId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1275,6 +1494,7 @@ export type StockCardUncheckedUpdateManyWithoutInboundInput = {
 export type StockCardCreateManyOutboundInput = {
   id?: string
   itemId: string
+  warehouseId?: string | null
   movementType: $Enums.StockMovementType
   referenceType: string
   referenceId: string
@@ -1301,6 +1521,7 @@ export type StockCardUpdateWithoutOutboundInput = {
   transactionDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   item?: Prisma.ItemUpdateOneRequiredWithoutStockCardsNestedInput
+  warehouse?: Prisma.WarehouseUpdateOneWithoutStockCardsNestedInput
   inbound?: Prisma.InboundUpdateOneWithoutStockCardsNestedInput
   stockAdjustment?: Prisma.StockAdjustmentUpdateOneWithoutStockCardsNestedInput
   return?: Prisma.ReturnUpdateOneWithoutStockCardsNestedInput
@@ -1309,6 +1530,7 @@ export type StockCardUpdateWithoutOutboundInput = {
 export type StockCardUncheckedUpdateWithoutOutboundInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   itemId?: Prisma.StringFieldUpdateOperationsInput | string
+  warehouseId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   movementType?: Prisma.EnumStockMovementTypeFieldUpdateOperationsInput | $Enums.StockMovementType
   referenceType?: Prisma.StringFieldUpdateOperationsInput | string
   referenceId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1326,6 +1548,7 @@ export type StockCardUncheckedUpdateWithoutOutboundInput = {
 export type StockCardUncheckedUpdateManyWithoutOutboundInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   itemId?: Prisma.StringFieldUpdateOperationsInput | string
+  warehouseId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   movementType?: Prisma.EnumStockMovementTypeFieldUpdateOperationsInput | $Enums.StockMovementType
   referenceType?: Prisma.StringFieldUpdateOperationsInput | string
   referenceId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1343,6 +1566,7 @@ export type StockCardUncheckedUpdateManyWithoutOutboundInput = {
 export type StockCardCreateManyStockAdjustmentInput = {
   id?: string
   itemId: string
+  warehouseId?: string | null
   movementType: $Enums.StockMovementType
   referenceType: string
   referenceId: string
@@ -1369,6 +1593,7 @@ export type StockCardUpdateWithoutStockAdjustmentInput = {
   transactionDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   item?: Prisma.ItemUpdateOneRequiredWithoutStockCardsNestedInput
+  warehouse?: Prisma.WarehouseUpdateOneWithoutStockCardsNestedInput
   inbound?: Prisma.InboundUpdateOneWithoutStockCardsNestedInput
   outbound?: Prisma.OutboundUpdateOneWithoutStockCardsNestedInput
   return?: Prisma.ReturnUpdateOneWithoutStockCardsNestedInput
@@ -1377,6 +1602,7 @@ export type StockCardUpdateWithoutStockAdjustmentInput = {
 export type StockCardUncheckedUpdateWithoutStockAdjustmentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   itemId?: Prisma.StringFieldUpdateOperationsInput | string
+  warehouseId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   movementType?: Prisma.EnumStockMovementTypeFieldUpdateOperationsInput | $Enums.StockMovementType
   referenceType?: Prisma.StringFieldUpdateOperationsInput | string
   referenceId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1394,6 +1620,7 @@ export type StockCardUncheckedUpdateWithoutStockAdjustmentInput = {
 export type StockCardUncheckedUpdateManyWithoutStockAdjustmentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   itemId?: Prisma.StringFieldUpdateOperationsInput | string
+  warehouseId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   movementType?: Prisma.EnumStockMovementTypeFieldUpdateOperationsInput | $Enums.StockMovementType
   referenceType?: Prisma.StringFieldUpdateOperationsInput | string
   referenceId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1411,6 +1638,7 @@ export type StockCardUncheckedUpdateManyWithoutStockAdjustmentInput = {
 export type StockCardCreateManyReturnInput = {
   id?: string
   itemId: string
+  warehouseId?: string | null
   movementType: $Enums.StockMovementType
   referenceType: string
   referenceId: string
@@ -1437,6 +1665,7 @@ export type StockCardUpdateWithoutReturnInput = {
   transactionDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   item?: Prisma.ItemUpdateOneRequiredWithoutStockCardsNestedInput
+  warehouse?: Prisma.WarehouseUpdateOneWithoutStockCardsNestedInput
   inbound?: Prisma.InboundUpdateOneWithoutStockCardsNestedInput
   outbound?: Prisma.OutboundUpdateOneWithoutStockCardsNestedInput
   stockAdjustment?: Prisma.StockAdjustmentUpdateOneWithoutStockCardsNestedInput
@@ -1445,6 +1674,7 @@ export type StockCardUpdateWithoutReturnInput = {
 export type StockCardUncheckedUpdateWithoutReturnInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   itemId?: Prisma.StringFieldUpdateOperationsInput | string
+  warehouseId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   movementType?: Prisma.EnumStockMovementTypeFieldUpdateOperationsInput | $Enums.StockMovementType
   referenceType?: Prisma.StringFieldUpdateOperationsInput | string
   referenceId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1462,6 +1692,7 @@ export type StockCardUncheckedUpdateWithoutReturnInput = {
 export type StockCardUncheckedUpdateManyWithoutReturnInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   itemId?: Prisma.StringFieldUpdateOperationsInput | string
+  warehouseId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   movementType?: Prisma.EnumStockMovementTypeFieldUpdateOperationsInput | $Enums.StockMovementType
   referenceType?: Prisma.StringFieldUpdateOperationsInput | string
   referenceId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1481,6 +1712,7 @@ export type StockCardUncheckedUpdateManyWithoutReturnInput = {
 export type StockCardSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   itemId?: boolean
+  warehouseId?: boolean
   movementType?: boolean
   referenceType?: boolean
   referenceId?: boolean
@@ -1495,6 +1727,7 @@ export type StockCardSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   stockAdjustmentId?: boolean
   returnId?: boolean
   item?: boolean | Prisma.ItemDefaultArgs<ExtArgs>
+  warehouse?: boolean | Prisma.StockCard$warehouseArgs<ExtArgs>
   inbound?: boolean | Prisma.StockCard$inboundArgs<ExtArgs>
   outbound?: boolean | Prisma.StockCard$outboundArgs<ExtArgs>
   stockAdjustment?: boolean | Prisma.StockCard$stockAdjustmentArgs<ExtArgs>
@@ -1504,6 +1737,7 @@ export type StockCardSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
 export type StockCardSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   itemId?: boolean
+  warehouseId?: boolean
   movementType?: boolean
   referenceType?: boolean
   referenceId?: boolean
@@ -1518,6 +1752,7 @@ export type StockCardSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
   stockAdjustmentId?: boolean
   returnId?: boolean
   item?: boolean | Prisma.ItemDefaultArgs<ExtArgs>
+  warehouse?: boolean | Prisma.StockCard$warehouseArgs<ExtArgs>
   inbound?: boolean | Prisma.StockCard$inboundArgs<ExtArgs>
   outbound?: boolean | Prisma.StockCard$outboundArgs<ExtArgs>
   stockAdjustment?: boolean | Prisma.StockCard$stockAdjustmentArgs<ExtArgs>
@@ -1527,6 +1762,7 @@ export type StockCardSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
 export type StockCardSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   itemId?: boolean
+  warehouseId?: boolean
   movementType?: boolean
   referenceType?: boolean
   referenceId?: boolean
@@ -1541,6 +1777,7 @@ export type StockCardSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
   stockAdjustmentId?: boolean
   returnId?: boolean
   item?: boolean | Prisma.ItemDefaultArgs<ExtArgs>
+  warehouse?: boolean | Prisma.StockCard$warehouseArgs<ExtArgs>
   inbound?: boolean | Prisma.StockCard$inboundArgs<ExtArgs>
   outbound?: boolean | Prisma.StockCard$outboundArgs<ExtArgs>
   stockAdjustment?: boolean | Prisma.StockCard$stockAdjustmentArgs<ExtArgs>
@@ -1550,6 +1787,7 @@ export type StockCardSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
 export type StockCardSelectScalar = {
   id?: boolean
   itemId?: boolean
+  warehouseId?: boolean
   movementType?: boolean
   referenceType?: boolean
   referenceId?: boolean
@@ -1565,9 +1803,10 @@ export type StockCardSelectScalar = {
   returnId?: boolean
 }
 
-export type StockCardOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "itemId" | "movementType" | "referenceType" | "referenceId" | "quantityBefore" | "quantityChange" | "quantityAfter" | "notes" | "transactionDate" | "createdAt" | "inboundId" | "outboundId" | "stockAdjustmentId" | "returnId", ExtArgs["result"]["stockCard"]>
+export type StockCardOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "itemId" | "warehouseId" | "movementType" | "referenceType" | "referenceId" | "quantityBefore" | "quantityChange" | "quantityAfter" | "notes" | "transactionDate" | "createdAt" | "inboundId" | "outboundId" | "stockAdjustmentId" | "returnId", ExtArgs["result"]["stockCard"]>
 export type StockCardInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   item?: boolean | Prisma.ItemDefaultArgs<ExtArgs>
+  warehouse?: boolean | Prisma.StockCard$warehouseArgs<ExtArgs>
   inbound?: boolean | Prisma.StockCard$inboundArgs<ExtArgs>
   outbound?: boolean | Prisma.StockCard$outboundArgs<ExtArgs>
   stockAdjustment?: boolean | Prisma.StockCard$stockAdjustmentArgs<ExtArgs>
@@ -1575,6 +1814,7 @@ export type StockCardInclude<ExtArgs extends runtime.Types.Extensions.InternalAr
 }
 export type StockCardIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   item?: boolean | Prisma.ItemDefaultArgs<ExtArgs>
+  warehouse?: boolean | Prisma.StockCard$warehouseArgs<ExtArgs>
   inbound?: boolean | Prisma.StockCard$inboundArgs<ExtArgs>
   outbound?: boolean | Prisma.StockCard$outboundArgs<ExtArgs>
   stockAdjustment?: boolean | Prisma.StockCard$stockAdjustmentArgs<ExtArgs>
@@ -1582,6 +1822,7 @@ export type StockCardIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Ex
 }
 export type StockCardIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   item?: boolean | Prisma.ItemDefaultArgs<ExtArgs>
+  warehouse?: boolean | Prisma.StockCard$warehouseArgs<ExtArgs>
   inbound?: boolean | Prisma.StockCard$inboundArgs<ExtArgs>
   outbound?: boolean | Prisma.StockCard$outboundArgs<ExtArgs>
   stockAdjustment?: boolean | Prisma.StockCard$stockAdjustmentArgs<ExtArgs>
@@ -1592,6 +1833,7 @@ export type $StockCardPayload<ExtArgs extends runtime.Types.Extensions.InternalA
   name: "StockCard"
   objects: {
     item: Prisma.$ItemPayload<ExtArgs>
+    warehouse: Prisma.$WarehousePayload<ExtArgs> | null
     inbound: Prisma.$InboundPayload<ExtArgs> | null
     outbound: Prisma.$OutboundPayload<ExtArgs> | null
     stockAdjustment: Prisma.$StockAdjustmentPayload<ExtArgs> | null
@@ -1600,6 +1842,7 @@ export type $StockCardPayload<ExtArgs extends runtime.Types.Extensions.InternalA
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     itemId: string
+    warehouseId: string | null
     movementType: $Enums.StockMovementType
     referenceType: string
     referenceId: string
@@ -2008,6 +2251,7 @@ readonly fields: StockCardFieldRefs;
 export interface Prisma__StockCardClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   item<T extends Prisma.ItemDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ItemDefaultArgs<ExtArgs>>): Prisma.Prisma__ItemClient<runtime.Types.Result.GetResult<Prisma.$ItemPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  warehouse<T extends Prisma.StockCard$warehouseArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.StockCard$warehouseArgs<ExtArgs>>): Prisma.Prisma__WarehouseClient<runtime.Types.Result.GetResult<Prisma.$WarehousePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   inbound<T extends Prisma.StockCard$inboundArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.StockCard$inboundArgs<ExtArgs>>): Prisma.Prisma__InboundClient<runtime.Types.Result.GetResult<Prisma.$InboundPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   outbound<T extends Prisma.StockCard$outboundArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.StockCard$outboundArgs<ExtArgs>>): Prisma.Prisma__OutboundClient<runtime.Types.Result.GetResult<Prisma.$OutboundPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   stockAdjustment<T extends Prisma.StockCard$stockAdjustmentArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.StockCard$stockAdjustmentArgs<ExtArgs>>): Prisma.Prisma__StockAdjustmentClient<runtime.Types.Result.GetResult<Prisma.$StockAdjustmentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
@@ -2043,6 +2287,7 @@ export interface Prisma__StockCardClient<T, Null = never, ExtArgs extends runtim
 export interface StockCardFieldRefs {
   readonly id: Prisma.FieldRef<"StockCard", 'String'>
   readonly itemId: Prisma.FieldRef<"StockCard", 'String'>
+  readonly warehouseId: Prisma.FieldRef<"StockCard", 'String'>
   readonly movementType: Prisma.FieldRef<"StockCard", 'StockMovementType'>
   readonly referenceType: Prisma.FieldRef<"StockCard", 'String'>
   readonly referenceId: Prisma.FieldRef<"StockCard", 'String'>
@@ -2449,6 +2694,25 @@ export type StockCardDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Int
    * Limit how many StockCards to delete.
    */
   limit?: number
+}
+
+/**
+ * StockCard.warehouse
+ */
+export type StockCard$warehouseArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Warehouse
+   */
+  select?: Prisma.WarehouseSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Warehouse
+   */
+  omit?: Prisma.WarehouseOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.WarehouseInclude<ExtArgs> | null
+  where?: Prisma.WarehouseWhereInput
 }
 
 /**

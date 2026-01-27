@@ -10,6 +10,7 @@ import { NumberInput } from '@/components/ui/NumberInput';
 import { Modal } from '@/components/ui/Modal';
 import { getAllItems, createRAB, calculateRABLineStats } from '@/app/actions/rab';
 import Link from 'next/link';
+import { useTranslations, useLocale } from 'next-intl';
 
 type RABLine = {
     id: string; // internal id for key
@@ -26,6 +27,8 @@ type RABLine = {
 };
 
 export default function ClientRABForm() {
+    const t = useTranslations('budget.form');
+    const locale = useLocale();
     const router = useRouter();
     const { user } = useAuth();
     const [isLoading, setIsLoading] = useState(false);
@@ -81,7 +84,7 @@ export default function ClientRABForm() {
 
     const handleModalSave = async () => {
         if (!modalItemId) {
-            alert('Please select an item');
+            alert(t('itemModal.alertSelect'));
             return;
         }
 
@@ -175,15 +178,15 @@ export default function ClientRABForm() {
 
     const handleSubmit = async () => {
         if (!user || !user.id) {
-            alert("User not authenticated");
+            alert(t('alerts.userAuth'));
             return;
         }
         if (lines.length === 0) {
-            alert("Please add at least one item.");
+            alert(t('alerts.noItems'));
             return;
         }
         if (lines.some(l => !l.itemId)) {
-            alert("Please select an Item for all lines.");
+            alert(t('alerts.allItems'));
             return;
         }
 
@@ -204,43 +207,43 @@ export default function ClientRABForm() {
         setIsLoading(false);
 
         if (result.success) {
-            alert("Budget Plan Created Successfully!");
+            alert(t('alerts.success'));
             router.push('/budget');
         } else {
-            alert("Failed: " + result.error);
+            alert(t('alerts.failed') + result.error);
         }
     };
 
-    if (pageLoading) return <div className="p-8">Loading...</div>;
+    if (pageLoading) return <div className="p-8">{t('table.loading')}</div>;
 
     return (
         <div className="animate-fadeIn p-6 max-w-7xl mx-auto">
             <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-4">
-                    <Link href="/budget" className="p-2 rounded-full hover:bg-[var(--color-bg-hover)]">
+                    <Link href="/budget" className="p-2 rounded-full hover:bg-(--color-bg-hover)">
                         <ArrowLeft size={20} />
                     </Link>
                     <div>
-                        <h1 className="text-2xl font-bold">Create Budget Plan</h1>
-                        <p className="text-[var(--color-text-secondary)]">Estimate and plan monthly budget</p>
+                        <h1 className="text-2xl font-bold">{t('createTitle')}</h1>
+                        <p className="text-(--color-text-secondary)">{t('description')}</p>
                     </div>
                 </div>
                 <div className="flex gap-2">
                     <button
                         onClick={handleSubmit}
                         disabled={isLoading}
-                        className="flex items-center gap-2 bg-[var(--color-primary)] text-white px-6 py-2 rounded-lg hover:bg-[var(--color-primary)]/90 disabled:opacity-50"
+                        className="flex items-center gap-2 bg-(--color-primary) text-white px-6 py-2 rounded-lg hover:bg-(--color-primary)/90 disabled:opacity-50"
                     >
-                        {isLoading ? "Saving..." : <><Save size={18} /> Save Plan</>}
+                        {isLoading ? t('saving') : <><Save size={18} /> {t('save')}</>}
                     </button>
                 </div>
             </div>
 
-            <div className="bg-[var(--color-bg-card)] rounded-xl border border-[var(--color-border)] p-6 mb-6">
-                <h3 className="text-lg font-semibold mb-4">Budget Period</h3>
+            <div className="bg-(--color-bg-card) rounded-xl border border-(--color-border) p-6 mb-6">
+                <h3 className="text-lg font-semibold mb-4">{t('sections.period')}</h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div>
-                        <label className="block text-sm font-medium mb-1">Fiscal Year</label>
+                        <label className="block text-sm font-medium mb-1">{t('sections.fiscalYear')}</label>
                         <SearchableDropdown
                             value={String(fiscalYear)}
                             onChange={(value) => setFiscalYear(Number(value))}
@@ -248,60 +251,60 @@ export default function ClientRABForm() {
                                 value: String(y),
                                 label: String(y)
                             }))}
-                            placeholder="Select Year..."
+                            placeholder={t('sections.selectYear')}
                         />
                     </div>
                     <div>
-                        <label className="block text-sm font-medium mb-1">Fiscal Month</label>
+                        <label className="block text-sm font-medium mb-1">{t('sections.fiscalMonth')}</label>
                         <SearchableDropdown
                             value={String(fiscalMonth)}
                             onChange={(value) => setFiscalMonth(Number(value))}
                             options={Array.from({ length: 12 }, (_, i) => i + 1).map(m => ({
                                 value: String(m),
-                                label: new Date(0, m - 1).toLocaleString('default', { month: 'long' })
+                                label: new Date(0, m - 1).toLocaleString(locale === 'id' ? 'id-ID' : 'default', { month: 'long' })
                             }))}
-                            placeholder="Select Month..."
+                            placeholder={t('sections.selectMonth')}
                         />
                     </div>
                     <div>
-                        <label className="block text-sm font-medium mb-1">Currency</label>
+                        <label className="block text-sm font-medium mb-1">{t('sections.currency')}</label>
                         <SearchableDropdown
                             value={currency}
                             onChange={(value) => setCurrency(value as string)}
                             options={[
                                 { value: 'IDR', label: 'IDR (Indonesian Rupiah)' }
                             ]}
-                            placeholder="Select Currency..."
+                            placeholder="Select Currency..." // Hardcoded as it's just one option for now, or translate
                             disabled
                         />
                     </div>
                 </div>
             </div>
 
-            <div className="bg-[var(--color-bg-card)] rounded-xl border border-[var(--color-border)] overflow-x-auto shadow-lg">
+            <div className="bg-(--color-bg-card) rounded-xl border border-(--color-border) overflow-x-auto shadow-lg">
                 <table className="w-full text-left text-sm min-w-max">
-                    <thead className="bg-[var(--color-bg-secondary)] border-b border-[var(--color-border)]">
+                    <thead className="bg-(--color-bg-secondary) border-b border-(--color-border)">
                         <tr>
-                            <th className="px-4 py-4 w-12 text-center font-bold text-xs tracking-wide">NO</th>
-                            <th className="px-4 py-4 w-72 font-bold text-xs tracking-wide">ITEM NAME</th>
-                            <th className="px-4 py-4 w-40 text-right font-bold text-xs tracking-wide">REQUIRED</th>
-                            <th className="px-4 py-4 w-28 text-right font-bold text-xs tracking-wide">LAST STOCK</th>
-                            <th className="px-4 py-4 w-36 text-right font-bold text-xs tracking-wide">REPLENISH</th>
-                            <th className="px-4 py-4 w-32 text-right font-bold text-xs tracking-wide">UNIT PRICE</th>
-                            <th className="px-4 py-4 w-40 text-right font-bold text-xs tracking-wide">TOTAL COST</th>
+                            <th className="px-4 py-4 w-12 text-center font-bold text-xs tracking-wide">{t('table.no')}</th>
+                            <th className="px-4 py-4 w-72 font-bold text-xs tracking-wide">{t('table.itemName')}</th>
+                            <th className="px-4 py-4 w-40 text-right font-bold text-xs tracking-wide">{t('table.required')}</th>
+                            <th className="px-4 py-4 w-28 text-right font-bold text-xs tracking-wide">{t('table.lastStock')}</th>
+                            <th className="px-4 py-4 w-36 text-right font-bold text-xs tracking-wide">{t('table.replenish')}</th>
+                            <th className="px-4 py-4 w-32 text-right font-bold text-xs tracking-wide">{t('table.unitPrice')}</th>
+                            <th className="px-4 py-4 w-40 text-right font-bold text-xs tracking-wide">{t('table.totalCost')}</th>
                             <th className="px-4 py-4 w-12"></th>
                         </tr>
                     </thead>
-                    <tbody className="divide-y divide-[var(--color-border)]">
+                    <tbody className="divide-y divide-(--color-border)">
                         {lines.map((line, index) => (
-                            <tr key={line.id} className="hover:bg-[var(--color-bg-hover)] transition-all">
-                                <td className="px-4 py-3 text-center font-medium text-[var(--color-text-secondary)]">{index + 1}</td>
+                            <tr key={line.id} className="hover:bg-(--color-bg-hover) transition-all">
+                                <td className="px-4 py-3 text-center font-medium text-(--color-text-secondary)">{index + 1}</td>
                                 <td className="px-4 py-3">
                                     <div className="max-w-xs truncate font-medium">
-                                        {line.itemName || <span className="text-[var(--color-text-muted)] italic">Not selected</span>}
+                                        {line.itemName || <span className="text-(--color-text-muted) italic">Not selected</span>}
                                     </div>
                                     {line.sku && (
-                                        <div className="text-xs text-[var(--color-text-muted)] truncate">{line.sku}</div>
+                                        <div className="text-xs text-(--color-text-muted) truncate">{line.sku}</div>
                                     )}
                                 </td>
                                 <td className="px-4 py-3 text-right">
@@ -316,13 +319,13 @@ export default function ClientRABForm() {
                                         )}
                                     </div>
                                 </td>
-                                <td className="px-4 py-3 text-right text-[var(--color-text-muted)] font-mono text-sm">
+                                <td className="px-4 py-3 text-right text-(--color-text-muted) font-mono text-sm">
                                     {line.lastStock.toLocaleString('id-ID')}
                                 </td>
                                 <td className="px-4 py-3 text-right font-semibold text-green-600 dark:text-green-400 font-mono text-sm">
                                     {line.replenishStock.toLocaleString('id-ID')}
                                 </td>
-                                <td className="px-4 py-3 text-right text-[var(--color-text-secondary)] font-mono text-sm">
+                                <td className="px-4 py-3 text-right text-(--color-text-secondary) font-mono text-sm">
                                     {formatCurrency(line.unitPrice)}
                                 </td>
                                 <td className="px-4 py-3 text-right font-bold text-lg text-blue-600 dark:text-blue-400 font-mono">
@@ -350,21 +353,21 @@ export default function ClientRABForm() {
                         ))}
                         {/* Add Row Button Row */}
                         <tr>
-                            <td colSpan={8} className="px-4 py-4 bg-[var(--color-bg-secondary)]">
+                            <td colSpan={8} className="px-4 py-4 bg-(--color-bg-secondary)">
                                 <div className="flex justify-center">
                                     <button
                                         onClick={addLine}
-                                        className="flex items-center gap-2 text-[var(--color-primary)] font-semibold hover:text-[var(--color-primary)]/80 transition-colors py-2 px-3 rounded-lg hover:bg-[var(--color-bg-hover)]"
+                                        className="flex items-center gap-2 text-(--color-primary) font-semibold hover:text-(--color-primary)/80 transition-colors py-2 px-3 rounded-lg hover:bg-(--color-bg-hover)"
                                     >
-                                        <Plus size={18} /> Add Item
+                                        <Plus size={18} /> {t('table.addItem')}
                                     </button>
                                 </div>
                             </td>
                         </tr>
                     </tbody>
-                    <tfoot className="bg-[var(--color-bg-secondary)] border-t-2 border-[var(--color-border)]">
+                    <tfoot className="bg-(--color-bg-secondary) border-t-2 border-(--color-border)">
                         <tr>
-                            <td colSpan={2} className="px-4 py-4 text-right font-bold tracking-wide">TOTAL</td>
+                            <td colSpan={2} className="px-4 py-4 text-right font-bold tracking-wide">{t('table.total')}</td>
                             <td className="px-4 py-4 text-right font-bold font-mono">{lines.reduce((a, b) => a + (b.requiredStock || 0), 0).toLocaleString('id-ID')}</td>
                             <td className="px-4 py-4 text-right font-bold font-mono">{lines.reduce((a, b) => a + b.lastStock, 0).toLocaleString('id-ID')}</td>
                             <td className="px-4 py-4 text-right font-bold text-green-700 dark:text-green-300 font-mono">{lines.reduce((a, b) => a + b.replenishStock, 0).toLocaleString('id-ID')}</td>
@@ -385,12 +388,12 @@ export default function ClientRABForm() {
                     setModalItemId('');
                     setModalRequiredStock(0);
                 }}
-                title={editingLine ? 'Edit Item' : 'Add Item'}
+                title={editingLine ? t('itemModal.editTitle') : t('itemModal.addTitle')}
             >
                 <div className="space-y-4">
                     {/* Item Selector */}
                     <div>
-                        <label className="block text-sm font-medium mb-2">Item</label>
+                        <label className="block text-sm font-medium mb-2">{t('itemModal.itemLabel')}</label>
                         <SearchableDropdown
                             value={modalItemId}
                             onChange={(value) => setModalItemId(value as string)}
@@ -399,16 +402,16 @@ export default function ClientRABForm() {
                                 label: item.name,
                                 subtitle: `SKU: ${item.sku}`
                             }))}
-                            placeholder="Select an item..."
+                            placeholder={t('itemModal.selectItemPlaceholder')}
                         />
                     </div>
 
                     {/* Required Stock Input */}
                     <div>
                         <label className="block text-sm font-medium mb-2">
-                            Required Stock
+                            {t('itemModal.requiredStockLabel')}
                             {modalItemId && items.find(i => i.id === modalItemId)?.uom?.symbol && (
-                                <span className="ml-2 text-xs text-[var(--color-text-muted)]">
+                                <span className="ml-2 text-xs text-(--color-text-muted)">
                                     ({items.find(i => i.id === modalItemId)?.uom?.symbol})
                                 </span>
                             )}
@@ -430,16 +433,16 @@ export default function ClientRABForm() {
                                 setModalItemId('');
                                 setModalRequiredStock(0);
                             }}
-                            className="px-4 py-2 border border-[var(--color-border)] rounded-lg hover:bg-[var(--color-bg-hover)] transition-colors"
+                            className="px-4 py-2 border border-(--color-border) rounded-lg hover:bg-(--color-bg-hover) transition-colors"
                         >
-                            Cancel
+                            {t('itemModal.cancel')}
                         </button>
                         <button
                             onClick={handleModalSave}
-                            className="px-4 py-2 bg-[var(--color-primary)] text-white rounded-lg hover:bg-[var(--color-primary)]/90 transition-colors flex items-center gap-2"
+                            className="px-4 py-2 bg-(--color-primary) text-white rounded-lg hover:bg-(--color-primary)/90 transition-colors flex items-center gap-2"
                         >
                             <Save size={16} />
-                            {editingLine ? 'Update' : 'Add'} Item
+                            {editingLine ? t('itemModal.update') : t('itemModal.add')}
                         </button>
                     </div>
                 </div>
@@ -447,3 +450,4 @@ export default function ClientRABForm() {
         </div>
     );
 }
+

@@ -27,6 +27,7 @@ export type AggregateStockOpname = {
 export type StockOpnameMinAggregateOutputType = {
   id: string | null
   opnameCode: string | null
+  warehouseId: string | null
   scheduledDate: Date | null
   startedAt: Date | null
   completedAt: Date | null
@@ -39,6 +40,7 @@ export type StockOpnameMinAggregateOutputType = {
 export type StockOpnameMaxAggregateOutputType = {
   id: string | null
   opnameCode: string | null
+  warehouseId: string | null
   scheduledDate: Date | null
   startedAt: Date | null
   completedAt: Date | null
@@ -51,6 +53,7 @@ export type StockOpnameMaxAggregateOutputType = {
 export type StockOpnameCountAggregateOutputType = {
   id: number
   opnameCode: number
+  warehouseId: number
   scheduledDate: number
   startedAt: number
   completedAt: number
@@ -65,6 +68,7 @@ export type StockOpnameCountAggregateOutputType = {
 export type StockOpnameMinAggregateInputType = {
   id?: true
   opnameCode?: true
+  warehouseId?: true
   scheduledDate?: true
   startedAt?: true
   completedAt?: true
@@ -77,6 +81,7 @@ export type StockOpnameMinAggregateInputType = {
 export type StockOpnameMaxAggregateInputType = {
   id?: true
   opnameCode?: true
+  warehouseId?: true
   scheduledDate?: true
   startedAt?: true
   completedAt?: true
@@ -89,6 +94,7 @@ export type StockOpnameMaxAggregateInputType = {
 export type StockOpnameCountAggregateInputType = {
   id?: true
   opnameCode?: true
+  warehouseId?: true
   scheduledDate?: true
   startedAt?: true
   completedAt?: true
@@ -174,6 +180,7 @@ export type StockOpnameGroupByArgs<ExtArgs extends runtime.Types.Extensions.Inte
 export type StockOpnameGroupByOutputType = {
   id: string
   opnameCode: string
+  warehouseId: string | null
   scheduledDate: Date
   startedAt: Date | null
   completedAt: Date | null
@@ -207,6 +214,7 @@ export type StockOpnameWhereInput = {
   NOT?: Prisma.StockOpnameWhereInput | Prisma.StockOpnameWhereInput[]
   id?: Prisma.StringFilter<"StockOpname"> | string
   opnameCode?: Prisma.StringFilter<"StockOpname"> | string
+  warehouseId?: Prisma.StringNullableFilter<"StockOpname"> | string | null
   scheduledDate?: Prisma.DateTimeFilter<"StockOpname"> | Date | string
   startedAt?: Prisma.DateTimeNullableFilter<"StockOpname"> | Date | string | null
   completedAt?: Prisma.DateTimeNullableFilter<"StockOpname"> | Date | string | null
@@ -214,6 +222,7 @@ export type StockOpnameWhereInput = {
   notes?: Prisma.StringNullableFilter<"StockOpname"> | string | null
   createdAt?: Prisma.DateTimeFilter<"StockOpname"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"StockOpname"> | Date | string
+  warehouse?: Prisma.XOR<Prisma.WarehouseNullableScalarRelationFilter, Prisma.WarehouseWhereInput> | null
   counts?: Prisma.StockOpnameCountListRelationFilter
   adjustment?: Prisma.XOR<Prisma.StockAdjustmentNullableScalarRelationFilter, Prisma.StockAdjustmentWhereInput> | null
 }
@@ -221,6 +230,7 @@ export type StockOpnameWhereInput = {
 export type StockOpnameOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   opnameCode?: Prisma.SortOrder
+  warehouseId?: Prisma.SortOrderInput | Prisma.SortOrder
   scheduledDate?: Prisma.SortOrder
   startedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   completedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -228,6 +238,7 @@ export type StockOpnameOrderByWithRelationInput = {
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  warehouse?: Prisma.WarehouseOrderByWithRelationInput
   counts?: Prisma.StockOpnameCountOrderByRelationAggregateInput
   adjustment?: Prisma.StockAdjustmentOrderByWithRelationInput
 }
@@ -238,6 +249,7 @@ export type StockOpnameWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.StockOpnameWhereInput | Prisma.StockOpnameWhereInput[]
   OR?: Prisma.StockOpnameWhereInput[]
   NOT?: Prisma.StockOpnameWhereInput | Prisma.StockOpnameWhereInput[]
+  warehouseId?: Prisma.StringNullableFilter<"StockOpname"> | string | null
   scheduledDate?: Prisma.DateTimeFilter<"StockOpname"> | Date | string
   startedAt?: Prisma.DateTimeNullableFilter<"StockOpname"> | Date | string | null
   completedAt?: Prisma.DateTimeNullableFilter<"StockOpname"> | Date | string | null
@@ -245,6 +257,7 @@ export type StockOpnameWhereUniqueInput = Prisma.AtLeast<{
   notes?: Prisma.StringNullableFilter<"StockOpname"> | string | null
   createdAt?: Prisma.DateTimeFilter<"StockOpname"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"StockOpname"> | Date | string
+  warehouse?: Prisma.XOR<Prisma.WarehouseNullableScalarRelationFilter, Prisma.WarehouseWhereInput> | null
   counts?: Prisma.StockOpnameCountListRelationFilter
   adjustment?: Prisma.XOR<Prisma.StockAdjustmentNullableScalarRelationFilter, Prisma.StockAdjustmentWhereInput> | null
 }, "id" | "opnameCode">
@@ -252,6 +265,7 @@ export type StockOpnameWhereUniqueInput = Prisma.AtLeast<{
 export type StockOpnameOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   opnameCode?: Prisma.SortOrder
+  warehouseId?: Prisma.SortOrderInput | Prisma.SortOrder
   scheduledDate?: Prisma.SortOrder
   startedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   completedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -270,6 +284,7 @@ export type StockOpnameScalarWhereWithAggregatesInput = {
   NOT?: Prisma.StockOpnameScalarWhereWithAggregatesInput | Prisma.StockOpnameScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"StockOpname"> | string
   opnameCode?: Prisma.StringWithAggregatesFilter<"StockOpname"> | string
+  warehouseId?: Prisma.StringNullableWithAggregatesFilter<"StockOpname"> | string | null
   scheduledDate?: Prisma.DateTimeWithAggregatesFilter<"StockOpname"> | Date | string
   startedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"StockOpname"> | Date | string | null
   completedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"StockOpname"> | Date | string | null
@@ -289,6 +304,7 @@ export type StockOpnameCreateInput = {
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  warehouse?: Prisma.WarehouseCreateNestedOneWithoutStockOpnamesInput
   counts?: Prisma.StockOpnameCountCreateNestedManyWithoutStockOpnameInput
   adjustment?: Prisma.StockAdjustmentCreateNestedOneWithoutStockOpnameInput
 }
@@ -296,6 +312,7 @@ export type StockOpnameCreateInput = {
 export type StockOpnameUncheckedCreateInput = {
   id?: string
   opnameCode: string
+  warehouseId?: string | null
   scheduledDate: Date | string
   startedAt?: Date | string | null
   completedAt?: Date | string | null
@@ -317,6 +334,7 @@ export type StockOpnameUpdateInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  warehouse?: Prisma.WarehouseUpdateOneWithoutStockOpnamesNestedInput
   counts?: Prisma.StockOpnameCountUpdateManyWithoutStockOpnameNestedInput
   adjustment?: Prisma.StockAdjustmentUpdateOneWithoutStockOpnameNestedInput
 }
@@ -324,6 +342,7 @@ export type StockOpnameUpdateInput = {
 export type StockOpnameUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   opnameCode?: Prisma.StringFieldUpdateOperationsInput | string
+  warehouseId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scheduledDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -338,6 +357,7 @@ export type StockOpnameUncheckedUpdateInput = {
 export type StockOpnameCreateManyInput = {
   id?: string
   opnameCode: string
+  warehouseId?: string | null
   scheduledDate: Date | string
   startedAt?: Date | string | null
   completedAt?: Date | string | null
@@ -362,6 +382,7 @@ export type StockOpnameUpdateManyMutationInput = {
 export type StockOpnameUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   opnameCode?: Prisma.StringFieldUpdateOperationsInput | string
+  warehouseId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scheduledDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -371,9 +392,20 @@ export type StockOpnameUncheckedUpdateManyInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
+export type StockOpnameListRelationFilter = {
+  every?: Prisma.StockOpnameWhereInput
+  some?: Prisma.StockOpnameWhereInput
+  none?: Prisma.StockOpnameWhereInput
+}
+
+export type StockOpnameOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
+}
+
 export type StockOpnameCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   opnameCode?: Prisma.SortOrder
+  warehouseId?: Prisma.SortOrder
   scheduledDate?: Prisma.SortOrder
   startedAt?: Prisma.SortOrder
   completedAt?: Prisma.SortOrder
@@ -386,6 +418,7 @@ export type StockOpnameCountOrderByAggregateInput = {
 export type StockOpnameMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   opnameCode?: Prisma.SortOrder
+  warehouseId?: Prisma.SortOrder
   scheduledDate?: Prisma.SortOrder
   startedAt?: Prisma.SortOrder
   completedAt?: Prisma.SortOrder
@@ -398,6 +431,7 @@ export type StockOpnameMaxOrderByAggregateInput = {
 export type StockOpnameMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   opnameCode?: Prisma.SortOrder
+  warehouseId?: Prisma.SortOrder
   scheduledDate?: Prisma.SortOrder
   startedAt?: Prisma.SortOrder
   completedAt?: Prisma.SortOrder
@@ -415,6 +449,48 @@ export type StockOpnameScalarRelationFilter = {
 export type StockOpnameNullableScalarRelationFilter = {
   is?: Prisma.StockOpnameWhereInput | null
   isNot?: Prisma.StockOpnameWhereInput | null
+}
+
+export type StockOpnameCreateNestedManyWithoutWarehouseInput = {
+  create?: Prisma.XOR<Prisma.StockOpnameCreateWithoutWarehouseInput, Prisma.StockOpnameUncheckedCreateWithoutWarehouseInput> | Prisma.StockOpnameCreateWithoutWarehouseInput[] | Prisma.StockOpnameUncheckedCreateWithoutWarehouseInput[]
+  connectOrCreate?: Prisma.StockOpnameCreateOrConnectWithoutWarehouseInput | Prisma.StockOpnameCreateOrConnectWithoutWarehouseInput[]
+  createMany?: Prisma.StockOpnameCreateManyWarehouseInputEnvelope
+  connect?: Prisma.StockOpnameWhereUniqueInput | Prisma.StockOpnameWhereUniqueInput[]
+}
+
+export type StockOpnameUncheckedCreateNestedManyWithoutWarehouseInput = {
+  create?: Prisma.XOR<Prisma.StockOpnameCreateWithoutWarehouseInput, Prisma.StockOpnameUncheckedCreateWithoutWarehouseInput> | Prisma.StockOpnameCreateWithoutWarehouseInput[] | Prisma.StockOpnameUncheckedCreateWithoutWarehouseInput[]
+  connectOrCreate?: Prisma.StockOpnameCreateOrConnectWithoutWarehouseInput | Prisma.StockOpnameCreateOrConnectWithoutWarehouseInput[]
+  createMany?: Prisma.StockOpnameCreateManyWarehouseInputEnvelope
+  connect?: Prisma.StockOpnameWhereUniqueInput | Prisma.StockOpnameWhereUniqueInput[]
+}
+
+export type StockOpnameUpdateManyWithoutWarehouseNestedInput = {
+  create?: Prisma.XOR<Prisma.StockOpnameCreateWithoutWarehouseInput, Prisma.StockOpnameUncheckedCreateWithoutWarehouseInput> | Prisma.StockOpnameCreateWithoutWarehouseInput[] | Prisma.StockOpnameUncheckedCreateWithoutWarehouseInput[]
+  connectOrCreate?: Prisma.StockOpnameCreateOrConnectWithoutWarehouseInput | Prisma.StockOpnameCreateOrConnectWithoutWarehouseInput[]
+  upsert?: Prisma.StockOpnameUpsertWithWhereUniqueWithoutWarehouseInput | Prisma.StockOpnameUpsertWithWhereUniqueWithoutWarehouseInput[]
+  createMany?: Prisma.StockOpnameCreateManyWarehouseInputEnvelope
+  set?: Prisma.StockOpnameWhereUniqueInput | Prisma.StockOpnameWhereUniqueInput[]
+  disconnect?: Prisma.StockOpnameWhereUniqueInput | Prisma.StockOpnameWhereUniqueInput[]
+  delete?: Prisma.StockOpnameWhereUniqueInput | Prisma.StockOpnameWhereUniqueInput[]
+  connect?: Prisma.StockOpnameWhereUniqueInput | Prisma.StockOpnameWhereUniqueInput[]
+  update?: Prisma.StockOpnameUpdateWithWhereUniqueWithoutWarehouseInput | Prisma.StockOpnameUpdateWithWhereUniqueWithoutWarehouseInput[]
+  updateMany?: Prisma.StockOpnameUpdateManyWithWhereWithoutWarehouseInput | Prisma.StockOpnameUpdateManyWithWhereWithoutWarehouseInput[]
+  deleteMany?: Prisma.StockOpnameScalarWhereInput | Prisma.StockOpnameScalarWhereInput[]
+}
+
+export type StockOpnameUncheckedUpdateManyWithoutWarehouseNestedInput = {
+  create?: Prisma.XOR<Prisma.StockOpnameCreateWithoutWarehouseInput, Prisma.StockOpnameUncheckedCreateWithoutWarehouseInput> | Prisma.StockOpnameCreateWithoutWarehouseInput[] | Prisma.StockOpnameUncheckedCreateWithoutWarehouseInput[]
+  connectOrCreate?: Prisma.StockOpnameCreateOrConnectWithoutWarehouseInput | Prisma.StockOpnameCreateOrConnectWithoutWarehouseInput[]
+  upsert?: Prisma.StockOpnameUpsertWithWhereUniqueWithoutWarehouseInput | Prisma.StockOpnameUpsertWithWhereUniqueWithoutWarehouseInput[]
+  createMany?: Prisma.StockOpnameCreateManyWarehouseInputEnvelope
+  set?: Prisma.StockOpnameWhereUniqueInput | Prisma.StockOpnameWhereUniqueInput[]
+  disconnect?: Prisma.StockOpnameWhereUniqueInput | Prisma.StockOpnameWhereUniqueInput[]
+  delete?: Prisma.StockOpnameWhereUniqueInput | Prisma.StockOpnameWhereUniqueInput[]
+  connect?: Prisma.StockOpnameWhereUniqueInput | Prisma.StockOpnameWhereUniqueInput[]
+  update?: Prisma.StockOpnameUpdateWithWhereUniqueWithoutWarehouseInput | Prisma.StockOpnameUpdateWithWhereUniqueWithoutWarehouseInput[]
+  updateMany?: Prisma.StockOpnameUpdateManyWithWhereWithoutWarehouseInput | Prisma.StockOpnameUpdateManyWithWhereWithoutWarehouseInput[]
+  deleteMany?: Prisma.StockOpnameScalarWhereInput | Prisma.StockOpnameScalarWhereInput[]
 }
 
 export type EnumStockOpnameStatusFieldUpdateOperationsInput = {
@@ -451,6 +527,76 @@ export type StockOpnameUpdateOneWithoutAdjustmentNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.StockOpnameUpdateToOneWithWhereWithoutAdjustmentInput, Prisma.StockOpnameUpdateWithoutAdjustmentInput>, Prisma.StockOpnameUncheckedUpdateWithoutAdjustmentInput>
 }
 
+export type StockOpnameCreateWithoutWarehouseInput = {
+  id?: string
+  opnameCode: string
+  scheduledDate: Date | string
+  startedAt?: Date | string | null
+  completedAt?: Date | string | null
+  status?: $Enums.StockOpnameStatus
+  notes?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  counts?: Prisma.StockOpnameCountCreateNestedManyWithoutStockOpnameInput
+  adjustment?: Prisma.StockAdjustmentCreateNestedOneWithoutStockOpnameInput
+}
+
+export type StockOpnameUncheckedCreateWithoutWarehouseInput = {
+  id?: string
+  opnameCode: string
+  scheduledDate: Date | string
+  startedAt?: Date | string | null
+  completedAt?: Date | string | null
+  status?: $Enums.StockOpnameStatus
+  notes?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  counts?: Prisma.StockOpnameCountUncheckedCreateNestedManyWithoutStockOpnameInput
+  adjustment?: Prisma.StockAdjustmentUncheckedCreateNestedOneWithoutStockOpnameInput
+}
+
+export type StockOpnameCreateOrConnectWithoutWarehouseInput = {
+  where: Prisma.StockOpnameWhereUniqueInput
+  create: Prisma.XOR<Prisma.StockOpnameCreateWithoutWarehouseInput, Prisma.StockOpnameUncheckedCreateWithoutWarehouseInput>
+}
+
+export type StockOpnameCreateManyWarehouseInputEnvelope = {
+  data: Prisma.StockOpnameCreateManyWarehouseInput | Prisma.StockOpnameCreateManyWarehouseInput[]
+  skipDuplicates?: boolean
+}
+
+export type StockOpnameUpsertWithWhereUniqueWithoutWarehouseInput = {
+  where: Prisma.StockOpnameWhereUniqueInput
+  update: Prisma.XOR<Prisma.StockOpnameUpdateWithoutWarehouseInput, Prisma.StockOpnameUncheckedUpdateWithoutWarehouseInput>
+  create: Prisma.XOR<Prisma.StockOpnameCreateWithoutWarehouseInput, Prisma.StockOpnameUncheckedCreateWithoutWarehouseInput>
+}
+
+export type StockOpnameUpdateWithWhereUniqueWithoutWarehouseInput = {
+  where: Prisma.StockOpnameWhereUniqueInput
+  data: Prisma.XOR<Prisma.StockOpnameUpdateWithoutWarehouseInput, Prisma.StockOpnameUncheckedUpdateWithoutWarehouseInput>
+}
+
+export type StockOpnameUpdateManyWithWhereWithoutWarehouseInput = {
+  where: Prisma.StockOpnameScalarWhereInput
+  data: Prisma.XOR<Prisma.StockOpnameUpdateManyMutationInput, Prisma.StockOpnameUncheckedUpdateManyWithoutWarehouseInput>
+}
+
+export type StockOpnameScalarWhereInput = {
+  AND?: Prisma.StockOpnameScalarWhereInput | Prisma.StockOpnameScalarWhereInput[]
+  OR?: Prisma.StockOpnameScalarWhereInput[]
+  NOT?: Prisma.StockOpnameScalarWhereInput | Prisma.StockOpnameScalarWhereInput[]
+  id?: Prisma.StringFilter<"StockOpname"> | string
+  opnameCode?: Prisma.StringFilter<"StockOpname"> | string
+  warehouseId?: Prisma.StringNullableFilter<"StockOpname"> | string | null
+  scheduledDate?: Prisma.DateTimeFilter<"StockOpname"> | Date | string
+  startedAt?: Prisma.DateTimeNullableFilter<"StockOpname"> | Date | string | null
+  completedAt?: Prisma.DateTimeNullableFilter<"StockOpname"> | Date | string | null
+  status?: Prisma.EnumStockOpnameStatusFilter<"StockOpname"> | $Enums.StockOpnameStatus
+  notes?: Prisma.StringNullableFilter<"StockOpname"> | string | null
+  createdAt?: Prisma.DateTimeFilter<"StockOpname"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"StockOpname"> | Date | string
+}
+
 export type StockOpnameCreateWithoutCountsInput = {
   id?: string
   opnameCode: string
@@ -461,12 +607,14 @@ export type StockOpnameCreateWithoutCountsInput = {
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  warehouse?: Prisma.WarehouseCreateNestedOneWithoutStockOpnamesInput
   adjustment?: Prisma.StockAdjustmentCreateNestedOneWithoutStockOpnameInput
 }
 
 export type StockOpnameUncheckedCreateWithoutCountsInput = {
   id?: string
   opnameCode: string
+  warehouseId?: string | null
   scheduledDate: Date | string
   startedAt?: Date | string | null
   completedAt?: Date | string | null
@@ -503,12 +651,14 @@ export type StockOpnameUpdateWithoutCountsInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  warehouse?: Prisma.WarehouseUpdateOneWithoutStockOpnamesNestedInput
   adjustment?: Prisma.StockAdjustmentUpdateOneWithoutStockOpnameNestedInput
 }
 
 export type StockOpnameUncheckedUpdateWithoutCountsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   opnameCode?: Prisma.StringFieldUpdateOperationsInput | string
+  warehouseId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scheduledDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -529,12 +679,14 @@ export type StockOpnameCreateWithoutAdjustmentInput = {
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  warehouse?: Prisma.WarehouseCreateNestedOneWithoutStockOpnamesInput
   counts?: Prisma.StockOpnameCountCreateNestedManyWithoutStockOpnameInput
 }
 
 export type StockOpnameUncheckedCreateWithoutAdjustmentInput = {
   id?: string
   opnameCode: string
+  warehouseId?: string | null
   scheduledDate: Date | string
   startedAt?: Date | string | null
   completedAt?: Date | string | null
@@ -571,10 +723,51 @@ export type StockOpnameUpdateWithoutAdjustmentInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  warehouse?: Prisma.WarehouseUpdateOneWithoutStockOpnamesNestedInput
   counts?: Prisma.StockOpnameCountUpdateManyWithoutStockOpnameNestedInput
 }
 
 export type StockOpnameUncheckedUpdateWithoutAdjustmentInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  opnameCode?: Prisma.StringFieldUpdateOperationsInput | string
+  warehouseId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  scheduledDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.EnumStockOpnameStatusFieldUpdateOperationsInput | $Enums.StockOpnameStatus
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  counts?: Prisma.StockOpnameCountUncheckedUpdateManyWithoutStockOpnameNestedInput
+}
+
+export type StockOpnameCreateManyWarehouseInput = {
+  id?: string
+  opnameCode: string
+  scheduledDate: Date | string
+  startedAt?: Date | string | null
+  completedAt?: Date | string | null
+  status?: $Enums.StockOpnameStatus
+  notes?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type StockOpnameUpdateWithoutWarehouseInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  opnameCode?: Prisma.StringFieldUpdateOperationsInput | string
+  scheduledDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.EnumStockOpnameStatusFieldUpdateOperationsInput | $Enums.StockOpnameStatus
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  counts?: Prisma.StockOpnameCountUpdateManyWithoutStockOpnameNestedInput
+  adjustment?: Prisma.StockAdjustmentUpdateOneWithoutStockOpnameNestedInput
+}
+
+export type StockOpnameUncheckedUpdateWithoutWarehouseInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   opnameCode?: Prisma.StringFieldUpdateOperationsInput | string
   scheduledDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -585,6 +778,19 @@ export type StockOpnameUncheckedUpdateWithoutAdjustmentInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   counts?: Prisma.StockOpnameCountUncheckedUpdateManyWithoutStockOpnameNestedInput
+  adjustment?: Prisma.StockAdjustmentUncheckedUpdateOneWithoutStockOpnameNestedInput
+}
+
+export type StockOpnameUncheckedUpdateManyWithoutWarehouseInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  opnameCode?: Prisma.StringFieldUpdateOperationsInput | string
+  scheduledDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.EnumStockOpnameStatusFieldUpdateOperationsInput | $Enums.StockOpnameStatus
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 
@@ -621,6 +827,7 @@ export type StockOpnameCountOutputTypeCountCountsArgs<ExtArgs extends runtime.Ty
 export type StockOpnameSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   opnameCode?: boolean
+  warehouseId?: boolean
   scheduledDate?: boolean
   startedAt?: boolean
   completedAt?: boolean
@@ -628,6 +835,7 @@ export type StockOpnameSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   notes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  warehouse?: boolean | Prisma.StockOpname$warehouseArgs<ExtArgs>
   counts?: boolean | Prisma.StockOpname$countsArgs<ExtArgs>
   adjustment?: boolean | Prisma.StockOpname$adjustmentArgs<ExtArgs>
   _count?: boolean | Prisma.StockOpnameCountOutputTypeDefaultArgs<ExtArgs>
@@ -636,6 +844,7 @@ export type StockOpnameSelect<ExtArgs extends runtime.Types.Extensions.InternalA
 export type StockOpnameSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   opnameCode?: boolean
+  warehouseId?: boolean
   scheduledDate?: boolean
   startedAt?: boolean
   completedAt?: boolean
@@ -643,11 +852,13 @@ export type StockOpnameSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   notes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  warehouse?: boolean | Prisma.StockOpname$warehouseArgs<ExtArgs>
 }, ExtArgs["result"]["stockOpname"]>
 
 export type StockOpnameSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   opnameCode?: boolean
+  warehouseId?: boolean
   scheduledDate?: boolean
   startedAt?: boolean
   completedAt?: boolean
@@ -655,11 +866,13 @@ export type StockOpnameSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   notes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  warehouse?: boolean | Prisma.StockOpname$warehouseArgs<ExtArgs>
 }, ExtArgs["result"]["stockOpname"]>
 
 export type StockOpnameSelectScalar = {
   id?: boolean
   opnameCode?: boolean
+  warehouseId?: boolean
   scheduledDate?: boolean
   startedAt?: boolean
   completedAt?: boolean
@@ -669,24 +882,31 @@ export type StockOpnameSelectScalar = {
   updatedAt?: boolean
 }
 
-export type StockOpnameOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "opnameCode" | "scheduledDate" | "startedAt" | "completedAt" | "status" | "notes" | "createdAt" | "updatedAt", ExtArgs["result"]["stockOpname"]>
+export type StockOpnameOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "opnameCode" | "warehouseId" | "scheduledDate" | "startedAt" | "completedAt" | "status" | "notes" | "createdAt" | "updatedAt", ExtArgs["result"]["stockOpname"]>
 export type StockOpnameInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  warehouse?: boolean | Prisma.StockOpname$warehouseArgs<ExtArgs>
   counts?: boolean | Prisma.StockOpname$countsArgs<ExtArgs>
   adjustment?: boolean | Prisma.StockOpname$adjustmentArgs<ExtArgs>
   _count?: boolean | Prisma.StockOpnameCountOutputTypeDefaultArgs<ExtArgs>
 }
-export type StockOpnameIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
-export type StockOpnameIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
+export type StockOpnameIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  warehouse?: boolean | Prisma.StockOpname$warehouseArgs<ExtArgs>
+}
+export type StockOpnameIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  warehouse?: boolean | Prisma.StockOpname$warehouseArgs<ExtArgs>
+}
 
 export type $StockOpnamePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "StockOpname"
   objects: {
+    warehouse: Prisma.$WarehousePayload<ExtArgs> | null
     counts: Prisma.$StockOpnameCountPayload<ExtArgs>[]
     adjustment: Prisma.$StockAdjustmentPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     opnameCode: string
+    warehouseId: string | null
     scheduledDate: Date
     startedAt: Date | null
     completedAt: Date | null
@@ -1088,6 +1308,7 @@ readonly fields: StockOpnameFieldRefs;
  */
 export interface Prisma__StockOpnameClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  warehouse<T extends Prisma.StockOpname$warehouseArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.StockOpname$warehouseArgs<ExtArgs>>): Prisma.Prisma__WarehouseClient<runtime.Types.Result.GetResult<Prisma.$WarehousePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   counts<T extends Prisma.StockOpname$countsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.StockOpname$countsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$StockOpnameCountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   adjustment<T extends Prisma.StockOpname$adjustmentArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.StockOpname$adjustmentArgs<ExtArgs>>): Prisma.Prisma__StockAdjustmentClient<runtime.Types.Result.GetResult<Prisma.$StockAdjustmentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
@@ -1121,6 +1342,7 @@ export interface Prisma__StockOpnameClient<T, Null = never, ExtArgs extends runt
 export interface StockOpnameFieldRefs {
   readonly id: Prisma.FieldRef<"StockOpname", 'String'>
   readonly opnameCode: Prisma.FieldRef<"StockOpname", 'String'>
+  readonly warehouseId: Prisma.FieldRef<"StockOpname", 'String'>
   readonly scheduledDate: Prisma.FieldRef<"StockOpname", 'DateTime'>
   readonly startedAt: Prisma.FieldRef<"StockOpname", 'DateTime'>
   readonly completedAt: Prisma.FieldRef<"StockOpname", 'DateTime'>
@@ -1377,6 +1599,10 @@ export type StockOpnameCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Ext
    */
   data: Prisma.StockOpnameCreateManyInput | Prisma.StockOpnameCreateManyInput[]
   skipDuplicates?: boolean
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.StockOpnameIncludeCreateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1447,6 +1673,10 @@ export type StockOpnameUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Ext
    * Limit how many StockOpnames to update.
    */
   limit?: number
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.StockOpnameIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1513,6 +1743,25 @@ export type StockOpnameDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.I
    * Limit how many StockOpnames to delete.
    */
   limit?: number
+}
+
+/**
+ * StockOpname.warehouse
+ */
+export type StockOpname$warehouseArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Warehouse
+   */
+  select?: Prisma.WarehouseSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Warehouse
+   */
+  omit?: Prisma.WarehouseOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.WarehouseInclude<ExtArgs> | null
+  where?: Prisma.WarehouseWhereInput
 }
 
 /**

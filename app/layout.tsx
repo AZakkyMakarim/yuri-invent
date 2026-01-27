@@ -5,6 +5,7 @@ import { getLocale, getMessages } from "next-intl/server";
 import { ThemeProvider } from "@/providers/ThemeProvider";
 import { LoadingProvider } from "@/contexts/LoadingContext";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
+import { Toaster } from "@/components/ui/toaster";
 import "./globals.css";
 
 const inter = Inter({
@@ -33,6 +34,7 @@ export default async function RootLayout({
             <LoadingProvider>
               <LoadingSpinner />
               {children}
+              <Toaster />
             </LoadingProvider>
           </ThemeProvider>
         </NextIntlClientProvider>

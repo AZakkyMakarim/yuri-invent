@@ -4,11 +4,11 @@ import { serializeDecimal } from '@/lib/utils';
 import ClientPRForm from '@/components/purchase/ClientPRForm';
 
 interface PageProps {
-    params: { id: string }
+    params: Promise<{ id: string }>
 }
 
 export default async function EditPRPage({ params }: PageProps) {
-    const { id } = params;
+    const { id } = await params;
 
     const pr = await prisma.purchaseRequest.findUnique({
         where: { id },

@@ -13,7 +13,8 @@ import {
     AlertTriangle,
     FileText,
     Upload,
-    X
+    X,
+    ImageIcon
 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
@@ -23,9 +24,12 @@ import SearchableDropdown from '@/components/ui/SearchableDropdown';
 import { formatCurrency } from '@/lib/utils';
 import { useAuth } from '@/contexts/AuthContext';
 import { createPurchaseRequest, updatePurchaseRequest } from '@/app/actions/purchase';
+import { getWarehouses } from '@/app/actions/warehouses';
 import ItemPickerModal from './ItemPickerModal';
+
 import { FormattedNumberInput } from '@/components/ui/FormattedNumberInput';
 import JustificationModal from './JustificationModal';
+import { useTranslations } from 'next-intl';
 
 interface PRItem {
     id: string; // Temporary ID for new items
@@ -40,6 +44,10 @@ interface PRItem {
     notes?: string;
     fromRabLineId?: string; // Link to RAB line if applicable
     isSuppliedByVendor?: boolean; // Whether vendor has this item in their VendorItem list
+    imagePath?: string | null;
+    brand?: string | null;
+    type?: string | null;
+    movementType?: string | null;
 }
 
 interface ClientPRFormProps {
@@ -48,23 +56,29 @@ interface ClientPRFormProps {
     initialData?: any;
 }
 
-export default function ClientPRForm({ vendors, rabs, initialData }: ClientPRFormProps) {
+export default function ClientPRForm({ vendors: initialVendors, rabs, initialData }: ClientPRFormProps) {
     const router = useRouter();
     const { user } = useAuth();
+    const t = useTranslations('purchase.form');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const isEditMode = !!initialData;
     const [isItemPickerOpen, setIsItemPickerOpen] = useState(false);
+
+    // Vendor State Management
+    const [vendors, setVendors] = useState(initialVendors);
 
     // Form State
     const [prDate, setPrDate] = useState(initialData ? format(new Date(initialData.requestDate), 'yyyy-MM-dd') : format(new Date(), 'yyyy-MM-dd'));
     const [description, setDescription] = useState(initialData?.notes || '');
     const [selectedVendorId, setSelectedVendorId] = useState(initialData?.vendorId || '');
     const [selectedRabId, setSelectedRabId] = useState(initialData?.rabId || '');
+    const [selectedWarehouseId, setSelectedWarehouseId] = useState(initialData?.targetWarehouseId || '');
+    const [warehouses, setWarehouses] = useState<any[]>([]); // Add warehouses state
     const [items, setItems] = useState<PRItem[]>(
         initialData?.items?.map((item: any) => ({
             id: Math.random().toString(36).substr(2, 9),
             itemId: item.itemId,
-            code: item.item?.code || 'UNKNOWN',
+            code: item.item?.sku || item.item?.code || 'UNKNOWN',
             name: item.item?.name || 'Unknown Item',
             spec: '',
             uom: 'UOM', // Fallback or need to fetch item details in initialData
@@ -72,7 +86,11 @@ export default function ClientPRForm({ vendors, rabs, initialData }: ClientPRFor
             unitPrice: Number(item.unitPrice),
             totalAmount: Number(item.totalPrice),
             notes: item.notes,
-            fromRabLineId: undefined
+            fromRabLineId: undefined,
+            imagePath: item.item?.imagePath || null,
+            brand: item.item?.brand,
+            type: item.item?.type,
+            movementType: item.item?.movementType
         })) || []
     );
 
@@ -83,13 +101,20 @@ export default function ClientPRForm({ vendors, rabs, initialData }: ClientPRFor
     const [showJustificationModal, setShowJustificationModal] = useState(false);
     const [itemsExceedingBudget, setItemsExceedingBudget] = useState<any[]>([]);
 
+    useEffect(() => {
+        getWarehouses().then(res => {
+            if (res.success) setWarehouses(res.data as any[]);
+        });
+    }, []);
+
+    // Derived State
     // Derived State
     const selectedVendor = vendors.find(v => v.id === selectedVendorId);
 
     // Strict Vendor Logic: Clear items if Vendor changes
     const handleVendorChange = (vendorId: string) => {
         if (items.length > 0 && vendorId !== selectedVendorId) {
-            if (confirm('Changing vendor will clear current items. Continue?')) {
+            if (confirm(t('warnings.changeVendor'))) {
                 setItems([]);
                 setSelectedRabId(''); // Reset RAB too as it might not match
                 setSelectedVendorId(vendorId);
@@ -102,7 +127,7 @@ export default function ClientPRForm({ vendors, rabs, initialData }: ClientPRFor
     // Handle RAB Selection - just select the RAB, don't auto-load items
     const handleRabChange = (rabId: string) => {
         if (!selectedVendorId) {
-            alert('Please select a Vendor first.');
+            alert(t('fields.rabNoVendor'));
             return;
         }
 
@@ -117,7 +142,7 @@ export default function ClientPRForm({ vendors, rabs, initialData }: ClientPRFor
         // Check if item already exists
         const exists = items.some(item => item.itemId === itemOption.itemId);
         if (exists) {
-            alert('This item is already in the request');
+            alert(t('warnings.itemExists'));
             return;
         }
 
@@ -132,7 +157,11 @@ export default function ClientPRForm({ vendors, rabs, initialData }: ClientPRFor
             unitPrice: itemOption.unitPrice,
             totalAmount: (itemOption.rabQty || 1) * itemOption.unitPrice,
             fromRabLineId: itemOption.fromRabLineId,
-            isSuppliedByVendor: itemOption.isSuppliedByVendor
+            isSuppliedByVendor: itemOption.isSuppliedByVendor,
+            imagePath: itemOption.imagePath,
+            brand: itemOption.brand,
+            type: itemOption.type,
+            movementType: itemOption.movementType
         };
 
         setItems([...items, newItem]);
@@ -211,18 +240,18 @@ export default function ClientPRForm({ vendors, rabs, initialData }: ClientPRFor
         justificationData?: { reason: string; document?: string }
     ) => {
         if (!user?.id) {
-            if (process.env.NODE_ENV !== 'development' || !user) {
+            if (process.env.NODE_ENV !== 'development' || !user) { // Assuming development check for mock user
                 alert('User not authenticated');
                 return;
             }
         }
 
         if (!selectedVendorId) {
-            alert('Vendor is required');
+            alert(t('warnings.noVendor'));
             return;
         }
         if (items.length === 0) {
-            alert('Please add at least one item');
+            alert(t('warnings.noItems'));
             return;
         }
 
@@ -231,7 +260,10 @@ export default function ClientPRForm({ vendors, rabs, initialData }: ClientPRFor
 
         if (unsuppliedItems.length > 0 && status === 'PENDING_MANAGER_APPROVAL') {
             const itemList = unsuppliedItems.map(item => `- ${item.name}`).join('\n');
-            const confirmMsg = `⚠️ Warning: The following ${unsuppliedItems.length} item(s) are not typically supplied by this vendor:\n\n${itemList}\n\nPrices may need verification. Continue with submission?`;
+            const confirmMsg = t('warnings.unsupplied', {
+                count: unsuppliedItems.length,
+                items: itemList
+            });
 
             if (!confirm(confirmMsg)) {
                 return;
@@ -258,6 +290,7 @@ export default function ClientPRForm({ vendors, rabs, initialData }: ClientPRFor
                 description,
                 vendorId: selectedVendorId,
                 rabId: selectedRabId || undefined,
+                targetWarehouseId: selectedWarehouseId || undefined,
                 status,
                 items: items.map(item => ({
                     itemId: item.itemId,
@@ -282,10 +315,12 @@ export default function ClientPRForm({ vendors, rabs, initialData }: ClientPRFor
             }
 
             if (result.success) {
-                const action = isEditMode ? "Updated" : "Created";
-                alert(`PR ${action} Successfully! Number: ${result.data?.prNumber}`);
+                const message = isEditMode
+                    ? t('messages.successUpdated', { number: result.data?.prNumber })
+                    : t('messages.successCreated', { number: result.data?.prNumber });
+                alert(message);
                 router.push('/purchase');
-                router.refresh();
+                router.refresh(); // Important to refresh server data
             } else {
                 alert(`Failed to ${isEditMode ? 'update' : 'create'} PR: ${result.error}`);
             }
@@ -302,10 +337,10 @@ export default function ClientPRForm({ vendors, rabs, initialData }: ClientPRFor
             <div className="flex items-center justify-between">
                 <div>
                     <h1 className="text-2xl font-bold bg-linear-to-r from-(--color-primary) to-(--color-secondary) bg-clip-text text-transparent">
-                        {isEditMode ? 'Edit Purchase Request' : 'Create Purchase Request'}
+                        {isEditMode ? t('editTitle') : t('createTitle')}
                     </h1>
                     <p className="text-(--color-text-secondary)">
-                        {isEditMode ? 'Modify existing request' : 'New request for material purchase'}
+                        {isEditMode ? t('editDescription') : t('createDescription')}
                     </p>
                 </div>
                 <div className="flex gap-3">
@@ -314,7 +349,7 @@ export default function ClientPRForm({ vendors, rabs, initialData }: ClientPRFor
                         onClick={() => router.back()}
                         className="border-(--color-border) text-(--color-text-secondary) hover:bg-(--color-bg-hover)"
                     >
-                        Cancel
+                        {t('buttons.cancel')}
                     </Button>
                     <Button
                         variant="secondary"
@@ -323,7 +358,7 @@ export default function ClientPRForm({ vendors, rabs, initialData }: ClientPRFor
                         className="border-(--color-primary) text-(--color-primary) hover:bg-(--color-primary)/10"
                     >
                         <Save size={18} className="mr-2" />
-                        Save Draft
+                        {t('buttons.saveDraft')}
                     </Button>
                     <Button
                         onClick={() => handleSubmit('PENDING_MANAGER_APPROVAL')}
@@ -331,7 +366,7 @@ export default function ClientPRForm({ vendors, rabs, initialData }: ClientPRFor
                         className="bg-(--color-primary) hover:bg-(--color-primary)/90 text-white shadow-lg shadow-(--color-primary)/20"
                     >
                         {isSubmitting ? <Loader2 className="animate-spin mr-2" /> : <Send size={18} className="mr-2" />}
-                        {isEditMode && initialData.status === 'REJECTED' ? 'Resubmit for Approval' : 'Submit for Approval'}
+                        {isEditMode && initialData.status === 'REJECTED' ? t('buttons.resubmitApproval') : t('buttons.submitApproval')}
                     </Button>
                 </div>
             </div>
@@ -341,13 +376,13 @@ export default function ClientPRForm({ vendors, rabs, initialData }: ClientPRFor
                 <Card className="bg-(--color-bg-card) border-(--color-border) shadow-xs">
                     <CardHeader>
                         <CardTitle className="text-lg font-medium text-(--color-text-primary)">
-                            General Information
+                            {t('sections.generalInfo')}
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4">
                         <div>
                             <label className="block text-sm font-medium text-(--color-text-secondary) mb-1">
-                                Request Date
+                                {t('fields.requestDate')}
                             </label>
                             <Input
                                 type="date"
@@ -358,14 +393,32 @@ export default function ClientPRForm({ vendors, rabs, initialData }: ClientPRFor
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-(--color-text-secondary) mb-1">
-                                Description / Notes
+                                {t('fields.description')}
                             </label>
                             <Textarea
                                 value={description}
                                 onChange={(e) => setDescription(e.target.value)}
-                                placeholder="Enter purpose of request..."
+                                placeholder={t('fields.descriptionPlaceholder')}
                                 className="bg-(--color-bg-secondary) border-(--color-border) text-(--color-text-primary)"
                             />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-(--color-text-secondary) mb-1">
+                                Destination Warehouse
+                            </label>
+                            <select
+                                className="w-full h-10 px-3 rounded-md border border-input bg-background"
+                                value={selectedWarehouseId}
+                                onChange={e => setSelectedWarehouseId(e.target.value)}
+                            >
+                                <option value="">Select Warehouse (Optional)</option>
+                                {warehouses.map(w => (
+                                    <option key={w.id} value={w.id}>
+                                        {w.name} {w.isDefault ? '(Default)' : ''}
+                                    </option>
+                                ))}
+                            </select>
+                            <p className="text-xs text-(--color-text-muted) mt-1">If empty, will default to Main Warehouse during receiving.</p>
                         </div>
                     </CardContent>
                 </Card>
@@ -374,51 +427,51 @@ export default function ClientPRForm({ vendors, rabs, initialData }: ClientPRFor
                 <Card className="bg-(--color-bg-card) border-(--color-border) shadow-xs">
                     <CardHeader>
                         <CardTitle className="text-lg font-medium text-(--color-text-primary)">
-                            Source & Vendor
+                            {t('sections.sourceVendor')}
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4">
                         <div>
                             <label className="block text-sm font-medium text-(--color-text-secondary) mb-1">
-                                Vendor <span className="text-red-500">*</span>
+                                {t('fields.vendor')} <span className="text-red-500">*</span>
                             </label>
                             <SearchableDropdown
                                 options={vendors.map(v => ({ value: v.id, label: v.name }))}
                                 value={selectedVendorId}
                                 onChange={(val) => handleVendorChange(val as string)}
-                                placeholder="Select Vendor"
+                                placeholder={t('fields.vendorPlaceholder')}
                                 className="w-full"
                             />
                             {selectedVendorId && (
                                 <p className="text-xs text-(--color-text-muted) mt-1">
-                                    Only items supplied by this vendor will be available.
+                                    {t('fields.vendorHelp')}
                                 </p>
                             )}
                         </div>
 
                         <div>
                             <label className="block text-sm font-medium text-(--color-text-secondary) mb-1">
-                                Source RAB (Optional)
+                                {t('fields.sourceRab')}
                             </label>
                             <SearchableDropdown
                                 options={rabs.map(r => ({ value: r.id, label: `${r.code} - ${r.name}` }))}
                                 value={selectedRabId}
                                 onChange={(val) => handleRabChange(val as string)}
-                                placeholder="Select Approved RAB..."
+                                placeholder={t('fields.rabPlaceholder')}
                                 disabled={!selectedVendorId}
                                 className="w-full"
                             />
                             {selectedRabId ? (
                                 <p className="text-xs text-blue-600 dark:text-blue-400 mt-1">
-                                    ✓ RAB selected. Use "Add Item" button to add items from this RAB.
+                                    {t('fields.rabSelected')}
                                 </p>
                             ) : !selectedVendorId ? (
-                                <p className="text-xs text-amber-500 mt-1">
-                                    Select a vendor first to filter RAB items.
+                                <p className="text-xs text-orange-500 mt-1">
+                                    {t('fields.rabNoVendor')}
                                 </p>
                             ) : (
                                 <p className="text-xs text-(--color-text-muted) mt-1">
-                                    Optional: Select a RAB to add budgeted items.
+                                    {t('fields.rabHelp')}
                                 </p>
                             )}
                         </div>
@@ -430,7 +483,7 @@ export default function ClientPRForm({ vendors, rabs, initialData }: ClientPRFor
             <Card className="bg-(--color-bg-card) border-(--color-border) shadow-xs overflow-hidden">
                 <CardHeader className="flex flex-row items-center justify-between">
                     <CardTitle className="text-lg font-medium text-(--color-text-primary)">
-                        Request Items
+                        {t('sections.requestItems')}
                     </CardTitle>
                     <Button
                         disabled={!selectedVendorId}
@@ -439,28 +492,29 @@ export default function ClientPRForm({ vendors, rabs, initialData }: ClientPRFor
                         onClick={() => setIsItemPickerOpen(true)}
                     >
                         <Plus size={16} className="mr-2" />
-                        Add Item
+                        {t('buttons.addItem')}
                     </Button>
                 </CardHeader>
                 <div className="overflow-x-auto">
                     <table className="w-full text-sm text-left">
                         <thead className="bg-(--color-bg-secondary) text-(--color-text-secondary) uppercase text-xs font-semibold">
                             <tr>
-                                <th className="px-4 py-3">Item Code</th>
-                                <th className="px-4 py-3">Description</th>
-                                <th className="px-4 py-3">Source</th>
-                                <th className="px-4 py-3 text-right">Qty</th>
-                                <th className="px-4 py-3 text-center">UOM</th>
-                                <th className="px-4 py-3 text-right">Est. Price</th>
-                                <th className="px-4 py-3 text-right">Total</th>
-                                <th className="px-4 py-3 text-center">Action</th>
+                                <th className="px-4 py-3">{t('itemsTable.code')}</th>
+                                <th className="px-4 py-3 w-16">Image</th>
+                                <th className="px-4 py-3">{t('itemsTable.description')}</th>
+                                <th className="px-4 py-3">{t('itemsTable.source')}</th>
+                                <th className="px-4 py-3 text-right">{t('itemsTable.qty')}</th>
+                                <th className="px-4 py-3 text-center">{t('itemsTable.uom')}</th>
+                                <th className="px-4 py-3 text-right">{t('itemsTable.estPrice')}</th>
+                                <th className="px-4 py-3 text-right">{t('itemsTable.total')}</th>
+                                <th className="px-4 py-3 text-center">{t('itemsTable.action')}</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-(--color-border)">
                             {items.length === 0 ? (
                                 <tr>
-                                    <td colSpan={8} className="px-4 py-8 text-center text-(--color-text-muted)">
-                                        No items added yet. Click "Add Item" to add items from {selectedRabId ? 'RAB or catalog' : 'catalog'}.
+                                    <td colSpan={9} className="px-4 py-8 text-center text-(--color-text-muted)">
+                                        {t('itemsTable.noItems')}
                                     </td>
                                 </tr>
                             ) : (
@@ -469,9 +523,25 @@ export default function ClientPRForm({ vendors, rabs, initialData }: ClientPRFor
                                         <td className="px-4 py-3 font-medium text-(--color-text-primary)">
                                             {item.code}
                                         </td>
+                                        <td className="px-4 py-3">
+                                            {item.imagePath ? (
+                                                <div className="h-10 w-10 rounded border overflow-hidden bg-white">
+                                                    <img src={item.imagePath} alt={item.name} className="h-full w-full object-cover" />
+                                                </div>
+                                            ) : (
+                                                <div className="h-10 w-10 rounded border bg-gray-50 flex items-center justify-center text-gray-300">
+                                                    <ImageIcon size={16} />
+                                                </div>
+                                            )}
+                                        </td>
                                         <td className="px-4 py-3 text-(--color-text-secondary)">
                                             {item.name}
                                             {item.spec && <div className="text-xs text-(--color-text-muted)">{item.spec}</div>}
+                                            <div className="text-[10px] text-(--color-text-muted) mt-0.5 flex flex-wrap gap-x-2">
+                                                {item.brand && <span>B: {item.brand}</span>}
+                                                {item.type && <span>T: {item.type}</span>}
+                                                {item.movementType && <span>M: {item.movementType}</span>}
+                                            </div>
                                         </td>
                                         <td className="px-4 py-3">
                                             <div className="flex flex-col gap-1">
@@ -479,24 +549,24 @@ export default function ClientPRForm({ vendors, rabs, initialData }: ClientPRFor
                                                     {/* RAB Badge */}
                                                     {item.fromRabLineId && (
                                                         <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300">
-                                                            RAB
+                                                            {t('badges.rab')}
                                                         </span>
                                                     )}
 
                                                     {/* Vendor Supply Status */}
                                                     {item.isSuppliedByVendor ? (
                                                         <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300 inline-flex items-center gap-1">
-                                                            <span className="text-[10px]">✓</span> Supplied
+                                                            <span className="text-[10px]">✓</span> {t('badges.supplied')}
                                                         </span>
                                                     ) : (
                                                         <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300 inline-flex items-center gap-1">
-                                                            <span className="text-[10px]">✕</span> Unsupplied
+                                                            <span className="text-[10px]">✕</span> {t('badges.unsupplied')}
                                                         </span>
                                                     )}
                                                 </div>
                                                 {!item.isSuppliedByVendor && (
-                                                    <div className="text-[10px] text-amber-600 dark:text-amber-400">
-                                                        Verify pricing
+                                                    <div className="text-[10px] text-orange-600 dark:text-orange-400">
+                                                        {t('badges.verifyPricing')}
                                                     </div>
                                                 )}
                                             </div>
@@ -527,7 +597,7 @@ export default function ClientPRForm({ vendors, rabs, initialData }: ClientPRFor
                                                 }}
                                                 decimals={2}
                                                 className={`w-32 text-right h-8 ${!item.isSuppliedByVendor
-                                                    ? 'bg-amber-50 dark:bg-amber-900/20 border-amber-300 dark:border-amber-700'
+                                                    ? 'bg-orange-50 dark:bg-orange-900/20 border-orange-300 dark:border-orange-700'
                                                     : 'bg-(--color-bg-secondary)'
                                                     }`}
                                                 placeholder="0,00"
@@ -554,7 +624,7 @@ export default function ClientPRForm({ vendors, rabs, initialData }: ClientPRFor
                         {items.length > 0 && (
                             <tfoot className="bg-(--color-bg-secondary) font-semibold text-(--color-text-primary)">
                                 <tr>
-                                    <td colSpan={6} className="px-4 py-3 text-right">Grand Total:</td>
+                                    <td colSpan={6} className="px-4 py-3 text-right">{t('itemsTable.grandTotal')}:</td>
                                     <td className="px-4 py-3 text-right">{formatCurrency(calculateTotal())}</td>
                                     <td></td>
                                 </tr>
@@ -574,6 +644,8 @@ export default function ClientPRForm({ vendors, rabs, initialData }: ClientPRFor
                 rabId={selectedRabId}
                 rab={rabs.find(r => r.id === selectedRabId)}
             />
+
+
 
             {/* Justification Modal */}
             <JustificationModal

@@ -201,22 +201,26 @@ export default function RoleList() {
 
     const activeRole = roles.find(r => r.id === selectedRoleId);
 
+    // Translations
+    const t = useTranslations('master.role');
+    const tCommon = useTranslations('common');
+
     return (
         <div>
             <div className="flex items-center justify-between pb-4">
-                <h3 className="font-semibold text-lg">Roles</h3>
+                <h3 className="font-semibold text-lg">{t('listTitle')}</h3>
                 <Button size="sm" className="gap-2" onClick={() => setAddRoleModalOpen(true)}>
                     <Plus size={16} />
-                    Add Role
+                    {t('addNew')}
                 </Button>
             </div>
             <div className="flex flex-col lg:flex-row gap-6 h-[calc(100vh-270px)]">
                 {/* Left Sidebar: Roles List */}
                 <div className="w-full lg:w-1/4 min-w-[250px] flex flex-col gap-4">
-                    <div className="bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-lg overflow-hidden flex-1 flex flex-col">
+                    <div className="bg-(--color-bg-card) border border-(--color-border) rounded-lg overflow-hidden flex-1 flex flex-col">
                         <div className="p-2 space-y-1 overflow-y-auto flex-1">
                             {loading ? (
-                                <div className="flex justify-center p-4"><Loader2 className="animate-spin text-[var(--color-text-muted)]" /></div>
+                                <div className="flex justify-center p-4"><Loader2 className="animate-spin text-(--color-text-muted)" /></div>
                             ) : (
                                 roles.map(role => (
                                     <div key={role.id} className="flex items-center gap-1">
@@ -225,15 +229,15 @@ export default function RoleList() {
                                             className={cn(
                                                 "flex-1 text-left px-3 py-2.5 rounded-md text-sm font-medium transition-colors flex items-center justify-between group",
                                                 selectedRoleId === role.id
-                                                    ? "bg-[var(--color-primary)] text-white"
-                                                    : "text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-hover)] hover:text-[var(--color-text-primary)]"
+                                                    ? "bg-(--color-primary) text-white"
+                                                    : "text-(--color-text-secondary) hover:bg-(--color-bg-hover) hover:text-(--color-text-primary)"
                                             )}
                                         >
                                             <span>{role.name}</span>
                                             {role.isSystem && (
                                                 <Lock size={12} className={cn(
                                                     "opacity-50",
-                                                    selectedRoleId === role.id ? "text-white" : "text-[var(--color-text-muted)]"
+                                                    selectedRoleId === role.id ? "text-white" : "text-(--color-text-muted)"
                                                 )} />
                                             )}
                                         </button>
@@ -241,7 +245,7 @@ export default function RoleList() {
                                             <button
                                                 onClick={() => handleDeleteRole(role.id, role.name)}
                                                 className="p-2 rounded-md text-red-500 hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors"
-                                                title="Delete role"
+                                                title={tCommon('delete')}
                                             >
                                                 <Trash2 size={14} />
                                             </button>
@@ -254,18 +258,18 @@ export default function RoleList() {
                 </div>
 
                 {/* Right Logic: Grouped Permission List */}
-                <div className="flex-1 flex flex-col bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-lg overflow-hidden">
+                <div className="flex-1 flex flex-col bg-(--color-bg-card) border border-(--color-border) rounded-lg overflow-hidden">
                     {activeRole ? (
                         <>
                             {/* Header */}
-                            <div className="px-6 py-4 border-b border-[var(--color-border)] flex items-center justify-between bg-[var(--color-bg-tertiary)]/30">
+                            <div className="px-6 py-4 border-b border-(--color-border) flex items-center justify-between bg-(--color-bg-tertiary)/30">
                                 <div>
                                     <h2 className="text-lg font-bold flex items-center gap-2">
-                                        <Shield className="text-[var(--color-primary)]" size={20} />
-                                        Permission: {activeRole.name}
+                                        <Shield className="text-(--color-primary)" size={20} />
+                                        {t('permissionsTitle', { role: activeRole.name })}
                                     </h2>
-                                    <p className="text-sm text-[var(--color-text-muted)] mt-1">
-                                        {activeRole.description || 'Manage access levels for this role'}
+                                    <p className="text-sm text-(--color-text-muted) mt-1">
+                                        {activeRole.description || t('form.descriptionPlaceholder')}
                                     </p>
                                 </div>
                                 <Button
@@ -274,7 +278,7 @@ export default function RoleList() {
                                     className="gap-2 min-w-[120px]"
                                 >
                                     <Save size={16} />
-                                    Save Changes
+                                    {t('saveChanges')}
                                 </Button>
                             </div>
 
@@ -283,8 +287,8 @@ export default function RoleList() {
                                 <Table>
                                     <TableHeader>
                                         <TableRow>
-                                            <TableHead className="w-[70%]">Sub Menu / Module</TableHead>
-                                            <TableHead className="w-[30%] text-center">Access</TableHead>
+                                            <TableHead className="w-[70%]">{t('table.module')}</TableHead>
+                                            <TableHead className="w-[30%] text-center">{t('table.view')}</TableHead>
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
@@ -300,9 +304,9 @@ export default function RoleList() {
                                             const allSelected = hasPermissions && groupPermissionIds.every(id => selectedPermissions.has(id));
 
                                             return (
-                                                <TableRow key={group.key} className="hover:bg-[var(--color-bg-hover)]/30 transition-colors">
-                                                    <TableCell className="font-medium text-[var(--color-text-primary)] py-4">
-                                                        {group.label}
+                                                <TableRow key={group.key} className="hover:bg-(--color-bg-hover)/30 transition-colors">
+                                                    <TableCell className="font-medium text-(--color-text-primary) py-4">
+                                                        {t(`modules.${group.key}`)}
                                                     </TableCell>
                                                     <TableCell className="text-center">
                                                         <div className="flex justify-center">
@@ -316,7 +320,7 @@ export default function RoleList() {
                                                                 />
                                                                 <div className={cn(
                                                                     "w-11 h-6 peer-focus:outline-none rounded-full peer transition-colors",
-                                                                    !hasPermissions ? "bg-[var(--color-bg-tertiary)] opacity-50 cursor-not-allowed" : "bg-(--color-bg-tertiary) peer-checked:bg-[var(--color-primary)]",
+                                                                    !hasPermissions ? "bg-(--color-bg-tertiary) opacity-50 cursor-not-allowed" : "bg-(--color-bg-tertiary) peer-checked:bg-(--color-primary)",
                                                                     "after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full peer-checked:after:border-white"
                                                                 )}></div>
                                                             </label>
@@ -330,9 +334,9 @@ export default function RoleList() {
                             </div>
                         </>
                     ) : (
-                        <div className="flex-1 flex flex-col items-center justify-center text-[var(--color-text-muted)]">
+                        <div className="flex-1 flex flex-col items-center justify-center text-(--color-text-muted)">
                             <Shield size={48} className="mb-4 opacity-20" />
-                            <p>Select a role to manage permissions</p>
+                            <p>{t('messages.noChanges', { defaultValue: 'Select a role to manage permissions' })}</p>
                         </div>
                     )}
                 </div>
@@ -342,34 +346,34 @@ export default function RoleList() {
             <Modal
                 isOpen={addRoleModalOpen}
                 onClose={() => setAddRoleModalOpen(false)}
-                title="Add New Role"
+                title={t('form.createTitle')}
                 footer={
                     <>
                         <Button variant="secondary" onClick={() => setAddRoleModalOpen(false)}>
-                            Cancel
+                            {tCommon('cancel')}
                         </Button>
                         <Button onClick={handleCreateRole} disabled={!newRoleName.trim()}>
-                            Create Role
+                            {t('form.createTitle')}
                         </Button>
                     </>
                 }
             >
                 <div className="space-y-4">
                     <div>
-                        <label className="block text-sm font-medium mb-1">Role Name</label>
+                        <label className="block text-sm font-medium mb-1">{t('form.name')}</label>
                         <Input
                             value={newRoleName}
                             onChange={(e) => setNewRoleName(e.target.value)}
-                            placeholder="e.g. Warehouse Supervisor"
+                            placeholder={t('form.namePlaceholder')}
                             autoFocus
                         />
                     </div>
                     <div>
-                        <label className="block text-sm font-medium mb-1">Description</label>
+                        <label className="block text-sm font-medium mb-1">{t('form.description')}</label>
                         <Input
                             value={newRoleDesc}
                             onChange={(e) => setNewRoleDesc(e.target.value)}
-                            placeholder="Optional description"
+                            placeholder={t('form.descriptionPlaceholder')}
                         />
                     </div>
                 </div>
@@ -377,3 +381,4 @@ export default function RoleList() {
         </div>
     );
 }
+

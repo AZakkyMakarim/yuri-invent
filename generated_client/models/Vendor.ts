@@ -38,6 +38,7 @@ export type VendorMinAggregateOutputType = {
   vendorType: $Enums.VendorType | null
   bank: $Enums.BankName | null
   bankBranch: string | null
+  link: string | null
   spkDocumentPath: string | null
   createdById: string | null
   createdAt: Date | null
@@ -58,6 +59,7 @@ export type VendorMaxAggregateOutputType = {
   vendorType: $Enums.VendorType | null
   bank: $Enums.BankName | null
   bankBranch: string | null
+  link: string | null
   spkDocumentPath: string | null
   createdById: string | null
   createdAt: Date | null
@@ -78,6 +80,7 @@ export type VendorCountAggregateOutputType = {
   vendorType: number
   bank: number
   bankBranch: number
+  link: number
   spkDocumentPath: number
   createdById: number
   createdAt: number
@@ -100,6 +103,7 @@ export type VendorMinAggregateInputType = {
   vendorType?: true
   bank?: true
   bankBranch?: true
+  link?: true
   spkDocumentPath?: true
   createdById?: true
   createdAt?: true
@@ -120,6 +124,7 @@ export type VendorMaxAggregateInputType = {
   vendorType?: true
   bank?: true
   bankBranch?: true
+  link?: true
   spkDocumentPath?: true
   createdById?: true
   createdAt?: true
@@ -140,6 +145,7 @@ export type VendorCountAggregateInputType = {
   vendorType?: true
   bank?: true
   bankBranch?: true
+  link?: true
   spkDocumentPath?: true
   createdById?: true
   createdAt?: true
@@ -233,6 +239,7 @@ export type VendorGroupByOutputType = {
   vendorType: $Enums.VendorType
   bank: $Enums.BankName | null
   bankBranch: string | null
+  link: string | null
   spkDocumentPath: string | null
   createdById: string | null
   createdAt: Date
@@ -274,6 +281,7 @@ export type VendorWhereInput = {
   vendorType?: Prisma.EnumVendorTypeFilter<"Vendor"> | $Enums.VendorType
   bank?: Prisma.EnumBankNameNullableFilter<"Vendor"> | $Enums.BankName | null
   bankBranch?: Prisma.StringNullableFilter<"Vendor"> | string | null
+  link?: Prisma.StringNullableFilter<"Vendor"> | string | null
   spkDocumentPath?: Prisma.StringNullableFilter<"Vendor"> | string | null
   createdById?: Prisma.StringNullableFilter<"Vendor"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Vendor"> | Date | string
@@ -301,6 +309,7 @@ export type VendorOrderByWithRelationInput = {
   vendorType?: Prisma.SortOrder
   bank?: Prisma.SortOrderInput | Prisma.SortOrder
   bankBranch?: Prisma.SortOrderInput | Prisma.SortOrder
+  link?: Prisma.SortOrderInput | Prisma.SortOrder
   spkDocumentPath?: Prisma.SortOrderInput | Prisma.SortOrder
   createdById?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -331,6 +340,7 @@ export type VendorWhereUniqueInput = Prisma.AtLeast<{
   vendorType?: Prisma.EnumVendorTypeFilter<"Vendor"> | $Enums.VendorType
   bank?: Prisma.EnumBankNameNullableFilter<"Vendor"> | $Enums.BankName | null
   bankBranch?: Prisma.StringNullableFilter<"Vendor"> | string | null
+  link?: Prisma.StringNullableFilter<"Vendor"> | string | null
   spkDocumentPath?: Prisma.StringNullableFilter<"Vendor"> | string | null
   createdById?: Prisma.StringNullableFilter<"Vendor"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Vendor"> | Date | string
@@ -358,6 +368,7 @@ export type VendorOrderByWithAggregationInput = {
   vendorType?: Prisma.SortOrder
   bank?: Prisma.SortOrderInput | Prisma.SortOrder
   bankBranch?: Prisma.SortOrderInput | Prisma.SortOrder
+  link?: Prisma.SortOrderInput | Prisma.SortOrder
   spkDocumentPath?: Prisma.SortOrderInput | Prisma.SortOrder
   createdById?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -384,6 +395,7 @@ export type VendorScalarWhereWithAggregatesInput = {
   vendorType?: Prisma.EnumVendorTypeWithAggregatesFilter<"Vendor"> | $Enums.VendorType
   bank?: Prisma.EnumBankNameNullableWithAggregatesFilter<"Vendor"> | $Enums.BankName | null
   bankBranch?: Prisma.StringNullableWithAggregatesFilter<"Vendor"> | string | null
+  link?: Prisma.StringNullableWithAggregatesFilter<"Vendor"> | string | null
   spkDocumentPath?: Prisma.StringNullableWithAggregatesFilter<"Vendor"> | string | null
   createdById?: Prisma.StringNullableWithAggregatesFilter<"Vendor"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Vendor"> | Date | string
@@ -404,6 +416,7 @@ export type VendorCreateInput = {
   vendorType?: $Enums.VendorType
   bank?: $Enums.BankName | null
   bankBranch?: string | null
+  link?: string | null
   spkDocumentPath?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -430,6 +443,7 @@ export type VendorUncheckedCreateInput = {
   vendorType?: $Enums.VendorType
   bank?: $Enums.BankName | null
   bankBranch?: string | null
+  link?: string | null
   spkDocumentPath?: string | null
   createdById?: string | null
   createdAt?: Date | string
@@ -456,6 +470,7 @@ export type VendorUpdateInput = {
   vendorType?: Prisma.EnumVendorTypeFieldUpdateOperationsInput | $Enums.VendorType
   bank?: Prisma.NullableEnumBankNameFieldUpdateOperationsInput | $Enums.BankName | null
   bankBranch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  link?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   spkDocumentPath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -482,6 +497,7 @@ export type VendorUncheckedUpdateInput = {
   vendorType?: Prisma.EnumVendorTypeFieldUpdateOperationsInput | $Enums.VendorType
   bank?: Prisma.NullableEnumBankNameFieldUpdateOperationsInput | $Enums.BankName | null
   bankBranch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  link?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   spkDocumentPath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -508,6 +524,7 @@ export type VendorCreateManyInput = {
   vendorType?: $Enums.VendorType
   bank?: $Enums.BankName | null
   bankBranch?: string | null
+  link?: string | null
   spkDocumentPath?: string | null
   createdById?: string | null
   createdAt?: Date | string
@@ -528,6 +545,7 @@ export type VendorUpdateManyMutationInput = {
   vendorType?: Prisma.EnumVendorTypeFieldUpdateOperationsInput | $Enums.VendorType
   bank?: Prisma.NullableEnumBankNameFieldUpdateOperationsInput | $Enums.BankName | null
   bankBranch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  link?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   spkDocumentPath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -547,6 +565,7 @@ export type VendorUncheckedUpdateManyInput = {
   vendorType?: Prisma.EnumVendorTypeFieldUpdateOperationsInput | $Enums.VendorType
   bank?: Prisma.NullableEnumBankNameFieldUpdateOperationsInput | $Enums.BankName | null
   bankBranch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  link?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   spkDocumentPath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -577,6 +596,7 @@ export type VendorCountOrderByAggregateInput = {
   vendorType?: Prisma.SortOrder
   bank?: Prisma.SortOrder
   bankBranch?: Prisma.SortOrder
+  link?: Prisma.SortOrder
   spkDocumentPath?: Prisma.SortOrder
   createdById?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -597,6 +617,7 @@ export type VendorMaxOrderByAggregateInput = {
   vendorType?: Prisma.SortOrder
   bank?: Prisma.SortOrder
   bankBranch?: Prisma.SortOrder
+  link?: Prisma.SortOrder
   spkDocumentPath?: Prisma.SortOrder
   createdById?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -617,6 +638,7 @@ export type VendorMinOrderByAggregateInput = {
   vendorType?: Prisma.SortOrder
   bank?: Prisma.SortOrder
   bankBranch?: Prisma.SortOrder
+  link?: Prisma.SortOrder
   spkDocumentPath?: Prisma.SortOrder
   createdById?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -776,6 +798,7 @@ export type VendorCreateWithoutCreatedByInput = {
   vendorType?: $Enums.VendorType
   bank?: $Enums.BankName | null
   bankBranch?: string | null
+  link?: string | null
   spkDocumentPath?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -801,6 +824,7 @@ export type VendorUncheckedCreateWithoutCreatedByInput = {
   vendorType?: $Enums.VendorType
   bank?: $Enums.BankName | null
   bankBranch?: string | null
+  link?: string | null
   spkDocumentPath?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -855,6 +879,7 @@ export type VendorScalarWhereInput = {
   vendorType?: Prisma.EnumVendorTypeFilter<"Vendor"> | $Enums.VendorType
   bank?: Prisma.EnumBankNameNullableFilter<"Vendor"> | $Enums.BankName | null
   bankBranch?: Prisma.StringNullableFilter<"Vendor"> | string | null
+  link?: Prisma.StringNullableFilter<"Vendor"> | string | null
   spkDocumentPath?: Prisma.StringNullableFilter<"Vendor"> | string | null
   createdById?: Prisma.StringNullableFilter<"Vendor"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Vendor"> | Date | string
@@ -875,6 +900,7 @@ export type VendorCreateWithoutSuppliedItemsInput = {
   vendorType?: $Enums.VendorType
   bank?: $Enums.BankName | null
   bankBranch?: string | null
+  link?: string | null
   spkDocumentPath?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -900,6 +926,7 @@ export type VendorUncheckedCreateWithoutSuppliedItemsInput = {
   vendorType?: $Enums.VendorType
   bank?: $Enums.BankName | null
   bankBranch?: string | null
+  link?: string | null
   spkDocumentPath?: string | null
   createdById?: string | null
   createdAt?: Date | string
@@ -941,6 +968,7 @@ export type VendorUpdateWithoutSuppliedItemsInput = {
   vendorType?: Prisma.EnumVendorTypeFieldUpdateOperationsInput | $Enums.VendorType
   bank?: Prisma.NullableEnumBankNameFieldUpdateOperationsInput | $Enums.BankName | null
   bankBranch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  link?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   spkDocumentPath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -966,6 +994,7 @@ export type VendorUncheckedUpdateWithoutSuppliedItemsInput = {
   vendorType?: Prisma.EnumVendorTypeFieldUpdateOperationsInput | $Enums.VendorType
   bank?: Prisma.NullableEnumBankNameFieldUpdateOperationsInput | $Enums.BankName | null
   bankBranch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  link?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   spkDocumentPath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -991,6 +1020,7 @@ export type VendorCreateWithoutPriceHistoriesInput = {
   vendorType?: $Enums.VendorType
   bank?: $Enums.BankName | null
   bankBranch?: string | null
+  link?: string | null
   spkDocumentPath?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1016,6 +1046,7 @@ export type VendorUncheckedCreateWithoutPriceHistoriesInput = {
   vendorType?: $Enums.VendorType
   bank?: $Enums.BankName | null
   bankBranch?: string | null
+  link?: string | null
   spkDocumentPath?: string | null
   createdById?: string | null
   createdAt?: Date | string
@@ -1057,6 +1088,7 @@ export type VendorUpdateWithoutPriceHistoriesInput = {
   vendorType?: Prisma.EnumVendorTypeFieldUpdateOperationsInput | $Enums.VendorType
   bank?: Prisma.NullableEnumBankNameFieldUpdateOperationsInput | $Enums.BankName | null
   bankBranch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  link?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   spkDocumentPath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1082,6 +1114,7 @@ export type VendorUncheckedUpdateWithoutPriceHistoriesInput = {
   vendorType?: Prisma.EnumVendorTypeFieldUpdateOperationsInput | $Enums.VendorType
   bank?: Prisma.NullableEnumBankNameFieldUpdateOperationsInput | $Enums.BankName | null
   bankBranch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  link?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   spkDocumentPath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1107,6 +1140,7 @@ export type VendorCreateWithoutPurchaseRequestsInput = {
   vendorType?: $Enums.VendorType
   bank?: $Enums.BankName | null
   bankBranch?: string | null
+  link?: string | null
   spkDocumentPath?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1132,6 +1166,7 @@ export type VendorUncheckedCreateWithoutPurchaseRequestsInput = {
   vendorType?: $Enums.VendorType
   bank?: $Enums.BankName | null
   bankBranch?: string | null
+  link?: string | null
   spkDocumentPath?: string | null
   createdById?: string | null
   createdAt?: Date | string
@@ -1173,6 +1208,7 @@ export type VendorUpdateWithoutPurchaseRequestsInput = {
   vendorType?: Prisma.EnumVendorTypeFieldUpdateOperationsInput | $Enums.VendorType
   bank?: Prisma.NullableEnumBankNameFieldUpdateOperationsInput | $Enums.BankName | null
   bankBranch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  link?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   spkDocumentPath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1198,6 +1234,7 @@ export type VendorUncheckedUpdateWithoutPurchaseRequestsInput = {
   vendorType?: Prisma.EnumVendorTypeFieldUpdateOperationsInput | $Enums.VendorType
   bank?: Prisma.NullableEnumBankNameFieldUpdateOperationsInput | $Enums.BankName | null
   bankBranch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  link?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   spkDocumentPath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1223,6 +1260,7 @@ export type VendorCreateWithoutInboundsInput = {
   vendorType?: $Enums.VendorType
   bank?: $Enums.BankName | null
   bankBranch?: string | null
+  link?: string | null
   spkDocumentPath?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1248,6 +1286,7 @@ export type VendorUncheckedCreateWithoutInboundsInput = {
   vendorType?: $Enums.VendorType
   bank?: $Enums.BankName | null
   bankBranch?: string | null
+  link?: string | null
   spkDocumentPath?: string | null
   createdById?: string | null
   createdAt?: Date | string
@@ -1289,6 +1328,7 @@ export type VendorUpdateWithoutInboundsInput = {
   vendorType?: Prisma.EnumVendorTypeFieldUpdateOperationsInput | $Enums.VendorType
   bank?: Prisma.NullableEnumBankNameFieldUpdateOperationsInput | $Enums.BankName | null
   bankBranch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  link?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   spkDocumentPath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1314,6 +1354,7 @@ export type VendorUncheckedUpdateWithoutInboundsInput = {
   vendorType?: Prisma.EnumVendorTypeFieldUpdateOperationsInput | $Enums.VendorType
   bank?: Prisma.NullableEnumBankNameFieldUpdateOperationsInput | $Enums.BankName | null
   bankBranch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  link?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   spkDocumentPath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1339,6 +1380,7 @@ export type VendorCreateWithoutReturnsInput = {
   vendorType?: $Enums.VendorType
   bank?: $Enums.BankName | null
   bankBranch?: string | null
+  link?: string | null
   spkDocumentPath?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1364,6 +1406,7 @@ export type VendorUncheckedCreateWithoutReturnsInput = {
   vendorType?: $Enums.VendorType
   bank?: $Enums.BankName | null
   bankBranch?: string | null
+  link?: string | null
   spkDocumentPath?: string | null
   createdById?: string | null
   createdAt?: Date | string
@@ -1405,6 +1448,7 @@ export type VendorUpdateWithoutReturnsInput = {
   vendorType?: Prisma.EnumVendorTypeFieldUpdateOperationsInput | $Enums.VendorType
   bank?: Prisma.NullableEnumBankNameFieldUpdateOperationsInput | $Enums.BankName | null
   bankBranch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  link?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   spkDocumentPath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1430,6 +1474,7 @@ export type VendorUncheckedUpdateWithoutReturnsInput = {
   vendorType?: Prisma.EnumVendorTypeFieldUpdateOperationsInput | $Enums.VendorType
   bank?: Prisma.NullableEnumBankNameFieldUpdateOperationsInput | $Enums.BankName | null
   bankBranch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  link?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   spkDocumentPath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1455,6 +1500,7 @@ export type VendorCreateWithoutBillsInput = {
   vendorType?: $Enums.VendorType
   bank?: $Enums.BankName | null
   bankBranch?: string | null
+  link?: string | null
   spkDocumentPath?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1480,6 +1526,7 @@ export type VendorUncheckedCreateWithoutBillsInput = {
   vendorType?: $Enums.VendorType
   bank?: $Enums.BankName | null
   bankBranch?: string | null
+  link?: string | null
   spkDocumentPath?: string | null
   createdById?: string | null
   createdAt?: Date | string
@@ -1521,6 +1568,7 @@ export type VendorUpdateWithoutBillsInput = {
   vendorType?: Prisma.EnumVendorTypeFieldUpdateOperationsInput | $Enums.VendorType
   bank?: Prisma.NullableEnumBankNameFieldUpdateOperationsInput | $Enums.BankName | null
   bankBranch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  link?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   spkDocumentPath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1546,6 +1594,7 @@ export type VendorUncheckedUpdateWithoutBillsInput = {
   vendorType?: Prisma.EnumVendorTypeFieldUpdateOperationsInput | $Enums.VendorType
   bank?: Prisma.NullableEnumBankNameFieldUpdateOperationsInput | $Enums.BankName | null
   bankBranch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  link?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   spkDocumentPath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1571,6 +1620,7 @@ export type VendorCreateManyCreatedByInput = {
   vendorType?: $Enums.VendorType
   bank?: $Enums.BankName | null
   bankBranch?: string | null
+  link?: string | null
   spkDocumentPath?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1590,6 +1640,7 @@ export type VendorUpdateWithoutCreatedByInput = {
   vendorType?: Prisma.EnumVendorTypeFieldUpdateOperationsInput | $Enums.VendorType
   bank?: Prisma.NullableEnumBankNameFieldUpdateOperationsInput | $Enums.BankName | null
   bankBranch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  link?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   spkDocumentPath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1615,6 +1666,7 @@ export type VendorUncheckedUpdateWithoutCreatedByInput = {
   vendorType?: Prisma.EnumVendorTypeFieldUpdateOperationsInput | $Enums.VendorType
   bank?: Prisma.NullableEnumBankNameFieldUpdateOperationsInput | $Enums.BankName | null
   bankBranch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  link?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   spkDocumentPath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1640,6 +1692,7 @@ export type VendorUncheckedUpdateManyWithoutCreatedByInput = {
   vendorType?: Prisma.EnumVendorTypeFieldUpdateOperationsInput | $Enums.VendorType
   bank?: Prisma.NullableEnumBankNameFieldUpdateOperationsInput | $Enums.BankName | null
   bankBranch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  link?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   spkDocumentPath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1735,6 +1788,7 @@ export type VendorSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   vendorType?: boolean
   bank?: boolean
   bankBranch?: boolean
+  link?: boolean
   spkDocumentPath?: boolean
   createdById?: boolean
   createdAt?: boolean
@@ -1763,6 +1817,7 @@ export type VendorSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
   vendorType?: boolean
   bank?: boolean
   bankBranch?: boolean
+  link?: boolean
   spkDocumentPath?: boolean
   createdById?: boolean
   createdAt?: boolean
@@ -1784,6 +1839,7 @@ export type VendorSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
   vendorType?: boolean
   bank?: boolean
   bankBranch?: boolean
+  link?: boolean
   spkDocumentPath?: boolean
   createdById?: boolean
   createdAt?: boolean
@@ -1805,13 +1861,14 @@ export type VendorSelectScalar = {
   vendorType?: boolean
   bank?: boolean
   bankBranch?: boolean
+  link?: boolean
   spkDocumentPath?: boolean
   createdById?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type VendorOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "code" | "name" | "address" | "phone" | "email" | "contactName" | "bankName" | "bankAccount" | "isActive" | "vendorType" | "bank" | "bankBranch" | "spkDocumentPath" | "createdById" | "createdAt" | "updatedAt", ExtArgs["result"]["vendor"]>
+export type VendorOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "code" | "name" | "address" | "phone" | "email" | "contactName" | "bankName" | "bankAccount" | "isActive" | "vendorType" | "bank" | "bankBranch" | "link" | "spkDocumentPath" | "createdById" | "createdAt" | "updatedAt", ExtArgs["result"]["vendor"]>
 export type VendorInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   createdBy?: boolean | Prisma.Vendor$createdByArgs<ExtArgs>
   purchaseRequests?: boolean | Prisma.Vendor$purchaseRequestsArgs<ExtArgs>
@@ -1854,6 +1911,7 @@ export type $VendorPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     vendorType: $Enums.VendorType
     bank: $Enums.BankName | null
     bankBranch: string | null
+    link: string | null
     spkDocumentPath: string | null
     createdById: string | null
     createdAt: Date
@@ -2301,6 +2359,7 @@ export interface VendorFieldRefs {
   readonly vendorType: Prisma.FieldRef<"Vendor", 'VendorType'>
   readonly bank: Prisma.FieldRef<"Vendor", 'BankName'>
   readonly bankBranch: Prisma.FieldRef<"Vendor", 'String'>
+  readonly link: Prisma.FieldRef<"Vendor", 'String'>
   readonly spkDocumentPath: Prisma.FieldRef<"Vendor", 'String'>
   readonly createdById: Prisma.FieldRef<"Vendor", 'String'>
   readonly createdAt: Prisma.FieldRef<"Vendor", 'DateTime'>

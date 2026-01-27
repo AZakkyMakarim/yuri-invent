@@ -19,6 +19,7 @@ export type CreatePRInput = {
     rabId?: string;
     requestDate: Date;
     description?: string;
+    targetWarehouseId?: string;
     status: 'DRAFT' | 'PENDING_MANAGER_APPROVAL';
     items: PRLineInput[];
     requiresJustification?: boolean;
@@ -62,6 +63,7 @@ export async function createPurchaseRequest(input: CreatePRInput) {
             userId,
             vendorId,
             rabId,
+            targetWarehouseId,
             requestDate,
             description,
             status,
@@ -90,6 +92,7 @@ export async function createPurchaseRequest(input: CreatePRInput) {
                     totalAmount: new Prisma.Decimal(totalAmount),
                     vendorId,
                     rabId: rabId || null,
+                    targetWarehouseId: targetWarehouseId || null,
                     createdById: userId,
                     requiresJustification: requiresJustification || false,
                     justificationReason: justificationReason || null,
@@ -125,7 +128,9 @@ export async function getPurchaseRequests(
     limit = 10,
     search = '',
     status = '', // Comma separated
-    vendorId = ''
+    vendorId = '',
+    startDate?: Date | string,
+    endDate?: Date | string
 ) {
     try {
         const skip = (page - 1) * limit;
@@ -146,13 +151,31 @@ export async function getPurchaseRequests(
         }
 
         if (vendorId) {
-            where.vendorId = vendorId;
+            const vendorIds = vendorId.split(',').filter(Boolean);
+            if (vendorIds.length > 0) {
+                where.vendorId = { in: vendorIds };
+            }
+        }
+
+        if (startDate && endDate) {
+            where.requestDate = {
+                gte: new Date(startDate),
+                lte: new Date(endDate)
+            };
+        } else if (startDate) {
+            where.requestDate = {
+                gte: new Date(startDate)
+            };
+        } else if (endDate) {
+            where.requestDate = {
+                lte: new Date(endDate)
+            };
         }
 
         const [data, total] = await Promise.all([
             prisma.purchaseRequest.findMany({
                 where,
-                skip,
+                skip: skip,
                 take: limit,
                 orderBy: { createdAt: 'desc' },
                 include: {
@@ -192,6 +215,7 @@ export async function getPurchaseRequestById(id: string) {
             include: {
                 vendor: { include: { suppliedItems: { include: { item: true } } } },
                 rab: true,
+                targetWarehouse: true,
                 items: { include: { item: true } },
                 createdBy: { select: { name: true } },
                 managerApprovedBy: { select: { name: true } },
@@ -209,7 +233,7 @@ export async function getPurchaseRequestById(id: string) {
 
 export async function updatePurchaseRequest(input: UpdatePRInput) {
     try {
-        const { id, userId, vendorId, rabId, requestDate, description, status, items } = input;
+        const { id, userId, vendorId, rabId, targetWarehouseId, requestDate, description, status, items } = input;
 
         // Check ownership/status
         const existingPR = await prisma.purchaseRequest.findUnique({
@@ -240,6 +264,7 @@ export async function updatePurchaseRequest(input: UpdatePRInput) {
                     totalAmount: new Prisma.Decimal(totalAmount),
                     vendorId,
                     rabId: rabId || null,
+                    targetWarehouseId: targetWarehouseId || null,
                     updatedAt: new Date(),
                     items: {
                         create: items.map(item => ({
@@ -349,9 +374,13 @@ async function generatePONumber(date: Date): Promise<string> {
     return `${prefix}/${seq.toString().padStart(4, '0')}`;
 }
 
-export async function acceptPurchaseRequest(
+
+export async function confirmPurchaseRequest(
     prId: string,
-    userId: string
+    userId: string,
+    paymentType: 'SPK' | 'NON_SPK',
+    vendorId: string, // Purchasing can override vendor here
+    notes?: string
 ) {
     try {
         const pr = await prisma.purchaseRequest.findUnique({
@@ -363,23 +392,184 @@ export async function acceptPurchaseRequest(
             throw new Error('PR is not pending purchasing approval');
         }
 
-        const poNumber = await generatePONumber(new Date());
+        const newStatus = paymentType === 'SPK' ? 'CONFIRMED' : 'WAITING_PAYMENT';
 
         await prisma.purchaseRequest.update({
             where: { id: prId },
             data: {
-                status: 'APPROVED',
-                poNumber,
+                status: newStatus,
+                paymentType: paymentType,
+                vendorId: vendorId, // Update vendor if changed
                 purchasingAcceptedById: userId,
-                purchasingAcceptedAt: new Date()
+                purchasingAcceptedAt: new Date(),
+                purchasingNotes: notes
             }
         });
 
         revalidatePath('/purchase');
-        revalidatePath('/purchase/purchasing-verification');
+        revalidatePath(`/purchase/requests/${prId}`);
 
-        return { success: true, data: { poNumber } };
+        return { success: true };
     } catch (error: any) {
         return { success: false, error: error.message };
+    }
+}
+
+export async function releasePayment(prId: string, userId: string) {
+    try {
+        const pr = await prisma.purchaseRequest.findUnique({
+            where: { id: prId }
+        });
+
+        if (!pr) throw new Error('PR not found');
+        if (pr.status !== 'WAITING_PAYMENT') {
+            throw new Error('PR is not waiting for payment');
+        }
+
+        // 1. Create a Bill (Paid) to represent the cash out
+        // In a real system, this might just be a request to Finance module.
+        // Here we simulate it by creating a verified Bill and Payment.
+        await prisma.$transaction(async (tx) => {
+            // Create Bill
+            const bill = await tx.bill.create({
+                data: {
+                    billNumber: `BILL/${pr.prNumber.replace('PR/', '')}`, // Simple bill number gen
+                    vendorId: pr.vendorId,
+                    purchaseRequestId: pr.id,
+                    totalAmount: pr.totalAmount,
+                    remainingAmount: 0,
+                    paidAmount: pr.totalAmount,
+                    status: 'FULLY_PAID',
+                    createdById: userId,
+                }
+            });
+
+            // Create Payment record
+            await tx.payment.create({
+                data: {
+                    paymentCode: `PAY/${Date.now()}`,
+                    billId: bill.id,
+                    amount: pr.totalAmount,
+                    status: 'VALIDATED',
+                    paymentMethod: 'CASH', // Assumption for Non-SPK default
+                    createdById: userId,
+                    validatedById: userId,
+                    validatedAt: new Date()
+                }
+            });
+
+            // Update PR Status
+            await tx.purchaseRequest.update({
+                where: { id: prId },
+                data: { status: 'PAYMENT_RELEASED' }
+            });
+        });
+
+        revalidatePath('/purchase');
+        revalidatePath(`/purchase/requests/${prId}`);
+        return { success: true };
+    } catch (error: any) {
+        return { success: false, error: error.message };
+    }
+}
+
+export async function createPurchaseOrder(
+    prId: string,
+    userId: string,
+    details: {
+        poDocumentPath?: string;
+        shippingTrackingNumber?: string;
+        estimatedShippingDate?: Date;
+        notes?: string;
+    }
+) {
+    try {
+        const pr = await prisma.purchaseRequest.findUnique({
+            where: { id: prId }
+        });
+
+        if (!pr) throw new Error('PR not found');
+        // Must be CONFIRMED (SPK) or PAYMENT_RELEASED (Non-SPK) to create PO
+        const validStatuses = ['CONFIRMED', 'PAYMENT_RELEASED'];
+        if (!validStatuses.includes(pr.status)) {
+            throw new Error('PR is not ready for PO creation');
+        }
+
+        const poNumber = await generatePONumber(new Date());
+
+        // 3. Generate GRN (Goods Received Note) number
+        const year = new Date().getFullYear();
+        const month = String(new Date().getMonth() + 1).padStart(2, '0');
+
+        const grnCount = await prisma.inbound.count({
+            where: {
+                grnNumber: {
+                    startsWith: `GRN-${year}${month}`
+                }
+            }
+        });
+
+        const grnSequence = String(grnCount + 1).padStart(4, '0');
+        const grnNumber = `GRN-${year}${month}-${grnSequence}`;
+
+        // 4. Update PR and Create Inbound in transaction
+        const result = await prisma.$transaction(async (tx) => {
+            const updatedPR = await tx.purchaseRequest.update({
+                where: { id: prId },
+                data: {
+                    status: 'PO_ISSUED',
+                    poNumber,
+                    poSentAt: new Date(),
+                    poDocumentPath: details.poDocumentPath,
+                    shippingTrackingNumber: details.shippingTrackingNumber,
+                    estimatedShippingDate: details.estimatedShippingDate,
+                    purchasingNotes: details.notes ? (pr.purchasingNotes + '\n' + details.notes) : pr.purchasingNotes
+                },
+                include: { items: true }
+            });
+
+            const inbound = await tx.inbound.create({
+                data: {
+                    grnNumber,
+                    purchaseRequestId: prId,
+                    vendorId: pr.vendorId,
+                    warehouseId: pr.targetWarehouseId, // Use target warehouse from PR
+                    receiveDate: details.estimatedShippingDate || new Date(),
+                    status: 'PENDING_VERIFICATION',
+                    notes: `Created from PO ${poNumber}`,
+                    createdById: userId,
+                    items: {
+                        create: updatedPR.items.map(item => ({
+                            itemId: item.itemId,
+                            expectedQuantity: item.quantity,
+                            receivedQuantity: 0,
+                            notes: item.notes || null
+                        }))
+                    }
+                }
+            });
+
+            return { updatedPR, inbound };
+        });
+
+        revalidatePath('/purchase');
+        revalidatePath(`/purchase/requests/${prId}`);
+        revalidatePath('/inbound');
+
+        return { success: true, data: { poNumber, grnNumber } };
+    } catch (error: any) {
+        return { success: false, error: error.message };
+    }
+}
+export async function searchPurchaseRequests(query: string) {
+    try {
+        const res = await getPurchaseRequests(1, 20, query);
+        if (res.success && Array.isArray(res.data)) {
+            return res.data;
+        }
+        return [];
+    } catch (error) {
+        console.error('Failed to search PRs:', error);
+        return [];
     }
 }

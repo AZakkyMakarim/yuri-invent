@@ -29,6 +29,7 @@ export type InboundMinAggregateOutputType = {
   grnNumber: string | null
   purchaseRequestId: string | null
   vendorId: string | null
+  warehouseId: string | null
   receiveDate: Date | null
   status: $Enums.InboundStatus | null
   notes: string | null
@@ -39,6 +40,7 @@ export type InboundMinAggregateOutputType = {
   verificationNotes: string | null
   createdAt: Date | null
   updatedAt: Date | null
+  parentInboundId: string | null
 }
 
 export type InboundMaxAggregateOutputType = {
@@ -46,6 +48,7 @@ export type InboundMaxAggregateOutputType = {
   grnNumber: string | null
   purchaseRequestId: string | null
   vendorId: string | null
+  warehouseId: string | null
   receiveDate: Date | null
   status: $Enums.InboundStatus | null
   notes: string | null
@@ -56,6 +59,7 @@ export type InboundMaxAggregateOutputType = {
   verificationNotes: string | null
   createdAt: Date | null
   updatedAt: Date | null
+  parentInboundId: string | null
 }
 
 export type InboundCountAggregateOutputType = {
@@ -63,6 +67,7 @@ export type InboundCountAggregateOutputType = {
   grnNumber: number
   purchaseRequestId: number
   vendorId: number
+  warehouseId: number
   receiveDate: number
   status: number
   notes: number
@@ -73,6 +78,7 @@ export type InboundCountAggregateOutputType = {
   verificationNotes: number
   createdAt: number
   updatedAt: number
+  parentInboundId: number
   _all: number
 }
 
@@ -82,6 +88,7 @@ export type InboundMinAggregateInputType = {
   grnNumber?: true
   purchaseRequestId?: true
   vendorId?: true
+  warehouseId?: true
   receiveDate?: true
   status?: true
   notes?: true
@@ -92,6 +99,7 @@ export type InboundMinAggregateInputType = {
   verificationNotes?: true
   createdAt?: true
   updatedAt?: true
+  parentInboundId?: true
 }
 
 export type InboundMaxAggregateInputType = {
@@ -99,6 +107,7 @@ export type InboundMaxAggregateInputType = {
   grnNumber?: true
   purchaseRequestId?: true
   vendorId?: true
+  warehouseId?: true
   receiveDate?: true
   status?: true
   notes?: true
@@ -109,6 +118,7 @@ export type InboundMaxAggregateInputType = {
   verificationNotes?: true
   createdAt?: true
   updatedAt?: true
+  parentInboundId?: true
 }
 
 export type InboundCountAggregateInputType = {
@@ -116,6 +126,7 @@ export type InboundCountAggregateInputType = {
   grnNumber?: true
   purchaseRequestId?: true
   vendorId?: true
+  warehouseId?: true
   receiveDate?: true
   status?: true
   notes?: true
@@ -126,6 +137,7 @@ export type InboundCountAggregateInputType = {
   verificationNotes?: true
   createdAt?: true
   updatedAt?: true
+  parentInboundId?: true
   _all?: true
 }
 
@@ -206,6 +218,7 @@ export type InboundGroupByOutputType = {
   grnNumber: string
   purchaseRequestId: string
   vendorId: string
+  warehouseId: string | null
   receiveDate: Date
   status: $Enums.InboundStatus
   notes: string | null
@@ -216,6 +229,7 @@ export type InboundGroupByOutputType = {
   verificationNotes: string | null
   createdAt: Date
   updatedAt: Date
+  parentInboundId: string | null
   _count: InboundCountAggregateOutputType | null
   _min: InboundMinAggregateOutputType | null
   _max: InboundMaxAggregateOutputType | null
@@ -244,6 +258,7 @@ export type InboundWhereInput = {
   grnNumber?: Prisma.StringFilter<"Inbound"> | string
   purchaseRequestId?: Prisma.StringFilter<"Inbound"> | string
   vendorId?: Prisma.StringFilter<"Inbound"> | string
+  warehouseId?: Prisma.StringNullableFilter<"Inbound"> | string | null
   receiveDate?: Prisma.DateTimeFilter<"Inbound"> | Date | string
   status?: Prisma.EnumInboundStatusFilter<"Inbound"> | $Enums.InboundStatus
   notes?: Prisma.StringNullableFilter<"Inbound"> | string | null
@@ -254,12 +269,17 @@ export type InboundWhereInput = {
   verificationNotes?: Prisma.StringNullableFilter<"Inbound"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Inbound"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Inbound"> | Date | string
+  parentInboundId?: Prisma.StringNullableFilter<"Inbound"> | string | null
+  parentInbound?: Prisma.XOR<Prisma.InboundNullableScalarRelationFilter, Prisma.InboundWhereInput> | null
+  childInbounds?: Prisma.InboundListRelationFilter
   purchaseRequest?: Prisma.XOR<Prisma.PurchaseRequestScalarRelationFilter, Prisma.PurchaseRequestWhereInput>
   vendor?: Prisma.XOR<Prisma.VendorScalarRelationFilter, Prisma.VendorWhereInput>
+  warehouse?: Prisma.XOR<Prisma.WarehouseNullableScalarRelationFilter, Prisma.WarehouseWhereInput> | null
   createdBy?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   verifiedBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   items?: Prisma.InboundItemListRelationFilter
   stockCards?: Prisma.StockCardListRelationFilter
+  returns?: Prisma.ReturnListRelationFilter
 }
 
 export type InboundOrderByWithRelationInput = {
@@ -267,6 +287,7 @@ export type InboundOrderByWithRelationInput = {
   grnNumber?: Prisma.SortOrder
   purchaseRequestId?: Prisma.SortOrder
   vendorId?: Prisma.SortOrder
+  warehouseId?: Prisma.SortOrderInput | Prisma.SortOrder
   receiveDate?: Prisma.SortOrder
   status?: Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -277,12 +298,17 @@ export type InboundOrderByWithRelationInput = {
   verificationNotes?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  parentInboundId?: Prisma.SortOrderInput | Prisma.SortOrder
+  parentInbound?: Prisma.InboundOrderByWithRelationInput
+  childInbounds?: Prisma.InboundOrderByRelationAggregateInput
   purchaseRequest?: Prisma.PurchaseRequestOrderByWithRelationInput
   vendor?: Prisma.VendorOrderByWithRelationInput
+  warehouse?: Prisma.WarehouseOrderByWithRelationInput
   createdBy?: Prisma.UserOrderByWithRelationInput
   verifiedBy?: Prisma.UserOrderByWithRelationInput
   items?: Prisma.InboundItemOrderByRelationAggregateInput
   stockCards?: Prisma.StockCardOrderByRelationAggregateInput
+  returns?: Prisma.ReturnOrderByRelationAggregateInput
 }
 
 export type InboundWhereUniqueInput = Prisma.AtLeast<{
@@ -293,6 +319,7 @@ export type InboundWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.InboundWhereInput | Prisma.InboundWhereInput[]
   purchaseRequestId?: Prisma.StringFilter<"Inbound"> | string
   vendorId?: Prisma.StringFilter<"Inbound"> | string
+  warehouseId?: Prisma.StringNullableFilter<"Inbound"> | string | null
   receiveDate?: Prisma.DateTimeFilter<"Inbound"> | Date | string
   status?: Prisma.EnumInboundStatusFilter<"Inbound"> | $Enums.InboundStatus
   notes?: Prisma.StringNullableFilter<"Inbound"> | string | null
@@ -303,12 +330,17 @@ export type InboundWhereUniqueInput = Prisma.AtLeast<{
   verificationNotes?: Prisma.StringNullableFilter<"Inbound"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Inbound"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Inbound"> | Date | string
+  parentInboundId?: Prisma.StringNullableFilter<"Inbound"> | string | null
+  parentInbound?: Prisma.XOR<Prisma.InboundNullableScalarRelationFilter, Prisma.InboundWhereInput> | null
+  childInbounds?: Prisma.InboundListRelationFilter
   purchaseRequest?: Prisma.XOR<Prisma.PurchaseRequestScalarRelationFilter, Prisma.PurchaseRequestWhereInput>
   vendor?: Prisma.XOR<Prisma.VendorScalarRelationFilter, Prisma.VendorWhereInput>
+  warehouse?: Prisma.XOR<Prisma.WarehouseNullableScalarRelationFilter, Prisma.WarehouseWhereInput> | null
   createdBy?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   verifiedBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   items?: Prisma.InboundItemListRelationFilter
   stockCards?: Prisma.StockCardListRelationFilter
+  returns?: Prisma.ReturnListRelationFilter
 }, "id" | "grnNumber">
 
 export type InboundOrderByWithAggregationInput = {
@@ -316,6 +348,7 @@ export type InboundOrderByWithAggregationInput = {
   grnNumber?: Prisma.SortOrder
   purchaseRequestId?: Prisma.SortOrder
   vendorId?: Prisma.SortOrder
+  warehouseId?: Prisma.SortOrderInput | Prisma.SortOrder
   receiveDate?: Prisma.SortOrder
   status?: Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -326,6 +359,7 @@ export type InboundOrderByWithAggregationInput = {
   verificationNotes?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  parentInboundId?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.InboundCountOrderByAggregateInput
   _max?: Prisma.InboundMaxOrderByAggregateInput
   _min?: Prisma.InboundMinOrderByAggregateInput
@@ -339,6 +373,7 @@ export type InboundScalarWhereWithAggregatesInput = {
   grnNumber?: Prisma.StringWithAggregatesFilter<"Inbound"> | string
   purchaseRequestId?: Prisma.StringWithAggregatesFilter<"Inbound"> | string
   vendorId?: Prisma.StringWithAggregatesFilter<"Inbound"> | string
+  warehouseId?: Prisma.StringNullableWithAggregatesFilter<"Inbound"> | string | null
   receiveDate?: Prisma.DateTimeWithAggregatesFilter<"Inbound"> | Date | string
   status?: Prisma.EnumInboundStatusWithAggregatesFilter<"Inbound"> | $Enums.InboundStatus
   notes?: Prisma.StringNullableWithAggregatesFilter<"Inbound"> | string | null
@@ -349,6 +384,7 @@ export type InboundScalarWhereWithAggregatesInput = {
   verificationNotes?: Prisma.StringNullableWithAggregatesFilter<"Inbound"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Inbound"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Inbound"> | Date | string
+  parentInboundId?: Prisma.StringNullableWithAggregatesFilter<"Inbound"> | string | null
 }
 
 export type InboundCreateInput = {
@@ -362,12 +398,16 @@ export type InboundCreateInput = {
   verificationNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  parentInbound?: Prisma.InboundCreateNestedOneWithoutChildInboundsInput
+  childInbounds?: Prisma.InboundCreateNestedManyWithoutParentInboundInput
   purchaseRequest: Prisma.PurchaseRequestCreateNestedOneWithoutInboundsInput
   vendor: Prisma.VendorCreateNestedOneWithoutInboundsInput
+  warehouse?: Prisma.WarehouseCreateNestedOneWithoutInboundsInput
   createdBy: Prisma.UserCreateNestedOneWithoutCreatedInboundsInput
   verifiedBy?: Prisma.UserCreateNestedOneWithoutVerifiedInboundsInput
   items?: Prisma.InboundItemCreateNestedManyWithoutInboundInput
   stockCards?: Prisma.StockCardCreateNestedManyWithoutInboundInput
+  returns?: Prisma.ReturnCreateNestedManyWithoutInboundInput
 }
 
 export type InboundUncheckedCreateInput = {
@@ -375,6 +415,7 @@ export type InboundUncheckedCreateInput = {
   grnNumber: string
   purchaseRequestId: string
   vendorId: string
+  warehouseId?: string | null
   receiveDate?: Date | string
   status?: $Enums.InboundStatus
   notes?: string | null
@@ -385,8 +426,11 @@ export type InboundUncheckedCreateInput = {
   verificationNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  parentInboundId?: string | null
+  childInbounds?: Prisma.InboundUncheckedCreateNestedManyWithoutParentInboundInput
   items?: Prisma.InboundItemUncheckedCreateNestedManyWithoutInboundInput
   stockCards?: Prisma.StockCardUncheckedCreateNestedManyWithoutInboundInput
+  returns?: Prisma.ReturnUncheckedCreateNestedManyWithoutInboundInput
 }
 
 export type InboundUpdateInput = {
@@ -400,12 +444,16 @@ export type InboundUpdateInput = {
   verificationNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  parentInbound?: Prisma.InboundUpdateOneWithoutChildInboundsNestedInput
+  childInbounds?: Prisma.InboundUpdateManyWithoutParentInboundNestedInput
   purchaseRequest?: Prisma.PurchaseRequestUpdateOneRequiredWithoutInboundsNestedInput
   vendor?: Prisma.VendorUpdateOneRequiredWithoutInboundsNestedInput
+  warehouse?: Prisma.WarehouseUpdateOneWithoutInboundsNestedInput
   createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedInboundsNestedInput
   verifiedBy?: Prisma.UserUpdateOneWithoutVerifiedInboundsNestedInput
   items?: Prisma.InboundItemUpdateManyWithoutInboundNestedInput
   stockCards?: Prisma.StockCardUpdateManyWithoutInboundNestedInput
+  returns?: Prisma.ReturnUpdateManyWithoutInboundNestedInput
 }
 
 export type InboundUncheckedUpdateInput = {
@@ -413,6 +461,7 @@ export type InboundUncheckedUpdateInput = {
   grnNumber?: Prisma.StringFieldUpdateOperationsInput | string
   purchaseRequestId?: Prisma.StringFieldUpdateOperationsInput | string
   vendorId?: Prisma.StringFieldUpdateOperationsInput | string
+  warehouseId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   receiveDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumInboundStatusFieldUpdateOperationsInput | $Enums.InboundStatus
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -423,8 +472,11 @@ export type InboundUncheckedUpdateInput = {
   verificationNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  parentInboundId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  childInbounds?: Prisma.InboundUncheckedUpdateManyWithoutParentInboundNestedInput
   items?: Prisma.InboundItemUncheckedUpdateManyWithoutInboundNestedInput
   stockCards?: Prisma.StockCardUncheckedUpdateManyWithoutInboundNestedInput
+  returns?: Prisma.ReturnUncheckedUpdateManyWithoutInboundNestedInput
 }
 
 export type InboundCreateManyInput = {
@@ -432,6 +484,7 @@ export type InboundCreateManyInput = {
   grnNumber: string
   purchaseRequestId: string
   vendorId: string
+  warehouseId?: string | null
   receiveDate?: Date | string
   status?: $Enums.InboundStatus
   notes?: string | null
@@ -442,6 +495,7 @@ export type InboundCreateManyInput = {
   verificationNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  parentInboundId?: string | null
 }
 
 export type InboundUpdateManyMutationInput = {
@@ -462,6 +516,7 @@ export type InboundUncheckedUpdateManyInput = {
   grnNumber?: Prisma.StringFieldUpdateOperationsInput | string
   purchaseRequestId?: Prisma.StringFieldUpdateOperationsInput | string
   vendorId?: Prisma.StringFieldUpdateOperationsInput | string
+  warehouseId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   receiveDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumInboundStatusFieldUpdateOperationsInput | $Enums.InboundStatus
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -472,6 +527,7 @@ export type InboundUncheckedUpdateManyInput = {
   verificationNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  parentInboundId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type InboundListRelationFilter = {
@@ -484,11 +540,17 @@ export type InboundOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
+export type InboundNullableScalarRelationFilter = {
+  is?: Prisma.InboundWhereInput | null
+  isNot?: Prisma.InboundWhereInput | null
+}
+
 export type InboundCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   grnNumber?: Prisma.SortOrder
   purchaseRequestId?: Prisma.SortOrder
   vendorId?: Prisma.SortOrder
+  warehouseId?: Prisma.SortOrder
   receiveDate?: Prisma.SortOrder
   status?: Prisma.SortOrder
   notes?: Prisma.SortOrder
@@ -499,6 +561,7 @@ export type InboundCountOrderByAggregateInput = {
   verificationNotes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  parentInboundId?: Prisma.SortOrder
 }
 
 export type InboundMaxOrderByAggregateInput = {
@@ -506,6 +569,7 @@ export type InboundMaxOrderByAggregateInput = {
   grnNumber?: Prisma.SortOrder
   purchaseRequestId?: Prisma.SortOrder
   vendorId?: Prisma.SortOrder
+  warehouseId?: Prisma.SortOrder
   receiveDate?: Prisma.SortOrder
   status?: Prisma.SortOrder
   notes?: Prisma.SortOrder
@@ -516,6 +580,7 @@ export type InboundMaxOrderByAggregateInput = {
   verificationNotes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  parentInboundId?: Prisma.SortOrder
 }
 
 export type InboundMinOrderByAggregateInput = {
@@ -523,6 +588,7 @@ export type InboundMinOrderByAggregateInput = {
   grnNumber?: Prisma.SortOrder
   purchaseRequestId?: Prisma.SortOrder
   vendorId?: Prisma.SortOrder
+  warehouseId?: Prisma.SortOrder
   receiveDate?: Prisma.SortOrder
   status?: Prisma.SortOrder
   notes?: Prisma.SortOrder
@@ -533,16 +599,12 @@ export type InboundMinOrderByAggregateInput = {
   verificationNotes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  parentInboundId?: Prisma.SortOrder
 }
 
 export type InboundScalarRelationFilter = {
   is?: Prisma.InboundWhereInput
   isNot?: Prisma.InboundWhereInput
-}
-
-export type InboundNullableScalarRelationFilter = {
-  is?: Prisma.InboundWhereInput | null
-  isNot?: Prisma.InboundWhereInput | null
 }
 
 export type InboundCreateNestedManyWithoutCreatedByInput = {
@@ -626,6 +688,48 @@ export type InboundUncheckedUpdateManyWithoutVerifiedByNestedInput = {
   connect?: Prisma.InboundWhereUniqueInput | Prisma.InboundWhereUniqueInput[]
   update?: Prisma.InboundUpdateWithWhereUniqueWithoutVerifiedByInput | Prisma.InboundUpdateWithWhereUniqueWithoutVerifiedByInput[]
   updateMany?: Prisma.InboundUpdateManyWithWhereWithoutVerifiedByInput | Prisma.InboundUpdateManyWithWhereWithoutVerifiedByInput[]
+  deleteMany?: Prisma.InboundScalarWhereInput | Prisma.InboundScalarWhereInput[]
+}
+
+export type InboundCreateNestedManyWithoutWarehouseInput = {
+  create?: Prisma.XOR<Prisma.InboundCreateWithoutWarehouseInput, Prisma.InboundUncheckedCreateWithoutWarehouseInput> | Prisma.InboundCreateWithoutWarehouseInput[] | Prisma.InboundUncheckedCreateWithoutWarehouseInput[]
+  connectOrCreate?: Prisma.InboundCreateOrConnectWithoutWarehouseInput | Prisma.InboundCreateOrConnectWithoutWarehouseInput[]
+  createMany?: Prisma.InboundCreateManyWarehouseInputEnvelope
+  connect?: Prisma.InboundWhereUniqueInput | Prisma.InboundWhereUniqueInput[]
+}
+
+export type InboundUncheckedCreateNestedManyWithoutWarehouseInput = {
+  create?: Prisma.XOR<Prisma.InboundCreateWithoutWarehouseInput, Prisma.InboundUncheckedCreateWithoutWarehouseInput> | Prisma.InboundCreateWithoutWarehouseInput[] | Prisma.InboundUncheckedCreateWithoutWarehouseInput[]
+  connectOrCreate?: Prisma.InboundCreateOrConnectWithoutWarehouseInput | Prisma.InboundCreateOrConnectWithoutWarehouseInput[]
+  createMany?: Prisma.InboundCreateManyWarehouseInputEnvelope
+  connect?: Prisma.InboundWhereUniqueInput | Prisma.InboundWhereUniqueInput[]
+}
+
+export type InboundUpdateManyWithoutWarehouseNestedInput = {
+  create?: Prisma.XOR<Prisma.InboundCreateWithoutWarehouseInput, Prisma.InboundUncheckedCreateWithoutWarehouseInput> | Prisma.InboundCreateWithoutWarehouseInput[] | Prisma.InboundUncheckedCreateWithoutWarehouseInput[]
+  connectOrCreate?: Prisma.InboundCreateOrConnectWithoutWarehouseInput | Prisma.InboundCreateOrConnectWithoutWarehouseInput[]
+  upsert?: Prisma.InboundUpsertWithWhereUniqueWithoutWarehouseInput | Prisma.InboundUpsertWithWhereUniqueWithoutWarehouseInput[]
+  createMany?: Prisma.InboundCreateManyWarehouseInputEnvelope
+  set?: Prisma.InboundWhereUniqueInput | Prisma.InboundWhereUniqueInput[]
+  disconnect?: Prisma.InboundWhereUniqueInput | Prisma.InboundWhereUniqueInput[]
+  delete?: Prisma.InboundWhereUniqueInput | Prisma.InboundWhereUniqueInput[]
+  connect?: Prisma.InboundWhereUniqueInput | Prisma.InboundWhereUniqueInput[]
+  update?: Prisma.InboundUpdateWithWhereUniqueWithoutWarehouseInput | Prisma.InboundUpdateWithWhereUniqueWithoutWarehouseInput[]
+  updateMany?: Prisma.InboundUpdateManyWithWhereWithoutWarehouseInput | Prisma.InboundUpdateManyWithWhereWithoutWarehouseInput[]
+  deleteMany?: Prisma.InboundScalarWhereInput | Prisma.InboundScalarWhereInput[]
+}
+
+export type InboundUncheckedUpdateManyWithoutWarehouseNestedInput = {
+  create?: Prisma.XOR<Prisma.InboundCreateWithoutWarehouseInput, Prisma.InboundUncheckedCreateWithoutWarehouseInput> | Prisma.InboundCreateWithoutWarehouseInput[] | Prisma.InboundUncheckedCreateWithoutWarehouseInput[]
+  connectOrCreate?: Prisma.InboundCreateOrConnectWithoutWarehouseInput | Prisma.InboundCreateOrConnectWithoutWarehouseInput[]
+  upsert?: Prisma.InboundUpsertWithWhereUniqueWithoutWarehouseInput | Prisma.InboundUpsertWithWhereUniqueWithoutWarehouseInput[]
+  createMany?: Prisma.InboundCreateManyWarehouseInputEnvelope
+  set?: Prisma.InboundWhereUniqueInput | Prisma.InboundWhereUniqueInput[]
+  disconnect?: Prisma.InboundWhereUniqueInput | Prisma.InboundWhereUniqueInput[]
+  delete?: Prisma.InboundWhereUniqueInput | Prisma.InboundWhereUniqueInput[]
+  connect?: Prisma.InboundWhereUniqueInput | Prisma.InboundWhereUniqueInput[]
+  update?: Prisma.InboundUpdateWithWhereUniqueWithoutWarehouseInput | Prisma.InboundUpdateWithWhereUniqueWithoutWarehouseInput[]
+  updateMany?: Prisma.InboundUpdateManyWithWhereWithoutWarehouseInput | Prisma.InboundUpdateManyWithWhereWithoutWarehouseInput[]
   deleteMany?: Prisma.InboundScalarWhereInput | Prisma.InboundScalarWhereInput[]
 }
 
@@ -713,8 +817,66 @@ export type InboundUncheckedUpdateManyWithoutPurchaseRequestNestedInput = {
   deleteMany?: Prisma.InboundScalarWhereInput | Prisma.InboundScalarWhereInput[]
 }
 
+export type InboundCreateNestedOneWithoutChildInboundsInput = {
+  create?: Prisma.XOR<Prisma.InboundCreateWithoutChildInboundsInput, Prisma.InboundUncheckedCreateWithoutChildInboundsInput>
+  connectOrCreate?: Prisma.InboundCreateOrConnectWithoutChildInboundsInput
+  connect?: Prisma.InboundWhereUniqueInput
+}
+
+export type InboundCreateNestedManyWithoutParentInboundInput = {
+  create?: Prisma.XOR<Prisma.InboundCreateWithoutParentInboundInput, Prisma.InboundUncheckedCreateWithoutParentInboundInput> | Prisma.InboundCreateWithoutParentInboundInput[] | Prisma.InboundUncheckedCreateWithoutParentInboundInput[]
+  connectOrCreate?: Prisma.InboundCreateOrConnectWithoutParentInboundInput | Prisma.InboundCreateOrConnectWithoutParentInboundInput[]
+  createMany?: Prisma.InboundCreateManyParentInboundInputEnvelope
+  connect?: Prisma.InboundWhereUniqueInput | Prisma.InboundWhereUniqueInput[]
+}
+
+export type InboundUncheckedCreateNestedManyWithoutParentInboundInput = {
+  create?: Prisma.XOR<Prisma.InboundCreateWithoutParentInboundInput, Prisma.InboundUncheckedCreateWithoutParentInboundInput> | Prisma.InboundCreateWithoutParentInboundInput[] | Prisma.InboundUncheckedCreateWithoutParentInboundInput[]
+  connectOrCreate?: Prisma.InboundCreateOrConnectWithoutParentInboundInput | Prisma.InboundCreateOrConnectWithoutParentInboundInput[]
+  createMany?: Prisma.InboundCreateManyParentInboundInputEnvelope
+  connect?: Prisma.InboundWhereUniqueInput | Prisma.InboundWhereUniqueInput[]
+}
+
 export type EnumInboundStatusFieldUpdateOperationsInput = {
   set?: $Enums.InboundStatus
+}
+
+export type InboundUpdateOneWithoutChildInboundsNestedInput = {
+  create?: Prisma.XOR<Prisma.InboundCreateWithoutChildInboundsInput, Prisma.InboundUncheckedCreateWithoutChildInboundsInput>
+  connectOrCreate?: Prisma.InboundCreateOrConnectWithoutChildInboundsInput
+  upsert?: Prisma.InboundUpsertWithoutChildInboundsInput
+  disconnect?: Prisma.InboundWhereInput | boolean
+  delete?: Prisma.InboundWhereInput | boolean
+  connect?: Prisma.InboundWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.InboundUpdateToOneWithWhereWithoutChildInboundsInput, Prisma.InboundUpdateWithoutChildInboundsInput>, Prisma.InboundUncheckedUpdateWithoutChildInboundsInput>
+}
+
+export type InboundUpdateManyWithoutParentInboundNestedInput = {
+  create?: Prisma.XOR<Prisma.InboundCreateWithoutParentInboundInput, Prisma.InboundUncheckedCreateWithoutParentInboundInput> | Prisma.InboundCreateWithoutParentInboundInput[] | Prisma.InboundUncheckedCreateWithoutParentInboundInput[]
+  connectOrCreate?: Prisma.InboundCreateOrConnectWithoutParentInboundInput | Prisma.InboundCreateOrConnectWithoutParentInboundInput[]
+  upsert?: Prisma.InboundUpsertWithWhereUniqueWithoutParentInboundInput | Prisma.InboundUpsertWithWhereUniqueWithoutParentInboundInput[]
+  createMany?: Prisma.InboundCreateManyParentInboundInputEnvelope
+  set?: Prisma.InboundWhereUniqueInput | Prisma.InboundWhereUniqueInput[]
+  disconnect?: Prisma.InboundWhereUniqueInput | Prisma.InboundWhereUniqueInput[]
+  delete?: Prisma.InboundWhereUniqueInput | Prisma.InboundWhereUniqueInput[]
+  connect?: Prisma.InboundWhereUniqueInput | Prisma.InboundWhereUniqueInput[]
+  update?: Prisma.InboundUpdateWithWhereUniqueWithoutParentInboundInput | Prisma.InboundUpdateWithWhereUniqueWithoutParentInboundInput[]
+  updateMany?: Prisma.InboundUpdateManyWithWhereWithoutParentInboundInput | Prisma.InboundUpdateManyWithWhereWithoutParentInboundInput[]
+  deleteMany?: Prisma.InboundScalarWhereInput | Prisma.InboundScalarWhereInput[]
+}
+
+export type InboundUncheckedUpdateManyWithoutParentInboundNestedInput = {
+  create?: Prisma.XOR<Prisma.InboundCreateWithoutParentInboundInput, Prisma.InboundUncheckedCreateWithoutParentInboundInput> | Prisma.InboundCreateWithoutParentInboundInput[] | Prisma.InboundUncheckedCreateWithoutParentInboundInput[]
+  connectOrCreate?: Prisma.InboundCreateOrConnectWithoutParentInboundInput | Prisma.InboundCreateOrConnectWithoutParentInboundInput[]
+  upsert?: Prisma.InboundUpsertWithWhereUniqueWithoutParentInboundInput | Prisma.InboundUpsertWithWhereUniqueWithoutParentInboundInput[]
+  createMany?: Prisma.InboundCreateManyParentInboundInputEnvelope
+  set?: Prisma.InboundWhereUniqueInput | Prisma.InboundWhereUniqueInput[]
+  disconnect?: Prisma.InboundWhereUniqueInput | Prisma.InboundWhereUniqueInput[]
+  delete?: Prisma.InboundWhereUniqueInput | Prisma.InboundWhereUniqueInput[]
+  connect?: Prisma.InboundWhereUniqueInput | Prisma.InboundWhereUniqueInput[]
+  update?: Prisma.InboundUpdateWithWhereUniqueWithoutParentInboundInput | Prisma.InboundUpdateWithWhereUniqueWithoutParentInboundInput[]
+  updateMany?: Prisma.InboundUpdateManyWithWhereWithoutParentInboundInput | Prisma.InboundUpdateManyWithWhereWithoutParentInboundInput[]
+  deleteMany?: Prisma.InboundScalarWhereInput | Prisma.InboundScalarWhereInput[]
 }
 
 export type InboundCreateNestedOneWithoutItemsInput = {
@@ -747,6 +909,22 @@ export type InboundUpdateOneWithoutStockCardsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.InboundUpdateToOneWithWhereWithoutStockCardsInput, Prisma.InboundUpdateWithoutStockCardsInput>, Prisma.InboundUncheckedUpdateWithoutStockCardsInput>
 }
 
+export type InboundCreateNestedOneWithoutReturnsInput = {
+  create?: Prisma.XOR<Prisma.InboundCreateWithoutReturnsInput, Prisma.InboundUncheckedCreateWithoutReturnsInput>
+  connectOrCreate?: Prisma.InboundCreateOrConnectWithoutReturnsInput
+  connect?: Prisma.InboundWhereUniqueInput
+}
+
+export type InboundUpdateOneWithoutReturnsNestedInput = {
+  create?: Prisma.XOR<Prisma.InboundCreateWithoutReturnsInput, Prisma.InboundUncheckedCreateWithoutReturnsInput>
+  connectOrCreate?: Prisma.InboundCreateOrConnectWithoutReturnsInput
+  upsert?: Prisma.InboundUpsertWithoutReturnsInput
+  disconnect?: Prisma.InboundWhereInput | boolean
+  delete?: Prisma.InboundWhereInput | boolean
+  connect?: Prisma.InboundWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.InboundUpdateToOneWithWhereWithoutReturnsInput, Prisma.InboundUpdateWithoutReturnsInput>, Prisma.InboundUncheckedUpdateWithoutReturnsInput>
+}
+
 export type InboundCreateWithoutCreatedByInput = {
   id?: string
   grnNumber: string
@@ -758,11 +936,15 @@ export type InboundCreateWithoutCreatedByInput = {
   verificationNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  parentInbound?: Prisma.InboundCreateNestedOneWithoutChildInboundsInput
+  childInbounds?: Prisma.InboundCreateNestedManyWithoutParentInboundInput
   purchaseRequest: Prisma.PurchaseRequestCreateNestedOneWithoutInboundsInput
   vendor: Prisma.VendorCreateNestedOneWithoutInboundsInput
+  warehouse?: Prisma.WarehouseCreateNestedOneWithoutInboundsInput
   verifiedBy?: Prisma.UserCreateNestedOneWithoutVerifiedInboundsInput
   items?: Prisma.InboundItemCreateNestedManyWithoutInboundInput
   stockCards?: Prisma.StockCardCreateNestedManyWithoutInboundInput
+  returns?: Prisma.ReturnCreateNestedManyWithoutInboundInput
 }
 
 export type InboundUncheckedCreateWithoutCreatedByInput = {
@@ -770,6 +952,7 @@ export type InboundUncheckedCreateWithoutCreatedByInput = {
   grnNumber: string
   purchaseRequestId: string
   vendorId: string
+  warehouseId?: string | null
   receiveDate?: Date | string
   status?: $Enums.InboundStatus
   notes?: string | null
@@ -779,8 +962,11 @@ export type InboundUncheckedCreateWithoutCreatedByInput = {
   verificationNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  parentInboundId?: string | null
+  childInbounds?: Prisma.InboundUncheckedCreateNestedManyWithoutParentInboundInput
   items?: Prisma.InboundItemUncheckedCreateNestedManyWithoutInboundInput
   stockCards?: Prisma.StockCardUncheckedCreateNestedManyWithoutInboundInput
+  returns?: Prisma.ReturnUncheckedCreateNestedManyWithoutInboundInput
 }
 
 export type InboundCreateOrConnectWithoutCreatedByInput = {
@@ -804,11 +990,15 @@ export type InboundCreateWithoutVerifiedByInput = {
   verificationNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  parentInbound?: Prisma.InboundCreateNestedOneWithoutChildInboundsInput
+  childInbounds?: Prisma.InboundCreateNestedManyWithoutParentInboundInput
   purchaseRequest: Prisma.PurchaseRequestCreateNestedOneWithoutInboundsInput
   vendor: Prisma.VendorCreateNestedOneWithoutInboundsInput
+  warehouse?: Prisma.WarehouseCreateNestedOneWithoutInboundsInput
   createdBy: Prisma.UserCreateNestedOneWithoutCreatedInboundsInput
   items?: Prisma.InboundItemCreateNestedManyWithoutInboundInput
   stockCards?: Prisma.StockCardCreateNestedManyWithoutInboundInput
+  returns?: Prisma.ReturnCreateNestedManyWithoutInboundInput
 }
 
 export type InboundUncheckedCreateWithoutVerifiedByInput = {
@@ -816,6 +1006,7 @@ export type InboundUncheckedCreateWithoutVerifiedByInput = {
   grnNumber: string
   purchaseRequestId: string
   vendorId: string
+  warehouseId?: string | null
   receiveDate?: Date | string
   status?: $Enums.InboundStatus
   notes?: string | null
@@ -825,8 +1016,11 @@ export type InboundUncheckedCreateWithoutVerifiedByInput = {
   verificationNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  parentInboundId?: string | null
+  childInbounds?: Prisma.InboundUncheckedCreateNestedManyWithoutParentInboundInput
   items?: Prisma.InboundItemUncheckedCreateNestedManyWithoutInboundInput
   stockCards?: Prisma.StockCardUncheckedCreateNestedManyWithoutInboundInput
+  returns?: Prisma.ReturnUncheckedCreateNestedManyWithoutInboundInput
 }
 
 export type InboundCreateOrConnectWithoutVerifiedByInput = {
@@ -863,6 +1057,7 @@ export type InboundScalarWhereInput = {
   grnNumber?: Prisma.StringFilter<"Inbound"> | string
   purchaseRequestId?: Prisma.StringFilter<"Inbound"> | string
   vendorId?: Prisma.StringFilter<"Inbound"> | string
+  warehouseId?: Prisma.StringNullableFilter<"Inbound"> | string | null
   receiveDate?: Prisma.DateTimeFilter<"Inbound"> | Date | string
   status?: Prisma.EnumInboundStatusFilter<"Inbound"> | $Enums.InboundStatus
   notes?: Prisma.StringNullableFilter<"Inbound"> | string | null
@@ -873,6 +1068,7 @@ export type InboundScalarWhereInput = {
   verificationNotes?: Prisma.StringNullableFilter<"Inbound"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Inbound"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Inbound"> | Date | string
+  parentInboundId?: Prisma.StringNullableFilter<"Inbound"> | string | null
 }
 
 export type InboundUpsertWithWhereUniqueWithoutVerifiedByInput = {
@@ -891,6 +1087,76 @@ export type InboundUpdateManyWithWhereWithoutVerifiedByInput = {
   data: Prisma.XOR<Prisma.InboundUpdateManyMutationInput, Prisma.InboundUncheckedUpdateManyWithoutVerifiedByInput>
 }
 
+export type InboundCreateWithoutWarehouseInput = {
+  id?: string
+  grnNumber: string
+  receiveDate?: Date | string
+  status?: $Enums.InboundStatus
+  notes?: string | null
+  proofDocumentUrl?: string | null
+  verifiedAt?: Date | string | null
+  verificationNotes?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  parentInbound?: Prisma.InboundCreateNestedOneWithoutChildInboundsInput
+  childInbounds?: Prisma.InboundCreateNestedManyWithoutParentInboundInput
+  purchaseRequest: Prisma.PurchaseRequestCreateNestedOneWithoutInboundsInput
+  vendor: Prisma.VendorCreateNestedOneWithoutInboundsInput
+  createdBy: Prisma.UserCreateNestedOneWithoutCreatedInboundsInput
+  verifiedBy?: Prisma.UserCreateNestedOneWithoutVerifiedInboundsInput
+  items?: Prisma.InboundItemCreateNestedManyWithoutInboundInput
+  stockCards?: Prisma.StockCardCreateNestedManyWithoutInboundInput
+  returns?: Prisma.ReturnCreateNestedManyWithoutInboundInput
+}
+
+export type InboundUncheckedCreateWithoutWarehouseInput = {
+  id?: string
+  grnNumber: string
+  purchaseRequestId: string
+  vendorId: string
+  receiveDate?: Date | string
+  status?: $Enums.InboundStatus
+  notes?: string | null
+  proofDocumentUrl?: string | null
+  createdById: string
+  verifiedById?: string | null
+  verifiedAt?: Date | string | null
+  verificationNotes?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  parentInboundId?: string | null
+  childInbounds?: Prisma.InboundUncheckedCreateNestedManyWithoutParentInboundInput
+  items?: Prisma.InboundItemUncheckedCreateNestedManyWithoutInboundInput
+  stockCards?: Prisma.StockCardUncheckedCreateNestedManyWithoutInboundInput
+  returns?: Prisma.ReturnUncheckedCreateNestedManyWithoutInboundInput
+}
+
+export type InboundCreateOrConnectWithoutWarehouseInput = {
+  where: Prisma.InboundWhereUniqueInput
+  create: Prisma.XOR<Prisma.InboundCreateWithoutWarehouseInput, Prisma.InboundUncheckedCreateWithoutWarehouseInput>
+}
+
+export type InboundCreateManyWarehouseInputEnvelope = {
+  data: Prisma.InboundCreateManyWarehouseInput | Prisma.InboundCreateManyWarehouseInput[]
+  skipDuplicates?: boolean
+}
+
+export type InboundUpsertWithWhereUniqueWithoutWarehouseInput = {
+  where: Prisma.InboundWhereUniqueInput
+  update: Prisma.XOR<Prisma.InboundUpdateWithoutWarehouseInput, Prisma.InboundUncheckedUpdateWithoutWarehouseInput>
+  create: Prisma.XOR<Prisma.InboundCreateWithoutWarehouseInput, Prisma.InboundUncheckedCreateWithoutWarehouseInput>
+}
+
+export type InboundUpdateWithWhereUniqueWithoutWarehouseInput = {
+  where: Prisma.InboundWhereUniqueInput
+  data: Prisma.XOR<Prisma.InboundUpdateWithoutWarehouseInput, Prisma.InboundUncheckedUpdateWithoutWarehouseInput>
+}
+
+export type InboundUpdateManyWithWhereWithoutWarehouseInput = {
+  where: Prisma.InboundScalarWhereInput
+  data: Prisma.XOR<Prisma.InboundUpdateManyMutationInput, Prisma.InboundUncheckedUpdateManyWithoutWarehouseInput>
+}
+
 export type InboundCreateWithoutVendorInput = {
   id?: string
   grnNumber: string
@@ -902,17 +1168,22 @@ export type InboundCreateWithoutVendorInput = {
   verificationNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  parentInbound?: Prisma.InboundCreateNestedOneWithoutChildInboundsInput
+  childInbounds?: Prisma.InboundCreateNestedManyWithoutParentInboundInput
   purchaseRequest: Prisma.PurchaseRequestCreateNestedOneWithoutInboundsInput
+  warehouse?: Prisma.WarehouseCreateNestedOneWithoutInboundsInput
   createdBy: Prisma.UserCreateNestedOneWithoutCreatedInboundsInput
   verifiedBy?: Prisma.UserCreateNestedOneWithoutVerifiedInboundsInput
   items?: Prisma.InboundItemCreateNestedManyWithoutInboundInput
   stockCards?: Prisma.StockCardCreateNestedManyWithoutInboundInput
+  returns?: Prisma.ReturnCreateNestedManyWithoutInboundInput
 }
 
 export type InboundUncheckedCreateWithoutVendorInput = {
   id?: string
   grnNumber: string
   purchaseRequestId: string
+  warehouseId?: string | null
   receiveDate?: Date | string
   status?: $Enums.InboundStatus
   notes?: string | null
@@ -923,8 +1194,11 @@ export type InboundUncheckedCreateWithoutVendorInput = {
   verificationNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  parentInboundId?: string | null
+  childInbounds?: Prisma.InboundUncheckedCreateNestedManyWithoutParentInboundInput
   items?: Prisma.InboundItemUncheckedCreateNestedManyWithoutInboundInput
   stockCards?: Prisma.StockCardUncheckedCreateNestedManyWithoutInboundInput
+  returns?: Prisma.ReturnUncheckedCreateNestedManyWithoutInboundInput
 }
 
 export type InboundCreateOrConnectWithoutVendorInput = {
@@ -964,17 +1238,22 @@ export type InboundCreateWithoutPurchaseRequestInput = {
   verificationNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  parentInbound?: Prisma.InboundCreateNestedOneWithoutChildInboundsInput
+  childInbounds?: Prisma.InboundCreateNestedManyWithoutParentInboundInput
   vendor: Prisma.VendorCreateNestedOneWithoutInboundsInput
+  warehouse?: Prisma.WarehouseCreateNestedOneWithoutInboundsInput
   createdBy: Prisma.UserCreateNestedOneWithoutCreatedInboundsInput
   verifiedBy?: Prisma.UserCreateNestedOneWithoutVerifiedInboundsInput
   items?: Prisma.InboundItemCreateNestedManyWithoutInboundInput
   stockCards?: Prisma.StockCardCreateNestedManyWithoutInboundInput
+  returns?: Prisma.ReturnCreateNestedManyWithoutInboundInput
 }
 
 export type InboundUncheckedCreateWithoutPurchaseRequestInput = {
   id?: string
   grnNumber: string
   vendorId: string
+  warehouseId?: string | null
   receiveDate?: Date | string
   status?: $Enums.InboundStatus
   notes?: string | null
@@ -985,8 +1264,11 @@ export type InboundUncheckedCreateWithoutPurchaseRequestInput = {
   verificationNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  parentInboundId?: string | null
+  childInbounds?: Prisma.InboundUncheckedCreateNestedManyWithoutParentInboundInput
   items?: Prisma.InboundItemUncheckedCreateNestedManyWithoutInboundInput
   stockCards?: Prisma.StockCardUncheckedCreateNestedManyWithoutInboundInput
+  returns?: Prisma.ReturnUncheckedCreateNestedManyWithoutInboundInput
 }
 
 export type InboundCreateOrConnectWithoutPurchaseRequestInput = {
@@ -1015,6 +1297,180 @@ export type InboundUpdateManyWithWhereWithoutPurchaseRequestInput = {
   data: Prisma.XOR<Prisma.InboundUpdateManyMutationInput, Prisma.InboundUncheckedUpdateManyWithoutPurchaseRequestInput>
 }
 
+export type InboundCreateWithoutChildInboundsInput = {
+  id?: string
+  grnNumber: string
+  receiveDate?: Date | string
+  status?: $Enums.InboundStatus
+  notes?: string | null
+  proofDocumentUrl?: string | null
+  verifiedAt?: Date | string | null
+  verificationNotes?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  parentInbound?: Prisma.InboundCreateNestedOneWithoutChildInboundsInput
+  purchaseRequest: Prisma.PurchaseRequestCreateNestedOneWithoutInboundsInput
+  vendor: Prisma.VendorCreateNestedOneWithoutInboundsInput
+  warehouse?: Prisma.WarehouseCreateNestedOneWithoutInboundsInput
+  createdBy: Prisma.UserCreateNestedOneWithoutCreatedInboundsInput
+  verifiedBy?: Prisma.UserCreateNestedOneWithoutVerifiedInboundsInput
+  items?: Prisma.InboundItemCreateNestedManyWithoutInboundInput
+  stockCards?: Prisma.StockCardCreateNestedManyWithoutInboundInput
+  returns?: Prisma.ReturnCreateNestedManyWithoutInboundInput
+}
+
+export type InboundUncheckedCreateWithoutChildInboundsInput = {
+  id?: string
+  grnNumber: string
+  purchaseRequestId: string
+  vendorId: string
+  warehouseId?: string | null
+  receiveDate?: Date | string
+  status?: $Enums.InboundStatus
+  notes?: string | null
+  proofDocumentUrl?: string | null
+  createdById: string
+  verifiedById?: string | null
+  verifiedAt?: Date | string | null
+  verificationNotes?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  parentInboundId?: string | null
+  items?: Prisma.InboundItemUncheckedCreateNestedManyWithoutInboundInput
+  stockCards?: Prisma.StockCardUncheckedCreateNestedManyWithoutInboundInput
+  returns?: Prisma.ReturnUncheckedCreateNestedManyWithoutInboundInput
+}
+
+export type InboundCreateOrConnectWithoutChildInboundsInput = {
+  where: Prisma.InboundWhereUniqueInput
+  create: Prisma.XOR<Prisma.InboundCreateWithoutChildInboundsInput, Prisma.InboundUncheckedCreateWithoutChildInboundsInput>
+}
+
+export type InboundCreateWithoutParentInboundInput = {
+  id?: string
+  grnNumber: string
+  receiveDate?: Date | string
+  status?: $Enums.InboundStatus
+  notes?: string | null
+  proofDocumentUrl?: string | null
+  verifiedAt?: Date | string | null
+  verificationNotes?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  childInbounds?: Prisma.InboundCreateNestedManyWithoutParentInboundInput
+  purchaseRequest: Prisma.PurchaseRequestCreateNestedOneWithoutInboundsInput
+  vendor: Prisma.VendorCreateNestedOneWithoutInboundsInput
+  warehouse?: Prisma.WarehouseCreateNestedOneWithoutInboundsInput
+  createdBy: Prisma.UserCreateNestedOneWithoutCreatedInboundsInput
+  verifiedBy?: Prisma.UserCreateNestedOneWithoutVerifiedInboundsInput
+  items?: Prisma.InboundItemCreateNestedManyWithoutInboundInput
+  stockCards?: Prisma.StockCardCreateNestedManyWithoutInboundInput
+  returns?: Prisma.ReturnCreateNestedManyWithoutInboundInput
+}
+
+export type InboundUncheckedCreateWithoutParentInboundInput = {
+  id?: string
+  grnNumber: string
+  purchaseRequestId: string
+  vendorId: string
+  warehouseId?: string | null
+  receiveDate?: Date | string
+  status?: $Enums.InboundStatus
+  notes?: string | null
+  proofDocumentUrl?: string | null
+  createdById: string
+  verifiedById?: string | null
+  verifiedAt?: Date | string | null
+  verificationNotes?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  childInbounds?: Prisma.InboundUncheckedCreateNestedManyWithoutParentInboundInput
+  items?: Prisma.InboundItemUncheckedCreateNestedManyWithoutInboundInput
+  stockCards?: Prisma.StockCardUncheckedCreateNestedManyWithoutInboundInput
+  returns?: Prisma.ReturnUncheckedCreateNestedManyWithoutInboundInput
+}
+
+export type InboundCreateOrConnectWithoutParentInboundInput = {
+  where: Prisma.InboundWhereUniqueInput
+  create: Prisma.XOR<Prisma.InboundCreateWithoutParentInboundInput, Prisma.InboundUncheckedCreateWithoutParentInboundInput>
+}
+
+export type InboundCreateManyParentInboundInputEnvelope = {
+  data: Prisma.InboundCreateManyParentInboundInput | Prisma.InboundCreateManyParentInboundInput[]
+  skipDuplicates?: boolean
+}
+
+export type InboundUpsertWithoutChildInboundsInput = {
+  update: Prisma.XOR<Prisma.InboundUpdateWithoutChildInboundsInput, Prisma.InboundUncheckedUpdateWithoutChildInboundsInput>
+  create: Prisma.XOR<Prisma.InboundCreateWithoutChildInboundsInput, Prisma.InboundUncheckedCreateWithoutChildInboundsInput>
+  where?: Prisma.InboundWhereInput
+}
+
+export type InboundUpdateToOneWithWhereWithoutChildInboundsInput = {
+  where?: Prisma.InboundWhereInput
+  data: Prisma.XOR<Prisma.InboundUpdateWithoutChildInboundsInput, Prisma.InboundUncheckedUpdateWithoutChildInboundsInput>
+}
+
+export type InboundUpdateWithoutChildInboundsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  grnNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  receiveDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  status?: Prisma.EnumInboundStatusFieldUpdateOperationsInput | $Enums.InboundStatus
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  proofDocumentUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verificationNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  parentInbound?: Prisma.InboundUpdateOneWithoutChildInboundsNestedInput
+  purchaseRequest?: Prisma.PurchaseRequestUpdateOneRequiredWithoutInboundsNestedInput
+  vendor?: Prisma.VendorUpdateOneRequiredWithoutInboundsNestedInput
+  warehouse?: Prisma.WarehouseUpdateOneWithoutInboundsNestedInput
+  createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedInboundsNestedInput
+  verifiedBy?: Prisma.UserUpdateOneWithoutVerifiedInboundsNestedInput
+  items?: Prisma.InboundItemUpdateManyWithoutInboundNestedInput
+  stockCards?: Prisma.StockCardUpdateManyWithoutInboundNestedInput
+  returns?: Prisma.ReturnUpdateManyWithoutInboundNestedInput
+}
+
+export type InboundUncheckedUpdateWithoutChildInboundsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  grnNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  purchaseRequestId?: Prisma.StringFieldUpdateOperationsInput | string
+  vendorId?: Prisma.StringFieldUpdateOperationsInput | string
+  warehouseId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  receiveDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  status?: Prisma.EnumInboundStatusFieldUpdateOperationsInput | $Enums.InboundStatus
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  proofDocumentUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.StringFieldUpdateOperationsInput | string
+  verifiedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verificationNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  parentInboundId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  items?: Prisma.InboundItemUncheckedUpdateManyWithoutInboundNestedInput
+  stockCards?: Prisma.StockCardUncheckedUpdateManyWithoutInboundNestedInput
+  returns?: Prisma.ReturnUncheckedUpdateManyWithoutInboundNestedInput
+}
+
+export type InboundUpsertWithWhereUniqueWithoutParentInboundInput = {
+  where: Prisma.InboundWhereUniqueInput
+  update: Prisma.XOR<Prisma.InboundUpdateWithoutParentInboundInput, Prisma.InboundUncheckedUpdateWithoutParentInboundInput>
+  create: Prisma.XOR<Prisma.InboundCreateWithoutParentInboundInput, Prisma.InboundUncheckedCreateWithoutParentInboundInput>
+}
+
+export type InboundUpdateWithWhereUniqueWithoutParentInboundInput = {
+  where: Prisma.InboundWhereUniqueInput
+  data: Prisma.XOR<Prisma.InboundUpdateWithoutParentInboundInput, Prisma.InboundUncheckedUpdateWithoutParentInboundInput>
+}
+
+export type InboundUpdateManyWithWhereWithoutParentInboundInput = {
+  where: Prisma.InboundScalarWhereInput
+  data: Prisma.XOR<Prisma.InboundUpdateManyMutationInput, Prisma.InboundUncheckedUpdateManyWithoutParentInboundInput>
+}
+
 export type InboundCreateWithoutItemsInput = {
   id?: string
   grnNumber: string
@@ -1026,11 +1482,15 @@ export type InboundCreateWithoutItemsInput = {
   verificationNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  parentInbound?: Prisma.InboundCreateNestedOneWithoutChildInboundsInput
+  childInbounds?: Prisma.InboundCreateNestedManyWithoutParentInboundInput
   purchaseRequest: Prisma.PurchaseRequestCreateNestedOneWithoutInboundsInput
   vendor: Prisma.VendorCreateNestedOneWithoutInboundsInput
+  warehouse?: Prisma.WarehouseCreateNestedOneWithoutInboundsInput
   createdBy: Prisma.UserCreateNestedOneWithoutCreatedInboundsInput
   verifiedBy?: Prisma.UserCreateNestedOneWithoutVerifiedInboundsInput
   stockCards?: Prisma.StockCardCreateNestedManyWithoutInboundInput
+  returns?: Prisma.ReturnCreateNestedManyWithoutInboundInput
 }
 
 export type InboundUncheckedCreateWithoutItemsInput = {
@@ -1038,6 +1498,7 @@ export type InboundUncheckedCreateWithoutItemsInput = {
   grnNumber: string
   purchaseRequestId: string
   vendorId: string
+  warehouseId?: string | null
   receiveDate?: Date | string
   status?: $Enums.InboundStatus
   notes?: string | null
@@ -1048,7 +1509,10 @@ export type InboundUncheckedCreateWithoutItemsInput = {
   verificationNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  parentInboundId?: string | null
+  childInbounds?: Prisma.InboundUncheckedCreateNestedManyWithoutParentInboundInput
   stockCards?: Prisma.StockCardUncheckedCreateNestedManyWithoutInboundInput
+  returns?: Prisma.ReturnUncheckedCreateNestedManyWithoutInboundInput
 }
 
 export type InboundCreateOrConnectWithoutItemsInput = {
@@ -1078,11 +1542,15 @@ export type InboundUpdateWithoutItemsInput = {
   verificationNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  parentInbound?: Prisma.InboundUpdateOneWithoutChildInboundsNestedInput
+  childInbounds?: Prisma.InboundUpdateManyWithoutParentInboundNestedInput
   purchaseRequest?: Prisma.PurchaseRequestUpdateOneRequiredWithoutInboundsNestedInput
   vendor?: Prisma.VendorUpdateOneRequiredWithoutInboundsNestedInput
+  warehouse?: Prisma.WarehouseUpdateOneWithoutInboundsNestedInput
   createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedInboundsNestedInput
   verifiedBy?: Prisma.UserUpdateOneWithoutVerifiedInboundsNestedInput
   stockCards?: Prisma.StockCardUpdateManyWithoutInboundNestedInput
+  returns?: Prisma.ReturnUpdateManyWithoutInboundNestedInput
 }
 
 export type InboundUncheckedUpdateWithoutItemsInput = {
@@ -1090,6 +1558,7 @@ export type InboundUncheckedUpdateWithoutItemsInput = {
   grnNumber?: Prisma.StringFieldUpdateOperationsInput | string
   purchaseRequestId?: Prisma.StringFieldUpdateOperationsInput | string
   vendorId?: Prisma.StringFieldUpdateOperationsInput | string
+  warehouseId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   receiveDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumInboundStatusFieldUpdateOperationsInput | $Enums.InboundStatus
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1100,7 +1569,10 @@ export type InboundUncheckedUpdateWithoutItemsInput = {
   verificationNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  parentInboundId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  childInbounds?: Prisma.InboundUncheckedUpdateManyWithoutParentInboundNestedInput
   stockCards?: Prisma.StockCardUncheckedUpdateManyWithoutInboundNestedInput
+  returns?: Prisma.ReturnUncheckedUpdateManyWithoutInboundNestedInput
 }
 
 export type InboundCreateWithoutStockCardsInput = {
@@ -1114,11 +1586,15 @@ export type InboundCreateWithoutStockCardsInput = {
   verificationNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  parentInbound?: Prisma.InboundCreateNestedOneWithoutChildInboundsInput
+  childInbounds?: Prisma.InboundCreateNestedManyWithoutParentInboundInput
   purchaseRequest: Prisma.PurchaseRequestCreateNestedOneWithoutInboundsInput
   vendor: Prisma.VendorCreateNestedOneWithoutInboundsInput
+  warehouse?: Prisma.WarehouseCreateNestedOneWithoutInboundsInput
   createdBy: Prisma.UserCreateNestedOneWithoutCreatedInboundsInput
   verifiedBy?: Prisma.UserCreateNestedOneWithoutVerifiedInboundsInput
   items?: Prisma.InboundItemCreateNestedManyWithoutInboundInput
+  returns?: Prisma.ReturnCreateNestedManyWithoutInboundInput
 }
 
 export type InboundUncheckedCreateWithoutStockCardsInput = {
@@ -1126,6 +1602,7 @@ export type InboundUncheckedCreateWithoutStockCardsInput = {
   grnNumber: string
   purchaseRequestId: string
   vendorId: string
+  warehouseId?: string | null
   receiveDate?: Date | string
   status?: $Enums.InboundStatus
   notes?: string | null
@@ -1136,7 +1613,10 @@ export type InboundUncheckedCreateWithoutStockCardsInput = {
   verificationNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  parentInboundId?: string | null
+  childInbounds?: Prisma.InboundUncheckedCreateNestedManyWithoutParentInboundInput
   items?: Prisma.InboundItemUncheckedCreateNestedManyWithoutInboundInput
+  returns?: Prisma.ReturnUncheckedCreateNestedManyWithoutInboundInput
 }
 
 export type InboundCreateOrConnectWithoutStockCardsInput = {
@@ -1166,11 +1646,15 @@ export type InboundUpdateWithoutStockCardsInput = {
   verificationNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  parentInbound?: Prisma.InboundUpdateOneWithoutChildInboundsNestedInput
+  childInbounds?: Prisma.InboundUpdateManyWithoutParentInboundNestedInput
   purchaseRequest?: Prisma.PurchaseRequestUpdateOneRequiredWithoutInboundsNestedInput
   vendor?: Prisma.VendorUpdateOneRequiredWithoutInboundsNestedInput
+  warehouse?: Prisma.WarehouseUpdateOneWithoutInboundsNestedInput
   createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedInboundsNestedInput
   verifiedBy?: Prisma.UserUpdateOneWithoutVerifiedInboundsNestedInput
   items?: Prisma.InboundItemUpdateManyWithoutInboundNestedInput
+  returns?: Prisma.ReturnUpdateManyWithoutInboundNestedInput
 }
 
 export type InboundUncheckedUpdateWithoutStockCardsInput = {
@@ -1178,6 +1662,7 @@ export type InboundUncheckedUpdateWithoutStockCardsInput = {
   grnNumber?: Prisma.StringFieldUpdateOperationsInput | string
   purchaseRequestId?: Prisma.StringFieldUpdateOperationsInput | string
   vendorId?: Prisma.StringFieldUpdateOperationsInput | string
+  warehouseId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   receiveDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumInboundStatusFieldUpdateOperationsInput | $Enums.InboundStatus
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1188,7 +1673,114 @@ export type InboundUncheckedUpdateWithoutStockCardsInput = {
   verificationNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  parentInboundId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  childInbounds?: Prisma.InboundUncheckedUpdateManyWithoutParentInboundNestedInput
   items?: Prisma.InboundItemUncheckedUpdateManyWithoutInboundNestedInput
+  returns?: Prisma.ReturnUncheckedUpdateManyWithoutInboundNestedInput
+}
+
+export type InboundCreateWithoutReturnsInput = {
+  id?: string
+  grnNumber: string
+  receiveDate?: Date | string
+  status?: $Enums.InboundStatus
+  notes?: string | null
+  proofDocumentUrl?: string | null
+  verifiedAt?: Date | string | null
+  verificationNotes?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  parentInbound?: Prisma.InboundCreateNestedOneWithoutChildInboundsInput
+  childInbounds?: Prisma.InboundCreateNestedManyWithoutParentInboundInput
+  purchaseRequest: Prisma.PurchaseRequestCreateNestedOneWithoutInboundsInput
+  vendor: Prisma.VendorCreateNestedOneWithoutInboundsInput
+  warehouse?: Prisma.WarehouseCreateNestedOneWithoutInboundsInput
+  createdBy: Prisma.UserCreateNestedOneWithoutCreatedInboundsInput
+  verifiedBy?: Prisma.UserCreateNestedOneWithoutVerifiedInboundsInput
+  items?: Prisma.InboundItemCreateNestedManyWithoutInboundInput
+  stockCards?: Prisma.StockCardCreateNestedManyWithoutInboundInput
+}
+
+export type InboundUncheckedCreateWithoutReturnsInput = {
+  id?: string
+  grnNumber: string
+  purchaseRequestId: string
+  vendorId: string
+  warehouseId?: string | null
+  receiveDate?: Date | string
+  status?: $Enums.InboundStatus
+  notes?: string | null
+  proofDocumentUrl?: string | null
+  createdById: string
+  verifiedById?: string | null
+  verifiedAt?: Date | string | null
+  verificationNotes?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  parentInboundId?: string | null
+  childInbounds?: Prisma.InboundUncheckedCreateNestedManyWithoutParentInboundInput
+  items?: Prisma.InboundItemUncheckedCreateNestedManyWithoutInboundInput
+  stockCards?: Prisma.StockCardUncheckedCreateNestedManyWithoutInboundInput
+}
+
+export type InboundCreateOrConnectWithoutReturnsInput = {
+  where: Prisma.InboundWhereUniqueInput
+  create: Prisma.XOR<Prisma.InboundCreateWithoutReturnsInput, Prisma.InboundUncheckedCreateWithoutReturnsInput>
+}
+
+export type InboundUpsertWithoutReturnsInput = {
+  update: Prisma.XOR<Prisma.InboundUpdateWithoutReturnsInput, Prisma.InboundUncheckedUpdateWithoutReturnsInput>
+  create: Prisma.XOR<Prisma.InboundCreateWithoutReturnsInput, Prisma.InboundUncheckedCreateWithoutReturnsInput>
+  where?: Prisma.InboundWhereInput
+}
+
+export type InboundUpdateToOneWithWhereWithoutReturnsInput = {
+  where?: Prisma.InboundWhereInput
+  data: Prisma.XOR<Prisma.InboundUpdateWithoutReturnsInput, Prisma.InboundUncheckedUpdateWithoutReturnsInput>
+}
+
+export type InboundUpdateWithoutReturnsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  grnNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  receiveDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  status?: Prisma.EnumInboundStatusFieldUpdateOperationsInput | $Enums.InboundStatus
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  proofDocumentUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verificationNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  parentInbound?: Prisma.InboundUpdateOneWithoutChildInboundsNestedInput
+  childInbounds?: Prisma.InboundUpdateManyWithoutParentInboundNestedInput
+  purchaseRequest?: Prisma.PurchaseRequestUpdateOneRequiredWithoutInboundsNestedInput
+  vendor?: Prisma.VendorUpdateOneRequiredWithoutInboundsNestedInput
+  warehouse?: Prisma.WarehouseUpdateOneWithoutInboundsNestedInput
+  createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedInboundsNestedInput
+  verifiedBy?: Prisma.UserUpdateOneWithoutVerifiedInboundsNestedInput
+  items?: Prisma.InboundItemUpdateManyWithoutInboundNestedInput
+  stockCards?: Prisma.StockCardUpdateManyWithoutInboundNestedInput
+}
+
+export type InboundUncheckedUpdateWithoutReturnsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  grnNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  purchaseRequestId?: Prisma.StringFieldUpdateOperationsInput | string
+  vendorId?: Prisma.StringFieldUpdateOperationsInput | string
+  warehouseId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  receiveDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  status?: Prisma.EnumInboundStatusFieldUpdateOperationsInput | $Enums.InboundStatus
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  proofDocumentUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.StringFieldUpdateOperationsInput | string
+  verifiedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verificationNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  parentInboundId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  childInbounds?: Prisma.InboundUncheckedUpdateManyWithoutParentInboundNestedInput
+  items?: Prisma.InboundItemUncheckedUpdateManyWithoutInboundNestedInput
+  stockCards?: Prisma.StockCardUncheckedUpdateManyWithoutInboundNestedInput
 }
 
 export type InboundCreateManyCreatedByInput = {
@@ -1196,6 +1788,7 @@ export type InboundCreateManyCreatedByInput = {
   grnNumber: string
   purchaseRequestId: string
   vendorId: string
+  warehouseId?: string | null
   receiveDate?: Date | string
   status?: $Enums.InboundStatus
   notes?: string | null
@@ -1205,6 +1798,7 @@ export type InboundCreateManyCreatedByInput = {
   verificationNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  parentInboundId?: string | null
 }
 
 export type InboundCreateManyVerifiedByInput = {
@@ -1212,6 +1806,7 @@ export type InboundCreateManyVerifiedByInput = {
   grnNumber: string
   purchaseRequestId: string
   vendorId: string
+  warehouseId?: string | null
   receiveDate?: Date | string
   status?: $Enums.InboundStatus
   notes?: string | null
@@ -1221,6 +1816,7 @@ export type InboundCreateManyVerifiedByInput = {
   verificationNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  parentInboundId?: string | null
 }
 
 export type InboundUpdateWithoutCreatedByInput = {
@@ -1234,11 +1830,15 @@ export type InboundUpdateWithoutCreatedByInput = {
   verificationNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  parentInbound?: Prisma.InboundUpdateOneWithoutChildInboundsNestedInput
+  childInbounds?: Prisma.InboundUpdateManyWithoutParentInboundNestedInput
   purchaseRequest?: Prisma.PurchaseRequestUpdateOneRequiredWithoutInboundsNestedInput
   vendor?: Prisma.VendorUpdateOneRequiredWithoutInboundsNestedInput
+  warehouse?: Prisma.WarehouseUpdateOneWithoutInboundsNestedInput
   verifiedBy?: Prisma.UserUpdateOneWithoutVerifiedInboundsNestedInput
   items?: Prisma.InboundItemUpdateManyWithoutInboundNestedInput
   stockCards?: Prisma.StockCardUpdateManyWithoutInboundNestedInput
+  returns?: Prisma.ReturnUpdateManyWithoutInboundNestedInput
 }
 
 export type InboundUncheckedUpdateWithoutCreatedByInput = {
@@ -1246,6 +1846,7 @@ export type InboundUncheckedUpdateWithoutCreatedByInput = {
   grnNumber?: Prisma.StringFieldUpdateOperationsInput | string
   purchaseRequestId?: Prisma.StringFieldUpdateOperationsInput | string
   vendorId?: Prisma.StringFieldUpdateOperationsInput | string
+  warehouseId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   receiveDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumInboundStatusFieldUpdateOperationsInput | $Enums.InboundStatus
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1255,8 +1856,11 @@ export type InboundUncheckedUpdateWithoutCreatedByInput = {
   verificationNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  parentInboundId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  childInbounds?: Prisma.InboundUncheckedUpdateManyWithoutParentInboundNestedInput
   items?: Prisma.InboundItemUncheckedUpdateManyWithoutInboundNestedInput
   stockCards?: Prisma.StockCardUncheckedUpdateManyWithoutInboundNestedInput
+  returns?: Prisma.ReturnUncheckedUpdateManyWithoutInboundNestedInput
 }
 
 export type InboundUncheckedUpdateManyWithoutCreatedByInput = {
@@ -1264,6 +1868,7 @@ export type InboundUncheckedUpdateManyWithoutCreatedByInput = {
   grnNumber?: Prisma.StringFieldUpdateOperationsInput | string
   purchaseRequestId?: Prisma.StringFieldUpdateOperationsInput | string
   vendorId?: Prisma.StringFieldUpdateOperationsInput | string
+  warehouseId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   receiveDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumInboundStatusFieldUpdateOperationsInput | $Enums.InboundStatus
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1273,6 +1878,7 @@ export type InboundUncheckedUpdateManyWithoutCreatedByInput = {
   verificationNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  parentInboundId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type InboundUpdateWithoutVerifiedByInput = {
@@ -1286,11 +1892,15 @@ export type InboundUpdateWithoutVerifiedByInput = {
   verificationNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  parentInbound?: Prisma.InboundUpdateOneWithoutChildInboundsNestedInput
+  childInbounds?: Prisma.InboundUpdateManyWithoutParentInboundNestedInput
   purchaseRequest?: Prisma.PurchaseRequestUpdateOneRequiredWithoutInboundsNestedInput
   vendor?: Prisma.VendorUpdateOneRequiredWithoutInboundsNestedInput
+  warehouse?: Prisma.WarehouseUpdateOneWithoutInboundsNestedInput
   createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedInboundsNestedInput
   items?: Prisma.InboundItemUpdateManyWithoutInboundNestedInput
   stockCards?: Prisma.StockCardUpdateManyWithoutInboundNestedInput
+  returns?: Prisma.ReturnUpdateManyWithoutInboundNestedInput
 }
 
 export type InboundUncheckedUpdateWithoutVerifiedByInput = {
@@ -1298,6 +1908,7 @@ export type InboundUncheckedUpdateWithoutVerifiedByInput = {
   grnNumber?: Prisma.StringFieldUpdateOperationsInput | string
   purchaseRequestId?: Prisma.StringFieldUpdateOperationsInput | string
   vendorId?: Prisma.StringFieldUpdateOperationsInput | string
+  warehouseId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   receiveDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumInboundStatusFieldUpdateOperationsInput | $Enums.InboundStatus
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1307,8 +1918,11 @@ export type InboundUncheckedUpdateWithoutVerifiedByInput = {
   verificationNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  parentInboundId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  childInbounds?: Prisma.InboundUncheckedUpdateManyWithoutParentInboundNestedInput
   items?: Prisma.InboundItemUncheckedUpdateManyWithoutInboundNestedInput
   stockCards?: Prisma.StockCardUncheckedUpdateManyWithoutInboundNestedInput
+  returns?: Prisma.ReturnUncheckedUpdateManyWithoutInboundNestedInput
 }
 
 export type InboundUncheckedUpdateManyWithoutVerifiedByInput = {
@@ -1316,6 +1930,7 @@ export type InboundUncheckedUpdateManyWithoutVerifiedByInput = {
   grnNumber?: Prisma.StringFieldUpdateOperationsInput | string
   purchaseRequestId?: Prisma.StringFieldUpdateOperationsInput | string
   vendorId?: Prisma.StringFieldUpdateOperationsInput | string
+  warehouseId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   receiveDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumInboundStatusFieldUpdateOperationsInput | $Enums.InboundStatus
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1325,12 +1940,14 @@ export type InboundUncheckedUpdateManyWithoutVerifiedByInput = {
   verificationNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  parentInboundId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
-export type InboundCreateManyVendorInput = {
+export type InboundCreateManyWarehouseInput = {
   id?: string
   grnNumber: string
   purchaseRequestId: string
+  vendorId: string
   receiveDate?: Date | string
   status?: $Enums.InboundStatus
   notes?: string | null
@@ -1341,6 +1958,87 @@ export type InboundCreateManyVendorInput = {
   verificationNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  parentInboundId?: string | null
+}
+
+export type InboundUpdateWithoutWarehouseInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  grnNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  receiveDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  status?: Prisma.EnumInboundStatusFieldUpdateOperationsInput | $Enums.InboundStatus
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  proofDocumentUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verificationNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  parentInbound?: Prisma.InboundUpdateOneWithoutChildInboundsNestedInput
+  childInbounds?: Prisma.InboundUpdateManyWithoutParentInboundNestedInput
+  purchaseRequest?: Prisma.PurchaseRequestUpdateOneRequiredWithoutInboundsNestedInput
+  vendor?: Prisma.VendorUpdateOneRequiredWithoutInboundsNestedInput
+  createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedInboundsNestedInput
+  verifiedBy?: Prisma.UserUpdateOneWithoutVerifiedInboundsNestedInput
+  items?: Prisma.InboundItemUpdateManyWithoutInboundNestedInput
+  stockCards?: Prisma.StockCardUpdateManyWithoutInboundNestedInput
+  returns?: Prisma.ReturnUpdateManyWithoutInboundNestedInput
+}
+
+export type InboundUncheckedUpdateWithoutWarehouseInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  grnNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  purchaseRequestId?: Prisma.StringFieldUpdateOperationsInput | string
+  vendorId?: Prisma.StringFieldUpdateOperationsInput | string
+  receiveDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  status?: Prisma.EnumInboundStatusFieldUpdateOperationsInput | $Enums.InboundStatus
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  proofDocumentUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.StringFieldUpdateOperationsInput | string
+  verifiedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verificationNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  parentInboundId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  childInbounds?: Prisma.InboundUncheckedUpdateManyWithoutParentInboundNestedInput
+  items?: Prisma.InboundItemUncheckedUpdateManyWithoutInboundNestedInput
+  stockCards?: Prisma.StockCardUncheckedUpdateManyWithoutInboundNestedInput
+  returns?: Prisma.ReturnUncheckedUpdateManyWithoutInboundNestedInput
+}
+
+export type InboundUncheckedUpdateManyWithoutWarehouseInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  grnNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  purchaseRequestId?: Prisma.StringFieldUpdateOperationsInput | string
+  vendorId?: Prisma.StringFieldUpdateOperationsInput | string
+  receiveDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  status?: Prisma.EnumInboundStatusFieldUpdateOperationsInput | $Enums.InboundStatus
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  proofDocumentUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.StringFieldUpdateOperationsInput | string
+  verifiedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verificationNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  parentInboundId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+}
+
+export type InboundCreateManyVendorInput = {
+  id?: string
+  grnNumber: string
+  purchaseRequestId: string
+  warehouseId?: string | null
+  receiveDate?: Date | string
+  status?: $Enums.InboundStatus
+  notes?: string | null
+  proofDocumentUrl?: string | null
+  createdById: string
+  verifiedById?: string | null
+  verifiedAt?: Date | string | null
+  verificationNotes?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  parentInboundId?: string | null
 }
 
 export type InboundUpdateWithoutVendorInput = {
@@ -1354,17 +2052,22 @@ export type InboundUpdateWithoutVendorInput = {
   verificationNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  parentInbound?: Prisma.InboundUpdateOneWithoutChildInboundsNestedInput
+  childInbounds?: Prisma.InboundUpdateManyWithoutParentInboundNestedInput
   purchaseRequest?: Prisma.PurchaseRequestUpdateOneRequiredWithoutInboundsNestedInput
+  warehouse?: Prisma.WarehouseUpdateOneWithoutInboundsNestedInput
   createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedInboundsNestedInput
   verifiedBy?: Prisma.UserUpdateOneWithoutVerifiedInboundsNestedInput
   items?: Prisma.InboundItemUpdateManyWithoutInboundNestedInput
   stockCards?: Prisma.StockCardUpdateManyWithoutInboundNestedInput
+  returns?: Prisma.ReturnUpdateManyWithoutInboundNestedInput
 }
 
 export type InboundUncheckedUpdateWithoutVendorInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   grnNumber?: Prisma.StringFieldUpdateOperationsInput | string
   purchaseRequestId?: Prisma.StringFieldUpdateOperationsInput | string
+  warehouseId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   receiveDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumInboundStatusFieldUpdateOperationsInput | $Enums.InboundStatus
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1375,14 +2078,18 @@ export type InboundUncheckedUpdateWithoutVendorInput = {
   verificationNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  parentInboundId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  childInbounds?: Prisma.InboundUncheckedUpdateManyWithoutParentInboundNestedInput
   items?: Prisma.InboundItemUncheckedUpdateManyWithoutInboundNestedInput
   stockCards?: Prisma.StockCardUncheckedUpdateManyWithoutInboundNestedInput
+  returns?: Prisma.ReturnUncheckedUpdateManyWithoutInboundNestedInput
 }
 
 export type InboundUncheckedUpdateManyWithoutVendorInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   grnNumber?: Prisma.StringFieldUpdateOperationsInput | string
   purchaseRequestId?: Prisma.StringFieldUpdateOperationsInput | string
+  warehouseId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   receiveDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumInboundStatusFieldUpdateOperationsInput | $Enums.InboundStatus
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1393,12 +2100,14 @@ export type InboundUncheckedUpdateManyWithoutVendorInput = {
   verificationNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  parentInboundId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type InboundCreateManyPurchaseRequestInput = {
   id?: string
   grnNumber: string
   vendorId: string
+  warehouseId?: string | null
   receiveDate?: Date | string
   status?: $Enums.InboundStatus
   notes?: string | null
@@ -1409,6 +2118,7 @@ export type InboundCreateManyPurchaseRequestInput = {
   verificationNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  parentInboundId?: string | null
 }
 
 export type InboundUpdateWithoutPurchaseRequestInput = {
@@ -1422,17 +2132,22 @@ export type InboundUpdateWithoutPurchaseRequestInput = {
   verificationNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  parentInbound?: Prisma.InboundUpdateOneWithoutChildInboundsNestedInput
+  childInbounds?: Prisma.InboundUpdateManyWithoutParentInboundNestedInput
   vendor?: Prisma.VendorUpdateOneRequiredWithoutInboundsNestedInput
+  warehouse?: Prisma.WarehouseUpdateOneWithoutInboundsNestedInput
   createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedInboundsNestedInput
   verifiedBy?: Prisma.UserUpdateOneWithoutVerifiedInboundsNestedInput
   items?: Prisma.InboundItemUpdateManyWithoutInboundNestedInput
   stockCards?: Prisma.StockCardUpdateManyWithoutInboundNestedInput
+  returns?: Prisma.ReturnUpdateManyWithoutInboundNestedInput
 }
 
 export type InboundUncheckedUpdateWithoutPurchaseRequestInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   grnNumber?: Prisma.StringFieldUpdateOperationsInput | string
   vendorId?: Prisma.StringFieldUpdateOperationsInput | string
+  warehouseId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   receiveDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumInboundStatusFieldUpdateOperationsInput | $Enums.InboundStatus
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1443,14 +2158,99 @@ export type InboundUncheckedUpdateWithoutPurchaseRequestInput = {
   verificationNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  parentInboundId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  childInbounds?: Prisma.InboundUncheckedUpdateManyWithoutParentInboundNestedInput
   items?: Prisma.InboundItemUncheckedUpdateManyWithoutInboundNestedInput
   stockCards?: Prisma.StockCardUncheckedUpdateManyWithoutInboundNestedInput
+  returns?: Prisma.ReturnUncheckedUpdateManyWithoutInboundNestedInput
 }
 
 export type InboundUncheckedUpdateManyWithoutPurchaseRequestInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   grnNumber?: Prisma.StringFieldUpdateOperationsInput | string
   vendorId?: Prisma.StringFieldUpdateOperationsInput | string
+  warehouseId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  receiveDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  status?: Prisma.EnumInboundStatusFieldUpdateOperationsInput | $Enums.InboundStatus
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  proofDocumentUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.StringFieldUpdateOperationsInput | string
+  verifiedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verificationNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  parentInboundId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+}
+
+export type InboundCreateManyParentInboundInput = {
+  id?: string
+  grnNumber: string
+  purchaseRequestId: string
+  vendorId: string
+  warehouseId?: string | null
+  receiveDate?: Date | string
+  status?: $Enums.InboundStatus
+  notes?: string | null
+  proofDocumentUrl?: string | null
+  createdById: string
+  verifiedById?: string | null
+  verifiedAt?: Date | string | null
+  verificationNotes?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type InboundUpdateWithoutParentInboundInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  grnNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  receiveDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  status?: Prisma.EnumInboundStatusFieldUpdateOperationsInput | $Enums.InboundStatus
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  proofDocumentUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verificationNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  childInbounds?: Prisma.InboundUpdateManyWithoutParentInboundNestedInput
+  purchaseRequest?: Prisma.PurchaseRequestUpdateOneRequiredWithoutInboundsNestedInput
+  vendor?: Prisma.VendorUpdateOneRequiredWithoutInboundsNestedInput
+  warehouse?: Prisma.WarehouseUpdateOneWithoutInboundsNestedInput
+  createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedInboundsNestedInput
+  verifiedBy?: Prisma.UserUpdateOneWithoutVerifiedInboundsNestedInput
+  items?: Prisma.InboundItemUpdateManyWithoutInboundNestedInput
+  stockCards?: Prisma.StockCardUpdateManyWithoutInboundNestedInput
+  returns?: Prisma.ReturnUpdateManyWithoutInboundNestedInput
+}
+
+export type InboundUncheckedUpdateWithoutParentInboundInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  grnNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  purchaseRequestId?: Prisma.StringFieldUpdateOperationsInput | string
+  vendorId?: Prisma.StringFieldUpdateOperationsInput | string
+  warehouseId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  receiveDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  status?: Prisma.EnumInboundStatusFieldUpdateOperationsInput | $Enums.InboundStatus
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  proofDocumentUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.StringFieldUpdateOperationsInput | string
+  verifiedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verificationNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  childInbounds?: Prisma.InboundUncheckedUpdateManyWithoutParentInboundNestedInput
+  items?: Prisma.InboundItemUncheckedUpdateManyWithoutInboundNestedInput
+  stockCards?: Prisma.StockCardUncheckedUpdateManyWithoutInboundNestedInput
+  returns?: Prisma.ReturnUncheckedUpdateManyWithoutInboundNestedInput
+}
+
+export type InboundUncheckedUpdateManyWithoutParentInboundInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  grnNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  purchaseRequestId?: Prisma.StringFieldUpdateOperationsInput | string
+  vendorId?: Prisma.StringFieldUpdateOperationsInput | string
+  warehouseId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   receiveDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumInboundStatusFieldUpdateOperationsInput | $Enums.InboundStatus
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1469,13 +2269,17 @@ export type InboundUncheckedUpdateManyWithoutPurchaseRequestInput = {
  */
 
 export type InboundCountOutputType = {
+  childInbounds: number
   items: number
   stockCards: number
+  returns: number
 }
 
 export type InboundCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  childInbounds?: boolean | InboundCountOutputTypeCountChildInboundsArgs
   items?: boolean | InboundCountOutputTypeCountItemsArgs
   stockCards?: boolean | InboundCountOutputTypeCountStockCardsArgs
+  returns?: boolean | InboundCountOutputTypeCountReturnsArgs
 }
 
 /**
@@ -1486,6 +2290,13 @@ export type InboundCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Exte
    * Select specific fields to fetch from the InboundCountOutputType
    */
   select?: Prisma.InboundCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * InboundCountOutputType without action
+ */
+export type InboundCountOutputTypeCountChildInboundsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.InboundWhereInput
 }
 
 /**
@@ -1502,12 +2313,20 @@ export type InboundCountOutputTypeCountStockCardsArgs<ExtArgs extends runtime.Ty
   where?: Prisma.StockCardWhereInput
 }
 
+/**
+ * InboundCountOutputType without action
+ */
+export type InboundCountOutputTypeCountReturnsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ReturnWhereInput
+}
+
 
 export type InboundSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   grnNumber?: boolean
   purchaseRequestId?: boolean
   vendorId?: boolean
+  warehouseId?: boolean
   receiveDate?: boolean
   status?: boolean
   notes?: boolean
@@ -1518,12 +2337,17 @@ export type InboundSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   verificationNotes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  parentInboundId?: boolean
+  parentInbound?: boolean | Prisma.Inbound$parentInboundArgs<ExtArgs>
+  childInbounds?: boolean | Prisma.Inbound$childInboundsArgs<ExtArgs>
   purchaseRequest?: boolean | Prisma.PurchaseRequestDefaultArgs<ExtArgs>
   vendor?: boolean | Prisma.VendorDefaultArgs<ExtArgs>
+  warehouse?: boolean | Prisma.Inbound$warehouseArgs<ExtArgs>
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   verifiedBy?: boolean | Prisma.Inbound$verifiedByArgs<ExtArgs>
   items?: boolean | Prisma.Inbound$itemsArgs<ExtArgs>
   stockCards?: boolean | Prisma.Inbound$stockCardsArgs<ExtArgs>
+  returns?: boolean | Prisma.Inbound$returnsArgs<ExtArgs>
   _count?: boolean | Prisma.InboundCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["inbound"]>
 
@@ -1532,6 +2356,7 @@ export type InboundSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   grnNumber?: boolean
   purchaseRequestId?: boolean
   vendorId?: boolean
+  warehouseId?: boolean
   receiveDate?: boolean
   status?: boolean
   notes?: boolean
@@ -1542,8 +2367,11 @@ export type InboundSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   verificationNotes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  parentInboundId?: boolean
+  parentInbound?: boolean | Prisma.Inbound$parentInboundArgs<ExtArgs>
   purchaseRequest?: boolean | Prisma.PurchaseRequestDefaultArgs<ExtArgs>
   vendor?: boolean | Prisma.VendorDefaultArgs<ExtArgs>
+  warehouse?: boolean | Prisma.Inbound$warehouseArgs<ExtArgs>
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   verifiedBy?: boolean | Prisma.Inbound$verifiedByArgs<ExtArgs>
 }, ExtArgs["result"]["inbound"]>
@@ -1553,6 +2381,7 @@ export type InboundSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   grnNumber?: boolean
   purchaseRequestId?: boolean
   vendorId?: boolean
+  warehouseId?: boolean
   receiveDate?: boolean
   status?: boolean
   notes?: boolean
@@ -1563,8 +2392,11 @@ export type InboundSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   verificationNotes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  parentInboundId?: boolean
+  parentInbound?: boolean | Prisma.Inbound$parentInboundArgs<ExtArgs>
   purchaseRequest?: boolean | Prisma.PurchaseRequestDefaultArgs<ExtArgs>
   vendor?: boolean | Prisma.VendorDefaultArgs<ExtArgs>
+  warehouse?: boolean | Prisma.Inbound$warehouseArgs<ExtArgs>
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   verifiedBy?: boolean | Prisma.Inbound$verifiedByArgs<ExtArgs>
 }, ExtArgs["result"]["inbound"]>
@@ -1574,6 +2406,7 @@ export type InboundSelectScalar = {
   grnNumber?: boolean
   purchaseRequestId?: boolean
   vendorId?: boolean
+  warehouseId?: boolean
   receiveDate?: boolean
   status?: boolean
   notes?: boolean
@@ -1584,27 +2417,36 @@ export type InboundSelectScalar = {
   verificationNotes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  parentInboundId?: boolean
 }
 
-export type InboundOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "grnNumber" | "purchaseRequestId" | "vendorId" | "receiveDate" | "status" | "notes" | "proofDocumentUrl" | "createdById" | "verifiedById" | "verifiedAt" | "verificationNotes" | "createdAt" | "updatedAt", ExtArgs["result"]["inbound"]>
+export type InboundOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "grnNumber" | "purchaseRequestId" | "vendorId" | "warehouseId" | "receiveDate" | "status" | "notes" | "proofDocumentUrl" | "createdById" | "verifiedById" | "verifiedAt" | "verificationNotes" | "createdAt" | "updatedAt" | "parentInboundId", ExtArgs["result"]["inbound"]>
 export type InboundInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  parentInbound?: boolean | Prisma.Inbound$parentInboundArgs<ExtArgs>
+  childInbounds?: boolean | Prisma.Inbound$childInboundsArgs<ExtArgs>
   purchaseRequest?: boolean | Prisma.PurchaseRequestDefaultArgs<ExtArgs>
   vendor?: boolean | Prisma.VendorDefaultArgs<ExtArgs>
+  warehouse?: boolean | Prisma.Inbound$warehouseArgs<ExtArgs>
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   verifiedBy?: boolean | Prisma.Inbound$verifiedByArgs<ExtArgs>
   items?: boolean | Prisma.Inbound$itemsArgs<ExtArgs>
   stockCards?: boolean | Prisma.Inbound$stockCardsArgs<ExtArgs>
+  returns?: boolean | Prisma.Inbound$returnsArgs<ExtArgs>
   _count?: boolean | Prisma.InboundCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type InboundIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  parentInbound?: boolean | Prisma.Inbound$parentInboundArgs<ExtArgs>
   purchaseRequest?: boolean | Prisma.PurchaseRequestDefaultArgs<ExtArgs>
   vendor?: boolean | Prisma.VendorDefaultArgs<ExtArgs>
+  warehouse?: boolean | Prisma.Inbound$warehouseArgs<ExtArgs>
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   verifiedBy?: boolean | Prisma.Inbound$verifiedByArgs<ExtArgs>
 }
 export type InboundIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  parentInbound?: boolean | Prisma.Inbound$parentInboundArgs<ExtArgs>
   purchaseRequest?: boolean | Prisma.PurchaseRequestDefaultArgs<ExtArgs>
   vendor?: boolean | Prisma.VendorDefaultArgs<ExtArgs>
+  warehouse?: boolean | Prisma.Inbound$warehouseArgs<ExtArgs>
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   verifiedBy?: boolean | Prisma.Inbound$verifiedByArgs<ExtArgs>
 }
@@ -1612,18 +2454,23 @@ export type InboundIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
 export type $InboundPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Inbound"
   objects: {
+    parentInbound: Prisma.$InboundPayload<ExtArgs> | null
+    childInbounds: Prisma.$InboundPayload<ExtArgs>[]
     purchaseRequest: Prisma.$PurchaseRequestPayload<ExtArgs>
     vendor: Prisma.$VendorPayload<ExtArgs>
+    warehouse: Prisma.$WarehousePayload<ExtArgs> | null
     createdBy: Prisma.$UserPayload<ExtArgs>
     verifiedBy: Prisma.$UserPayload<ExtArgs> | null
     items: Prisma.$InboundItemPayload<ExtArgs>[]
     stockCards: Prisma.$StockCardPayload<ExtArgs>[]
+    returns: Prisma.$ReturnPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     grnNumber: string
     purchaseRequestId: string
     vendorId: string
+    warehouseId: string | null
     receiveDate: Date
     status: $Enums.InboundStatus
     notes: string | null
@@ -1634,6 +2481,7 @@ export type $InboundPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     verificationNotes: string | null
     createdAt: Date
     updatedAt: Date
+    parentInboundId: string | null
   }, ExtArgs["result"]["inbound"]>
   composites: {}
 }
@@ -2028,12 +2876,16 @@ readonly fields: InboundFieldRefs;
  */
 export interface Prisma__InboundClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  parentInbound<T extends Prisma.Inbound$parentInboundArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Inbound$parentInboundArgs<ExtArgs>>): Prisma.Prisma__InboundClient<runtime.Types.Result.GetResult<Prisma.$InboundPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  childInbounds<T extends Prisma.Inbound$childInboundsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Inbound$childInboundsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$InboundPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   purchaseRequest<T extends Prisma.PurchaseRequestDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PurchaseRequestDefaultArgs<ExtArgs>>): Prisma.Prisma__PurchaseRequestClient<runtime.Types.Result.GetResult<Prisma.$PurchaseRequestPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   vendor<T extends Prisma.VendorDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.VendorDefaultArgs<ExtArgs>>): Prisma.Prisma__VendorClient<runtime.Types.Result.GetResult<Prisma.$VendorPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  warehouse<T extends Prisma.Inbound$warehouseArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Inbound$warehouseArgs<ExtArgs>>): Prisma.Prisma__WarehouseClient<runtime.Types.Result.GetResult<Prisma.$WarehousePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   createdBy<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   verifiedBy<T extends Prisma.Inbound$verifiedByArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Inbound$verifiedByArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   items<T extends Prisma.Inbound$itemsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Inbound$itemsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$InboundItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   stockCards<T extends Prisma.Inbound$stockCardsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Inbound$stockCardsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$StockCardPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  returns<T extends Prisma.Inbound$returnsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Inbound$returnsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReturnPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2067,6 +2919,7 @@ export interface InboundFieldRefs {
   readonly grnNumber: Prisma.FieldRef<"Inbound", 'String'>
   readonly purchaseRequestId: Prisma.FieldRef<"Inbound", 'String'>
   readonly vendorId: Prisma.FieldRef<"Inbound", 'String'>
+  readonly warehouseId: Prisma.FieldRef<"Inbound", 'String'>
   readonly receiveDate: Prisma.FieldRef<"Inbound", 'DateTime'>
   readonly status: Prisma.FieldRef<"Inbound", 'InboundStatus'>
   readonly notes: Prisma.FieldRef<"Inbound", 'String'>
@@ -2077,6 +2930,7 @@ export interface InboundFieldRefs {
   readonly verificationNotes: Prisma.FieldRef<"Inbound", 'String'>
   readonly createdAt: Prisma.FieldRef<"Inbound", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Inbound", 'DateTime'>
+  readonly parentInboundId: Prisma.FieldRef<"Inbound", 'String'>
 }
     
 
@@ -2473,6 +3327,68 @@ export type InboundDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inter
 }
 
 /**
+ * Inbound.parentInbound
+ */
+export type Inbound$parentInboundArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Inbound
+   */
+  select?: Prisma.InboundSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Inbound
+   */
+  omit?: Prisma.InboundOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.InboundInclude<ExtArgs> | null
+  where?: Prisma.InboundWhereInput
+}
+
+/**
+ * Inbound.childInbounds
+ */
+export type Inbound$childInboundsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Inbound
+   */
+  select?: Prisma.InboundSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Inbound
+   */
+  omit?: Prisma.InboundOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.InboundInclude<ExtArgs> | null
+  where?: Prisma.InboundWhereInput
+  orderBy?: Prisma.InboundOrderByWithRelationInput | Prisma.InboundOrderByWithRelationInput[]
+  cursor?: Prisma.InboundWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.InboundScalarFieldEnum | Prisma.InboundScalarFieldEnum[]
+}
+
+/**
+ * Inbound.warehouse
+ */
+export type Inbound$warehouseArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Warehouse
+   */
+  select?: Prisma.WarehouseSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Warehouse
+   */
+  omit?: Prisma.WarehouseOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.WarehouseInclude<ExtArgs> | null
+  where?: Prisma.WarehouseWhereInput
+}
+
+/**
  * Inbound.verifiedBy
  */
 export type Inbound$verifiedByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2537,6 +3453,30 @@ export type Inbound$stockCardsArgs<ExtArgs extends runtime.Types.Extensions.Inte
   take?: number
   skip?: number
   distinct?: Prisma.StockCardScalarFieldEnum | Prisma.StockCardScalarFieldEnum[]
+}
+
+/**
+ * Inbound.returns
+ */
+export type Inbound$returnsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Return
+   */
+  select?: Prisma.ReturnSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Return
+   */
+  omit?: Prisma.ReturnOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ReturnInclude<ExtArgs> | null
+  where?: Prisma.ReturnWhereInput
+  orderBy?: Prisma.ReturnOrderByWithRelationInput | Prisma.ReturnOrderByWithRelationInput[]
+  cursor?: Prisma.ReturnWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ReturnScalarFieldEnum | Prisma.ReturnScalarFieldEnum[]
 }
 
 /**

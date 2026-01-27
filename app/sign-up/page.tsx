@@ -49,13 +49,13 @@ export default function SignUpPage() {
 
     if (success) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-[var(--color-bg-secondary)] p-4">
-                <div className="w-full max-w-md bg-[var(--color-bg-primary)] p-8 rounded-lg shadow-lg border border-[var(--color-border)] text-center">
+            <div className="min-h-screen flex items-center justify-center bg-(--color-bg-secondary) p-4">
+                <div className="w-full max-w-md bg-(--color-bg-primary) p-8 rounded-lg shadow-lg border border-(--color-border) text-center">
                     <div className="flex justify-center mb-4">
                         <CheckCircle size={48} className="text-green-500" />
                     </div>
                     <h1 className="text-2xl font-bold mb-2">Registration Successful</h1>
-                    <p className="text-[var(--color-text-secondary)] mb-6">
+                    <p className="text-(--color-text-secondary) mb-6">
                         Your account has been created. Please contact the administrator to verify and activate your account.
                     </p>
                     <Link href="/sign-in">
@@ -67,11 +67,11 @@ export default function SignUpPage() {
     }
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-[var(--color-bg-secondary)] p-4">
-            <div className="w-full max-w-md bg-[var(--color-bg-primary)] p-8 rounded-lg shadow-lg border border-[var(--color-border)]">
+        <div className="min-h-screen flex items-center justify-center bg-(--color-bg-secondary) p-4">
+            <div className="w-full max-w-md bg-(--color-bg-primary) p-8 rounded-lg shadow-lg border border-(--color-border)">
                 <div className="text-center mb-8">
                     <h1 className="text-2xl font-bold">Create an Account</h1>
-                    <p className="text-[var(--color-text-secondary)] mt-2">
+                    <p className="text-(--color-text-secondary) mt-2">
                         Sign up to access Yuri Invent
                     </p>
                 </div>
@@ -107,7 +107,7 @@ export default function SignUpPage() {
                         <button
                             type="button"
                             onClick={() => setShowPassword(!showPassword)}
-                            className="absolute right-3 top-[34px] text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)]"
+                            className="absolute right-3 top-[34px] text-(--color-text-muted) hover:text-(--color-text-primary)"
                         >
                             {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                         </button>
@@ -117,9 +117,9 @@ export default function SignUpPage() {
                         Sign Up
                     </Button>
 
-                    <div className="text-center text-sm text-[var(--color-text-secondary)]">
+                    <div className="text-center text-sm text-(--color-text-secondary)">
                         Already have an account?{' '}
-                        <Link href="/sign-in" className="text-[var(--color-primary)] hover:underline">
+                        <Link href="/sign-in" className="text-(--color-primary) hover:underline">
                             Sign In
                         </Link>
                     </div>
@@ -128,3 +128,4 @@ export default function SignUpPage() {
         </div>
     );
 }
+

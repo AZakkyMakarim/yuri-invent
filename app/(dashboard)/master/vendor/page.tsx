@@ -25,7 +25,6 @@ import {
 import {
     Button,
     Input,
-    Modal,
     Table,
     TableHeader,
     TableBody,
@@ -47,8 +46,17 @@ import {
     NumberInput
 } from '@/components/ui';
 import type { SortDirection } from '@/components/ui';
+import dynamic from 'next/dynamic';
+
+const Modal = dynamic(() => import('@/components/ui/Modal').then(mod => mod.Modal), {
+    loading: () => <></>,
+    ssr: false
+});
 import { apiFetch } from '@/lib/utils';
+import { supabase } from '@/lib/supabase';
+import { useAuth } from '@/contexts/AuthContext';
 import { formatDate } from '@/lib/format';
+import { useTranslations } from 'next-intl';
 
 interface Vendor {
     id: string;
@@ -60,10 +68,12 @@ interface Vendor {
     bankBranch: string | null;
     bankAccount: string | null;
     spkDocumentPath: string | null;
+    link: string | null; // Existing link property
     isActive: boolean;
     createdAt: string;
     createdBy?: {
         name: string;
+        role: { name: string };
     };
 }
 
@@ -97,6 +107,9 @@ const bankOptions = ['BCA', 'BRI', 'BNI', 'MANDIRI'];
 
 export default function VendorsPage() {
     const [vendors, setVendors] = useState<Vendor[]>([]);
+    const { user } = useAuth();
+    const t = useTranslations('master.vendor');
+    const tCommon = useTranslations('common');
     const [loading, setLoading] = useState(true);
     const [total, setTotal] = useState(0);
     const [totalPages, setTotalPages] = useState(0);
@@ -125,13 +138,14 @@ export default function VendorsPage() {
     const [formData, setFormData] = useState({
         name: '',
         vendorType: 'NON_SPK',
+        link: '',
         phone: '',
         address: '',
         bank: '',
         bankBranch: '',
         bankAccount: '',
         isActive: true,
-        vendorItems: [] as Array<{ itemId: string; itemName: string; cogsPerUom: number }>,
+        vendorItems: [] as Array<{ itemId: string; itemName: string; cogsPerUom: number; link?: string }>,
         spkDocumentPath: '',
     });
 
@@ -254,6 +268,7 @@ export default function VendorsPage() {
                     bankBranch: vendor.bankBranch || '',
                     bankAccount: vendor.bankAccount || '',
                     isActive: vendor.isActive,
+                    link: vendor.link || '',
                     vendorItems,
                     spkDocumentPath: vendor.spkDocumentPath || '',
                 });
@@ -268,6 +283,7 @@ export default function VendorsPage() {
                     bankBranch: vendor.bankBranch || '',
                     bankAccount: vendor.bankAccount || '',
                     isActive: vendor.isActive,
+                    link: vendor.link || '',
                     vendorItems: [],
                     spkDocumentPath: vendor.spkDocumentPath || '',
                 });
@@ -277,6 +293,7 @@ export default function VendorsPage() {
             setFormData({
                 name: '',
                 vendorType: activeTab === 'all' ? 'NON_SPK' : activeTab,
+                link: '',
                 phone: '',
                 address: '',
                 bank: '',
@@ -297,7 +314,7 @@ export default function VendorsPage() {
 
         // Validate file type
         if (file.type !== 'application/pdf') {
-            alert('Only PDF files are allowed');
+            alert(t('messages.fileTypeError'));
             e.target.value = ''; // Reset input
             return;
         }
@@ -305,7 +322,7 @@ export default function VendorsPage() {
         // Validate file size (5MB)
         const maxSize = 5 * 1024 * 1024;
         if (file.size > maxSize) {
-            alert('File size exceeds 5MB limit');
+            alert(t('messages.fileSizeError'));
             e.target.value = ''; // Reset input
             return;
         }
@@ -323,14 +340,23 @@ export default function VendorsPage() {
                 const uploadFormData = new FormData();
                 uploadFormData.append('file', selectedSPKFile);
 
-                const uploadResponse = await fetch('/api/upload', {
+                // Get session for authentication
+                const { data: { session } } = await supabase.auth.getSession();
+
+                const headers: HeadersInit = {};
+                if (session?.access_token) {
+                    headers['Authorization'] = `Bearer ${session.access_token}`;
+                }
+
+                const uploadResponse = await fetch('/api/upload/spk-document', {
                     method: 'POST',
+                    headers,
                     body: uploadFormData,
                 });
 
                 if (!uploadResponse.ok) {
                     const error = await uploadResponse.json();
-                    alert(error.error || 'Failed to upload SPK document');
+                    alert(error.error || t('messages.uploadFailed'));
                     setModalLoading(false);
                     return;
                 }
@@ -364,7 +390,7 @@ export default function VendorsPage() {
         } catch (error) {
             console.error('Error saving vendor:', error);
             // Show error to user
-            const errorMessage = error instanceof Error ? error.message : 'Failed to save vendor';
+            const errorMessage = error instanceof Error ? error.message : t('messages.saveFailed');
             alert(`Error: ${errorMessage}`);
         } finally {
             setModalLoading(false);
@@ -372,7 +398,7 @@ export default function VendorsPage() {
     };
 
     const handleDelete = async (id: string) => {
-        if (!confirm('Are you sure you want to delete this vendor?')) return;
+        if (!confirm(t('messages.deleteConfirm'))) return;
         try {
             await apiFetch(`/vendors/${id}`, { method: 'DELETE' });
             fetchVendors();
@@ -382,9 +408,9 @@ export default function VendorsPage() {
     };
 
     const tabs = [
-        { id: 'all', label: 'All Vendors', icon: <Briefcase size={18} /> },
-        { id: 'SPK', label: 'SPK Vendors', icon: <Building2 size={18} /> },
-        { id: 'NON_SPK', label: 'Non SPK Vendors', icon: <Building2 size={18} /> },
+        { id: 'all', label: t('tabs.all'), icon: <Briefcase size={18} /> },
+        { id: 'SPK', label: t('tabs.spk'), icon: <Building2 size={18} /> },
+        { id: 'NON_SPK', label: t('tabs.nonSpk'), icon: <Building2 size={18} /> },
     ];
 
     return (
@@ -402,9 +428,9 @@ export default function VendorsPage() {
                 {() => (
                     <div>
                         <div className="flex items-center justify-between mb-4">
-                            <h1 className="text-xl font-bold">Vendors</h1>
+                            <h1 className="text-xl font-bold">{t('title')}</h1>
                             <Button onClick={() => openModal()} leftIcon={<Plus size={18} />}>
-                                Add New Vendor
+                                {t('addNew')}
                             </Button>
                         </div>
 
@@ -414,30 +440,30 @@ export default function VendorsPage() {
                             onApply={applyFilters}
                             onReset={resetFilters}
                         >
-                            <FilterField label="Vendor Name">
+                            <FilterField label={t('table.vendor')}>
                                 <TextFilter
                                     value={pendingFilters.name}
                                     onChange={(v) => setPendingFilters({ ...pendingFilters, name: v })}
-                                    placeholder="Search name..."
+                                    placeholder={t('searchPlaceholder')}
                                 />
                             </FilterField>
-                            <FilterField label="Bank">
+                            <FilterField label={t('form.bank')}>
                                 <MultiSelectFilter
                                     options={bankOptions}
                                     selected={pendingFilters.bank}
                                     onChange={(v) => setPendingFilters({ ...pendingFilters, bank: v })}
-                                    placeholder="All Banks"
+                                    placeholder={tCommon('all')}
                                 />
                             </FilterField>
-                            <FilterField label="Status">
+                            <FilterField label={t('form.status')}>
                                 <MultiSelectFilter
                                     options={statusOptions}
                                     selected={pendingFilters.status}
                                     onChange={(v) => setPendingFilters({ ...pendingFilters, status: v })}
-                                    placeholder="All Status"
+                                    placeholder={tCommon('all')}
                                 />
                             </FilterField>
-                            <FilterField label="Created Date">
+                            <FilterField label={tCommon('created')}>
                                 <DateRangeFilter
                                     startDate={pendingFilters.dateStart}
                                     endDate={pendingFilters.dateEnd}
@@ -458,40 +484,49 @@ export default function VendorsPage() {
                                                 sortDirection={sort.field === 'name' ? sort.direction : null}
                                                 onSort={() => toggleSort('name')}
                                             >
-                                                Vendor Name
+                                                {t('table.vendor')}
                                             </SortableTableHead>
                                             <SortableTableHead
                                                 sortable
                                                 sortDirection={sort.field === 'vendorType' ? sort.direction : null}
                                                 onSort={() => toggleSort('vendorType')}
                                             >
-                                                Type
+                                                {t('table.type')}
                                             </SortableTableHead>
-                                            <TableHead>Phone</TableHead>
-                                            <TableHead>Address</TableHead>
+                                            <TableHead>{t('form.phone')}</TableHead>
+                                            <TableHead>{t('form.address')}</TableHead>
                                             <SortableTableHead
                                                 sortable
                                                 sortDirection={sort.field === 'bank' ? sort.direction : null}
                                                 onSort={() => toggleSort('bank')}
                                             >
-                                                Bank
+                                                {t('form.bank')}
                                             </SortableTableHead>
-                                            <TableHead>Branch</TableHead>
-                                            <TableHead>Account No</TableHead>
+                                            <TableHead>{t('form.branch')}</TableHead>
+                                            <TableHead>{t('form.account')}</TableHead>
+                                            <TableHead>{t('form.link')}</TableHead>
                                             <SortableTableHead
                                                 sortable
                                                 sortDirection={sort.field === 'status' ? sort.direction : null}
                                                 onSort={() => toggleSort('status')}
                                             >
-                                                Status
+                                                {t('form.status')}
                                             </SortableTableHead>
-                                            <TableHead className="w-24">Actions</TableHead>
+                                            <SortableTableHead
+                                                sortable
+                                                sortDirection={sort.field === 'createdAt' ? sort.direction : null}
+                                                onSort={() => toggleSort('createdAt')}
+                                            >
+                                                {t('table.date')}
+                                            </SortableTableHead>
+                                            <TableHead>{tCommon('createdBy')}</TableHead>
+                                            <TableHead className="w-20">{tCommon('actions')}</TableHead>
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
                                         {loading ? (
                                             <TableRow>
-                                                <TableCell colSpan={10} className="h-24 text-center">Loading...</TableCell>
+                                                <TableCell colSpan={10} className="h-24 text-center">{tCommon('loading')}</TableCell>
                                             </TableRow>
                                         ) : vendors.length === 0 ? (
                                             <TableEmpty colSpan={10} message="No vendors found" />
@@ -515,9 +550,34 @@ export default function VendorsPage() {
                                                     <TableCell>{vendor.bankBranch || '-'}</TableCell>
                                                     <TableCell>{vendor.bankAccount || '-'}</TableCell>
                                                     <TableCell>
+                                                        {vendor.link ? (
+                                                            <a
+                                                                href={vendor.link}
+                                                                target="_blank"
+                                                                rel="noopener noreferrer"
+                                                                className="text-blue-600 hover:underline flex items-center gap-1"
+                                                            >
+                                                                Link <Briefcase size={12} />
+                                                            </a>
+                                                        ) : '-'}
+                                                    </TableCell>
+                                                    <TableCell>
                                                         <Badge variant={vendor.isActive ? 'success' : 'danger'}>
                                                             {vendor.isActive ? 'Active' : 'Inactive'}
                                                         </Badge>
+                                                    </TableCell>
+                                                    <TableCell className="text-sm text-(--color-text-secondary)">
+                                                        {formatDate(vendor.createdAt)}
+                                                    </TableCell>
+                                                    <TableCell className="text-sm">
+                                                        <div className="flex flex-col">
+                                                            <span className="font-medium">{vendor.createdBy?.name || '-'}</span>
+                                                            {vendor.createdBy?.role?.name && (
+                                                                <span className="text-xs text-(--color-text-muted)">
+                                                                    ({vendor.createdBy.role.name})
+                                                                </span>
+                                                            )}
+                                                        </div>
                                                     </TableCell>
                                                     <TableCell>
                                                         <div className="flex items-center gap-2">
@@ -525,7 +585,7 @@ export default function VendorsPage() {
                                                                 variant="ghost"
                                                                 size="sm"
                                                                 onClick={() => router.push(`/master/vendor/${vendor.id}`)}
-                                                                title="View Details"
+                                                                title={tCommon('view')}
                                                             >
                                                                 <Eye size={16} />
                                                             </Button>
@@ -533,7 +593,7 @@ export default function VendorsPage() {
                                                                 variant="ghost"
                                                                 size="sm"
                                                                 onClick={() => openModal(vendor)}
-                                                                title="Edit"
+                                                                title={tCommon('edit')}
                                                             >
                                                                 <Pencil size={16} />
                                                             </Button>
@@ -561,7 +621,7 @@ export default function VendorsPage() {
             <Modal
                 isOpen={modalOpen}
                 onClose={() => setModalOpen(false)}
-                title={editingVendor ? 'Edit Vendor' : 'New Vendor'}
+                title={editingVendor ? t('form.editTitle') : t('form.createTitle')}
                 size="lg"
             >
                 <div className="space-y-6">
@@ -569,43 +629,49 @@ export default function VendorsPage() {
                     <div className="space-y-4">
                         <div className="flex items-center gap-2 mb-3">
                             <Building2 size={18} className="text-(--color-primary)" />
-                            <h3 className="text-sm font-semibold text-(--color-text-primary)">Basic Information</h3>
+                            <h3 className="text-sm font-semibold text-(--color-text-primary)">{t('sections.basic')}</h3>
                         </div>
 
                         <div className="grid grid-cols-1 gap-4">
                             <div>
                                 <label className="text-sm font-medium mb-1.5 block">
-                                    Vendor Name <span className="text-red-500">*</span>
+                                    {t('form.name')} <span className="text-red-500">*</span>
                                 </label>
                                 <Input
                                     value={formData.name}
                                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                    placeholder="e.g., PT. Example Jaya"
+                                    placeholder={t('form.name')}
+                                />
+                            </div>
+                            <div>
+                                <Input
+                                    label={t('form.link')}
+                                    value={formData.link} // Changed from form.link to formData.link
+                                    onChange={(e) => setFormData({ ...formData, link: e.target.value })}
+                                    placeholder="https://example.com"
                                 />
                             </div>
 
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
                                     <label className="text-sm font-medium mb-1.5 block">
-                                        Vendor Type <span className="text-red-500">*</span>
+                                        {t('form.type')} <span className="text-red-500">*</span>
                                     </label>
                                     <Dropdown
-                                        options={[
-                                            { value: 'SPK', label: 'SPK' },
-                                            { value: 'NON_SPK', label: 'Non-SPK' }
-                                        ]}
                                         value={formData.vendorType}
-                                        onChange={(v) => setFormData({ ...formData, vendorType: v })}
-                                        placeholder="Select Type"
+                                        onChange={(v) => setFormData({ ...formData, vendorType: v as 'SPK' | 'NON_SPK' })}
+                                        options={[
+                                            { value: 'NON_SPK', label: 'Regular (Non-SPK)' },
+                                            { value: 'SPK', label: 'Contract (SPK)' },
+                                        ]}
                                     />
                                 </div>
-
                                 <div>
-                                    <label className="text-sm font-medium mb-1.5 block">Active Status</label>
+                                    <label className="text-sm font-medium mb-1.5 block">{t('form.status')}</label>
                                     <Toggle
                                         checked={formData.isActive}
                                         onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
-                                        label={formData.isActive ? 'Active' : 'Inactive'}
+                                        label={formData.isActive ? tCommon('active') : tCommon('inactive')}
                                     />
                                 </div>
                             </div>
@@ -617,16 +683,16 @@ export default function VendorsPage() {
                         <div className="space-y-4 pt-4 border-t border-(--color-border)">
                             <div className="flex items-center gap-2 mb-3">
                                 <FileText size={18} className="text-(--color-primary)" />
-                                <h3 className="text-sm font-semibold text-(--color-text-primary)">SPK Document</h3>
-                                <span className="text-xs text-(--color-text-muted)">(Required for SPK vendors)</span>
+                                <h3 className="text-sm font-semibold text-(--color-text-primary)">{t('form.spk')}</h3>
+                                <span className="text-xs text-(--color-text-muted)">{t('sections.required')}</span>
                             </div>
 
                             <div>
                                 <label className="text-sm font-medium mb-1.5 block">
-                                    Upload SPK Document <span className="text-red-500">*</span>
+                                    {t('form.uploadSpk')} <span className="text-red-500">*</span>
                                 </label>
                                 <p className="text-xs text-(--color-text-muted) mb-2">
-                                    Accepted formats: Only PDF (Max 5MB)
+                                    {t('form.acceptedFormats')}
                                 </p>
 
                                 <div className="flex gap-3 items-start">
@@ -639,7 +705,7 @@ export default function VendorsPage() {
                                         `}>
                                             <Upload size={18} className="text-(--color-text-muted)" />
                                             <span className="text-sm text-(--color-text-muted)">
-                                                {selectedSPKFile ? selectedSPKFile.name : 'Click to select PDF document'}
+                                                {selectedSPKFile ? selectedSPKFile.name : t('form.clickToSelect')}
                                             </span>
                                         </div>
                                         <input
@@ -656,7 +722,7 @@ export default function VendorsPage() {
                                         <FileText size={16} className="text-(--color-success)" />
                                         <div className="flex-1">
                                             <p className="text-sm font-medium">
-                                                {selectedSPKFile ? `Selected: ${selectedSPKFile.name}` : 'Document uploaded'}
+                                                {selectedSPKFile ? `${t('form.selected')}: ${selectedSPKFile.name}` : t('form.fileUploaded')}
                                             </p>
                                             {formData.spkDocumentPath && !selectedSPKFile && (
                                                 <a
@@ -665,7 +731,7 @@ export default function VendorsPage() {
                                                     rel="noopener noreferrer"
                                                     className="text-xs text-(--color-primary) hover:underline"
                                                 >
-                                                    View current document
+                                                    {t('form.viewCurrent')}
                                                 </a>
                                             )}
                                         </div>
@@ -689,29 +755,29 @@ export default function VendorsPage() {
                     <div className="space-y-4 pt-4 border-t border-(--color-border)">
                         <div className="flex items-center gap-2 mb-3">
                             <Phone size={18} className="text-(--color-primary)" />
-                            <h3 className="text-sm font-semibold text-(--color-text-primary)">Contact Information</h3>
+                            <h3 className="text-sm font-semibold text-(--color-text-primary)">{t('sections.contact')}</h3>
                         </div>
 
                         <div className="grid grid-cols-1 gap-4">
                             <div>
-                                <label className="text-sm font-medium mb-1.5 block">Phone Number</label>
+                                <label className="text-sm font-medium mb-1.5 block">{t('form.phone')}</label>
                                 <div className="relative">
                                     <Input
                                         value={formData.phone}
                                         onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                                        placeholder="e.g., +62 812-3456-7890"
+                                        placeholder={t('form.phone')}
                                         className="pl-9"
                                     />
                                 </div>
                             </div>
 
                             <div>
-                                <label className="text-sm font-medium mb-1.5 block">Address</label>
+                                <label className="text-sm font-medium mb-1.5 block">{t('form.address')}</label>
                                 <div className="relative">
                                     <textarea
                                         value={formData.address}
                                         onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                                        placeholder="Enter full address..."
+                                        placeholder={t('form.address')}
                                         rows={3}
                                         className="w-full pl-3 pr-3 py-2 border border-(--color-border) rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-(--color-primary) focus:border-transparent"
                                     />
@@ -725,57 +791,71 @@ export default function VendorsPage() {
                         <div className="flex items-center justify-between mb-3">
                             <div className="flex items-center gap-2">
                                 <Package size={18} className="text-(--color-primary)" />
-                                <h3 className="text-sm font-semibold text-(--color-text-primary)">Vendor Items</h3>
-                                <span className="text-xs text-(--color-text-muted)">(Optional)</span>
+                                <h3 className="text-sm font-semibold text-(--color-text-primary)">{t('sections.items')}</h3>
+                                <span className="text-xs text-(--color-text-muted)">{t('sections.optional')}</span>
                             </div>
                         </div>
 
                         {/* Items List */}
                         <div className="space-y-3">
                             {formData.vendorItems.map((vendorItem, index) => (
-                                <div key={index} className="flex gap-3 items-center p-4 bg-(--color-bg-tertiary) rounded-lg border border-(--color-border)">
-                                    <div className="flex-1 grid grid-cols-2 gap-3">
-                                        <div>
-                                            <label className="text-sm font-medium mb-1.5 block">Item</label>
-                                            <Dropdown
-                                                options={items.map(item => ({ value: item.id, label: `${item.sku} - ${item.name}` }))}
-                                                value={vendorItem.itemId}
-                                                onChange={(v) => {
-                                                    const selectedItem = items.find(i => i.id === v);
-                                                    const newVendorItems = [...formData.vendorItems];
-                                                    newVendorItems[index] = {
-                                                        ...vendorItem,
-                                                        itemId: v,
-                                                        itemName: selectedItem?.name || ''
-                                                    };
-                                                    setFormData({ ...formData, vendorItems: newVendorItems });
-                                                }}
-                                                placeholder="Select Item"
-                                            />
-                                        </div>
-                                        <div>
-                                            <label className="text-sm font-medium mb-1.5 block">COGS per UOM</label>
-                                            <div className="relative flex items-center">
-                                                <span className="absolute left-3 text-sm font-semibold text-(--color-text-primary) pointer-events-none z-10">Rp</span>
-                                                <input
-                                                    type="text"
-                                                    disabled={!vendorItem.itemId}
-                                                    value={vendorItem.cogsPerUom ? parseInt(vendorItem.cogsPerUom.toString()).toLocaleString('id-ID') : ''}
-                                                    onChange={(e) => {
-                                                        const value = e.target.value.replace(/[^0-9]/g, '');
+                                <div key={index} className="flex gap-3 items-start p-4 bg-(--color-bg-tertiary) rounded-lg border border-(--color-border)">
+                                    <div className="flex-1 space-y-3">
+                                        <div className="grid grid-cols-2 gap-3">
+                                            <div>
+                                                <label className="text-sm font-medium mb-1.5 block">{t('form.item')}</label>
+                                                <Dropdown
+                                                    options={items.map(item => ({ value: item.id, label: `${item.sku} - ${item.name}` }))}
+                                                    value={vendorItem.itemId}
+                                                    onChange={(v) => {
+                                                        const selectedItem = items.find(i => i.id === v);
                                                         const newVendorItems = [...formData.vendorItems];
-                                                        newVendorItems[index] = { ...vendorItem, cogsPerUom: parseFloat(value) || 0 };
+                                                        newVendorItems[index] = {
+                                                            ...vendorItem,
+                                                            itemId: v,
+                                                            itemName: selectedItem?.name || ''
+                                                        };
                                                         setFormData({ ...formData, vendorItems: newVendorItems });
                                                     }}
-                                                    placeholder="10.000"
-                                                    className="w-full pl-10 pr-14 py-3 bg-(--color-bg-secondary) border border-(--color-border) rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-(--color-primary) focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
+                                                    placeholder={t('form.item')}
                                                 />
-                                                {vendorItem.itemId && items.find(i => i.id === vendorItem.itemId) && (
-                                                    <span className="absolute right-3 text-sm font-semibold text-(--color-text-muted) pointer-events-none">
-                                                        /{items.find(i => i.id === vendorItem.itemId)!.uom.symbol}
-                                                    </span>
-                                                )}
                                             </div>
+                                            <div>
+                                                <label className="text-sm font-medium mb-1.5 block">{t('form.cogs')}</label>
+                                                <div className="relative flex items-center">
+                                                    <span className="absolute left-3 text-sm font-semibold text-(--color-text-primary) pointer-events-none z-10">Rp</span>
+                                                    <input
+                                                        type="text"
+                                                        disabled={!vendorItem.itemId}
+                                                        value={vendorItem.cogsPerUom ? parseInt(vendorItem.cogsPerUom.toString()).toLocaleString('id-ID') : ''}
+                                                        onChange={(e) => {
+                                                            const value = e.target.value.replace(/[^0-9]/g, '');
+                                                            const newVendorItems = [...formData.vendorItems];
+                                                            newVendorItems[index] = { ...vendorItem, cogsPerUom: parseFloat(value) || 0 };
+                                                            setFormData({ ...formData, vendorItems: newVendorItems });
+                                                        }}
+                                                        placeholder="10.000"
+                                                        className="w-full pl-10 pr-14 py-3 bg-(--color-bg-secondary) border border-(--color-border) rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-(--color-primary) focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
+                                                    />
+                                                    {vendorItem.itemId && items.find(i => i.id === vendorItem.itemId) && (
+                                                        <span className="absolute right-3 text-sm font-semibold text-(--color-text-muted) pointer-events-none">
+                                                            /{items.find(i => i.id === vendorItem.itemId)!.uom.symbol}
+                                                        </span>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label className="text-sm font-medium mb-1.5 block">{t('form.link')} ({t('sections.optional')})</label>
+                                            <Input
+                                                value={vendorItem.link || ''}
+                                                onChange={(e) => {
+                                                    const newVendorItems = [...formData.vendorItems];
+                                                    newVendorItems[index] = { ...vendorItem, link: e.target.value };
+                                                    setFormData({ ...formData, vendorItems: newVendorItems });
+                                                }}
+                                                placeholder={t('form.link')}
+                                            />
                                         </div>
                                     </div>
                                     <Button
@@ -785,7 +865,7 @@ export default function VendorsPage() {
                                             const newVendorItems = formData.vendorItems.filter((_, i) => i !== index);
                                             setFormData({ ...formData, vendorItems: newVendorItems });
                                         }}
-                                        className="mt-5"
+                                        className="mt-1"
                                     >
                                         <Trash2 size={16} />
                                     </Button>
@@ -798,13 +878,13 @@ export default function VendorsPage() {
                                 onClick={() => {
                                     setFormData({
                                         ...formData,
-                                        vendorItems: [...formData.vendorItems, { itemId: '', itemName: '', cogsPerUom: 0 }]
+                                        vendorItems: [...formData.vendorItems, { itemId: '', itemName: '', cogsPerUom: 0, link: '' }]
                                     });
                                 }}
                                 leftIcon={<Plus size={16} />}
                                 className="w-full"
                             >
-                                Add Item
+                                {tCommon('add')}
                             </Button>
                         </div>
                     </div>
@@ -813,40 +893,40 @@ export default function VendorsPage() {
                     <div className="space-y-4 pt-4 border-t border-(--color-border)">
                         <div className="flex items-center gap-2 mb-3">
                             <CreditCard size={18} className="text-(--color-primary)" />
-                            <h3 className="text-sm font-semibold text-(--color-text-primary)">Banking Information</h3>
-                            <span className="text-xs text-(--color-text-muted)">(Optional)</span>
+                            <h3 className="text-sm font-semibold text-(--color-text-primary)">{t('form.bank')}</h3>
+                            <span className="text-xs text-(--color-text-muted)">{t('sections.optional')}</span>
                         </div>
 
                         <div className="grid grid-cols-1 gap-4">
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label className="text-sm font-medium mb-1.5 block">Bank Name</label>
+                                    <label className="text-sm font-medium mb-1.5 block">{t('form.bank')}</label>
                                     <Dropdown
                                         options={bankOptions.map(v => ({ value: v, label: v }))}
                                         value={formData.bank}
                                         onChange={(v) => setFormData({ ...formData, bank: v })}
-                                        placeholder="Select Bank"
+                                        placeholder={t('form.bank')}
                                         clearable
                                     />
                                 </div>
 
                                 <div>
-                                    <label className="text-sm font-medium mb-1.5 block">Branch</label>
+                                    <label className="text-sm font-medium mb-1.5 block">{t('form.branch')}</label>
                                     <Input
                                         value={formData.bankBranch}
                                         onChange={(e) => setFormData({ ...formData, bankBranch: e.target.value })}
-                                        placeholder="e.g., KCP Sudirman"
+                                        placeholder={t('form.branch')}
                                     />
                                 </div>
                             </div>
 
                             <div>
-                                <label className="text-sm font-medium mb-1.5 block">Account Number</label>
+                                <label className="text-sm font-medium mb-1.5 block">{t('form.account')}</label>
                                 <div className="relative">
                                     <Input
                                         value={formData.bankAccount}
                                         onChange={(e) => setFormData({ ...formData, bankAccount: e.target.value })}
-                                        placeholder="Enter account number"
+                                        placeholder={t('form.account')}
                                         className="pl-9"
                                     />
                                 </div>
@@ -861,17 +941,17 @@ export default function VendorsPage() {
                             onClick={() => setModalOpen(false)}
                             disabled={modalLoading}
                         >
-                            Cancel
+                            {tCommon('cancel')}
                         </Button>
                         <Button
                             onClick={handleSubmit}
                             isLoading={modalLoading}
                         >
-                            {editingVendor ? 'Save Changes' : 'Create Vendor'}
+                            {tCommon('save')}
                         </Button>
                     </div>
                 </div>
-            </Modal>
-        </div>
+            </Modal >
+        </div >
     );
 }
