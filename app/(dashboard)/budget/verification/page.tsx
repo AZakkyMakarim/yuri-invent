@@ -9,6 +9,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useTranslations } from 'next-intl';
 
 export default function RABVerificationPage() {
+    const router = useRouter();
     const t = useTranslations('budget');
     const { user } = useAuth();
     const [rabs, setRabs] = useState<any[]>([]);
@@ -124,7 +125,7 @@ export default function RABVerificationPage() {
                                         <td className="px-6 py-4 text-sm">{rab.createdBy?.name || 'Unknown'}</td>
                                         <td className="px-6 py-4 text-right flex justify-end gap-2">
                                             <button
-                                                onClick={() => console.log('View', rab.id)}
+                                                onClick={() => router.push(`/budget/${rab.id}`)}
                                                 className="p-1.5 hover:bg-(--color-bg-tertiary) rounded text-(--color-text-secondary)"
                                                 title={t('table.viewDetails')}
                                             >
