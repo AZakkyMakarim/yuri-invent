@@ -1,14 +1,14 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { Plus, Trash2, Save, ArrowLeft, Edit } from 'lucide-react';
 import { formatCurrency } from '@/lib/utils';
 import SearchableDropdown from '@/components/ui/SearchableDropdown';
 import { NumberInput } from '@/components/ui/NumberInput';
 import { Modal } from '@/components/ui/Modal';
-import { getAllItems, createRAB, calculateRABLineStats } from '@/app/actions/rab';
+import { getAllItems, createRAB, updateRAB, getRABDetails, calculateRABLineStats } from '@/app/actions/rab';
 import Link from 'next/link';
 import { useTranslations, useLocale } from 'next-intl';
 
@@ -30,6 +30,8 @@ export default function ClientRABForm() {
     const t = useTranslations('budget.form');
     const locale = useLocale();
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const editId = searchParams.get('editId');
     const { user } = useAuth();
     const [isLoading, setIsLoading] = useState(false);
     const [pageLoading, setPageLoading] = useState(true);
@@ -53,7 +55,44 @@ export default function ClientRABForm() {
 
     useEffect(() => {
         loadItems();
-    }, []);
+        if (editId) {
+            loadRABData(editId);
+        }
+    }, [editId]);
+
+    const loadRABData = async (id: string) => {
+        setIsLoading(true);
+        const result = await getRABDetails(id);
+        if (result.success && result.data) {
+            const rab = result.data;
+            setFiscalYear(rab.fiscalYear);
+            setFiscalMonth(rab.fiscalMonth);
+            setCurrency(rab.currency);
+
+            // Map lines
+            const mappedLines: RABLine[] = await Promise.all(rab.rabLines.map(async (l: any) => {
+                const stats = await calculateRABLineStats(l.itemId, l.requiredQty);
+                return {
+                    id: l.id,
+                    itemId: l.itemId,
+                    sku: l.item.sku,
+                    itemName: l.item.name,
+                    uomSymbol: l.item.uom.symbol,
+                    requiredStock: l.requiredQty,
+                    lastStock: stats.lastStockSnapshot, // Refresh stock snapshot or use existing? Better refresh for accuracy on re-edit
+                    replenishStock: stats.replenishQty,
+                    unitPrice: stats.unitPrice,
+                    totalCost: stats.totalAmount,
+                    notes: l.notes || ''
+                };
+            }));
+            setLines(mappedLines);
+        } else {
+            alert('Failed to load RAB for editing');
+            router.push('/budget');
+        }
+        setIsLoading(false);
+    };
 
     const loadItems = async () => {
         setPageLoading(true);
@@ -203,14 +242,20 @@ export default function ClientRABForm() {
             userId: user.id
         };
 
-        const result = await createRAB(payload);
+        let result;
+        if (editId) {
+            result = await updateRAB(editId, payload);
+        } else {
+            result = await createRAB(payload);
+        }
+
         setIsLoading(false);
 
         if (result.success) {
-            alert(t('alerts.success'));
+            alert(editId ? t('alerts.updated') : t('alerts.success'));
             router.push('/budget');
         } else {
-            alert(t('alerts.failed') + result.error);
+            alert((editId ? t('alerts.updateFailed') : t('alerts.failed')) + ': ' + result.error);
         }
     };
 
@@ -224,7 +269,7 @@ export default function ClientRABForm() {
                         <ArrowLeft size={20} />
                     </Link>
                     <div>
-                        <h1 className="text-2xl font-bold">{t('createTitle')}</h1>
+                        <h1 className="text-2xl font-bold">{editId ? t('editTitle') : t('createTitle')}</h1>
                         <p className="text-(--color-text-secondary)">{t('description')}</p>
                     </div>
                 </div>

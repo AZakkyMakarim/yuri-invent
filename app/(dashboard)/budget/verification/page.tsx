@@ -46,9 +46,14 @@ export default function RABVerificationPage() {
     };
 
     const handleReject = async (id: string) => {
-        if (!confirm(t('verification.rejectConfirm'))) return;
+        const reason = prompt(t('verification.rejectReasonPlaceholder') || 'Please enter rejection reason:');
+        if (reason === null) return; // Cancelled
+        if (!reason.trim()) {
+            alert(t('verification.rejectReasonRequired') || 'Rejection reason is required');
+            return;
+        }
 
-        const result = await rejectRAB(id);
+        const result = await rejectRAB(id, reason);
         if (result.success) {
             loadRABs();
         } else {

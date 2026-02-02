@@ -421,6 +421,7 @@ model RAB {
   approvedAt      DateTime?
   createdAt       DateTime       @default(now())
   updatedAt       DateTime       @updatedAt
+  rejectionReason String?
 
   // Relations
   createdBy        User              @relation("RABCreatedBy", fields: [createdById], references: [id])

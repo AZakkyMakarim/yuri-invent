@@ -145,6 +145,68 @@ export async function createRAB(data: CreateRABInput) {
     }
 }
 
+export async function updateRAB(id: string, data: CreateRABInput) {
+    const { fiscalYear, fiscalMonth, currency, items, userId } = data;
+
+    try {
+        // 1. Prepare Line Data with Calculations
+        let grandTotal = 0;
+        const lineData: Prisma.RABLineCreateManyRabInput[] = [];
+
+        for (const line of items) {
+            const stats = await calculateRABLineStats(line.itemId, line.requiredQty);
+
+            lineData.push({
+                itemId: line.itemId,
+                requiredQty: line.requiredQty,
+                notes: line.notes,
+                lastStockSnapshot: stats.lastStockSnapshot,
+                replenishQty: stats.replenishQty,
+                unitPrice: new Prisma.Decimal(stats.unitPrice),
+                totalAmount: new Prisma.Decimal(stats.totalAmount),
+                usedAmount: new Prisma.Decimal(0)
+            });
+
+            grandTotal += stats.totalAmount;
+        }
+
+        // 2. Update Transaction
+        // Delete existing lines and re-create them for simplicity (or update smart if needed)
+        // For RAB, full replacement of lines is safer/easier.
+
+        await prisma.$transaction([
+            prisma.rABLine.deleteMany({ where: { rabId: id } }),
+            prisma.rAB.update({
+                where: { id },
+                data: {
+                    fiscalYear,
+                    fiscalMonth,
+                    currency,
+                    totalBudget: new Prisma.Decimal(grandTotal),
+                    remainingBudget: new Prisma.Decimal(grandTotal),
+                    usedBudget: new Prisma.Decimal(0),
+                    status: 'DRAFT', // Reset to DRAFT
+                    rejectionReason: null, // Clear rejection reason
+                    // createdById: userId, // Keep original creator? Or update? usually keep.
+                    updatedAt: new Date(),
+                    rabLines: {
+                        createMany: {
+                            data: lineData,
+                        },
+                    },
+                },
+            })
+        ]);
+
+        revalidatePath('/budget');
+        return { success: true };
+
+    } catch (error: any) {
+        console.error('Failed to update RAB:', error);
+        return { success: false, error: error.message || 'Failed to update RAB' };
+    }
+}
+
 export async function getAllItems() {
     try {
         const items = await prisma.item.findMany({
@@ -257,12 +319,13 @@ export async function approveRAB(id: string, userId: string) {
     }
 }
 
-export async function rejectRAB(id: string) {
+export async function rejectRAB(id: string, reason: string) {
     try {
         await prisma.rAB.update({
             where: { id },
             data: {
-                status: 'REJECTED'
+                status: 'REJECTED',
+                rejectionReason: reason
             }
         });
         revalidatePath('/budget');

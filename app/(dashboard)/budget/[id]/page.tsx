@@ -69,6 +69,8 @@ export default function RABDetailPage() {
                 return 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400';
             case 'PENDING':
                 return 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400';
+            case 'REJECTED':
+                return 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400';
             default:
                 return 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-400';
         }
@@ -98,8 +100,32 @@ export default function RABDetailPage() {
                     <span className={`px-4 py-2 rounded-full text-sm font-semibold ${getStatusColor(rab.status)}`}>
                         {rab.status}
                     </span>
+                    {rab.status === 'REJECTED' && (
+                        <Link
+                            href={`/budget/input?editId=${rab.id}`}
+                            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors text-sm font-semibold"
+                        >
+                            <FileText size={16} />
+                            Revise
+                        </Link>
+                    )}
                 </div>
             </div>
+
+            {/* Rejection Reason Card */}
+            {rab.status === 'REJECTED' && rab.rejectionReason && (
+                <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 animate-slideDown">
+                    <div className="flex items-start gap-3">
+                        <div className="p-2 bg-red-100 dark:bg-red-900/30 rounded-lg shrink-0">
+                            <ArrowLeft className="text-red-600 dark:text-red-400 rotate-180" size={24} />
+                        </div>
+                        <div>
+                            <h3 className="font-semibold text-red-800 dark:text-red-300">Rejection Reason</h3>
+                            <p className="text-red-700 dark:text-red-400 mt-1">{rab.rejectionReason}</p>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {/* Summary Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
