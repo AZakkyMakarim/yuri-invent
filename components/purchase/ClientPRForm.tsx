@@ -192,8 +192,9 @@ export default function ClientPRForm({ vendors: initialVendors, rabs, initialDat
         }
 
         // Case 2 & 3: RAB selected - check if items exceed or not in RAB
+        // Case 2 & 3: RAB selected - check if items exceed or not in RAB
         const selectedRab = rabs.find(r => r.id === selectedRabId);
-        if (!selectedRab?.lines) {
+        if (!selectedRab?.rabLines) {
             // RAB has no lines, treat as no RAB
             setRequiresJustification(true);
             setItemsExceedingBudget(
@@ -210,7 +211,7 @@ export default function ClientPRForm({ vendors: initialVendors, rabs, initialDat
         const exceedingItems: any[] = [];
 
         for (const item of items) {
-            const rabLine = selectedRab.lines.find((l: any) => l.itemId === item.itemId);
+            const rabLine = selectedRab.rabLines.find((l: any) => l.itemId === item.itemId);
 
             if (!rabLine) {
                 // Item not in RAB
