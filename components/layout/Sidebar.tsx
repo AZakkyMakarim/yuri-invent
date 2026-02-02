@@ -89,8 +89,8 @@ const navItems: NavItem[] = [
         key: 'adjustment',
         icon: <Settings2 size={20} />,
         children: [
-            { key: 'adjustmentList', href: '/adjustment', permission: 'adjustment_list_input' },
-            { key: 'adjustmentVerification', href: '/adjustment/verification', permission: 'adjustment_verification' },
+            { key: 'adjustmentList', href: '/stock-adjustment', permission: 'adjustment_list_input' },
+            { key: 'adjustmentVerification', href: '/stock-adjustment/verification', permission: 'adjustment_verification' },
         ],
     },
     {

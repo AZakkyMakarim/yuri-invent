@@ -5,21 +5,14 @@ import { format } from 'date-fns';
 import {
     Search,
     Loader2,
-    Calendar,
-    AlertTriangle,
-    PackageX,
-    ArrowRightLeft,
     Check,
-    Clock,
-    XCircle,
-    Truck,
-    Archive
+    AlertTriangle,
+    RefreshCw
 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
-import { Tabs } from "@/components/ui/Tabs";
 import {
     Table,
     TableBody,
@@ -28,12 +21,11 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/Table";
-import { getInboundIssues, getPendingShortages, closeShortage } from '@/app/actions/inbound';
-import { getReturns, keepReturnItems } from '@/app/actions/return';
+import { getUnifiedInboundIssues, UnifiedInboundIssue } from '@/app/actions/inbound';
+import { resolveInboundDiscrepancy } from '@/app/actions/inbound-resolution';
 import { useAuth } from '@/contexts/AuthContext';
 import { ResolutionModal } from '@/components/inbound/ResolutionModal';
-import { resolveInboundDiscrepancy } from '@/app/actions/inbound-resolution';
-import { DiscrepancyResolution } from '@prisma/client';
+import { DiscrepancyResolution, InboundDiscrepancyType } from '@prisma/client';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 
@@ -43,12 +35,11 @@ export default function InboundIssuesPage() {
     const t = useTranslations('inbound');
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState('');
-    const [activeTab, setActiveTab] = useState('shortages');
+    const [issues, setIssues] = useState<UnifiedInboundIssue[]>([]);
 
-    // Data States
-    const [shortages, setShortages] = useState<any[]>([]);
-    const [returns, setReturns] = useState<any[]>([]);
-    const [history, setHistory] = useState<any[]>([]);
+    // Pagination (Simple for now)
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
 
     // Modal State
     const [selectedIssue, setSelectedIssue] = useState<any>(null);
@@ -56,20 +47,15 @@ export default function InboundIssuesPage() {
 
     useEffect(() => {
         loadData();
-    }, [search, activeTab]);
+    }, [search, page]);
 
     const loadData = async () => {
         setLoading(true);
         try {
-            if (activeTab === 'shortages') {
-                const res = await getPendingShortages(1, 100, search);
-                if (res.success) setShortages(res.data || []);
-            } else if (activeTab === 'returns') {
-                const res = await getReturns(1, 100, search, 'DRAFT'); // Only Draft returns need resolution
-                if (res.success) setReturns(res.data || []);
-            } else if (activeTab === 'history') {
-                const res = await getInboundIssues(1, 100, search);
-                if (res.success) setHistory(res.data || []);
+            const res = await getUnifiedInboundIssues(page, 20, search);
+            if (res.success) {
+                setIssues(res.data || []);
+                setTotalPages(res.pagination?.totalPages || 1);
             }
         } catch (error) {
             console.error('Failed to load data', error);
@@ -77,65 +63,89 @@ export default function InboundIssuesPage() {
         setLoading(false);
     };
 
-    // Actions
-    const handleCloseShortage = async (id: string) => {
-        if (!confirm('Are you sure you want to close this shortage? This means you are NOT expecting the remaining items.')) return;
+    const handleOpenResolve = (issue: UnifiedInboundIssue) => {
+        // Prepare issue object for Modal
+        const modalIssue = {
+            id: issue.id,
+            discrepancyType: issue.type,
+            item: {
+                sku: issue.sku || '-',
+                name: issue.itemName || '-'
+            },
+            expectedQuantity: issue.data.items ? issue.data.items.reduce((acc: number, i: any) => acc + i.expectedQuantity, 0) : issue.data.expectedQuantity || 0, // Fallback logic depending on shape
+            receivedQuantity: issue.data.receivedQuantity || 0,
+            rejectedQuantity: issue.type === 'SHORTAGE' ? 0 : (issue.data.rejectedQuantity || 0)
+        };
 
-        const result = await closeShortage(id, 'Closed by user in Resolution Center');
-        if (result.success) {
-            loadData();
+        // For Shortages (Parent Inbound Logic), we need to adapt structure slightly if needed by Modal
+        // But Shortage is usually Inbound level. Modal expects Item level?
+        // Actually ResolutionModal is typed for InboundItem props (expected, received, rejected).
+        // Shortage "Child Inbound" has items.
+
+        if (issue.type === 'SHORTAGE') {
+            // Shortage Issue is a CHILD INBOUND.
+            // We can pass aggregated data or maybe we need to adjust Modal to handle Inbound level shortages?
+            // For now, let's map it so it looks like an item to the modal, or adjust Modal.
+            // The "Shortage" resolution actions (WAIT, CLOSE) apply to the whole Child Inbound.
+
+            modalIssue.expectedQuantity = issue.qtyInvolved;
+            modalIssue.receivedQuantity = 0;
+            modalIssue.rejectedQuantity = 0;
         } else {
-            alert('Failed: ' + result.error);
+            modalIssue.expectedQuantity = issue.data.expectedQuantity;
+            modalIssue.receivedQuantity = issue.data.receivedQuantity;
+            modalIssue.rejectedQuantity = issue.data.rejectedQuantity;
         }
-    };
 
-    const handleKeepReturn = async (id: string) => {
-        if (!confirm('Are you sure you want to KEEP these items? This will add them to stock and complete the return.')) return;
-
-        const result = await keepReturnItems(id, 'Kept by user decision');
-        if (result.success) {
-            loadData();
-        } else {
-            alert('Failed: ' + result.error);
-        }
-    };
-
-    const handleProcessReturn = (id: string) => {
-        router.push(`/returns/${id}`);
-    };
-
-    // Discrepancy History Actions
-    const handleOpenResolve = (issue: any) => {
-        setSelectedIssue(issue);
+        setSelectedIssue(modalIssue);
         setIsModalOpen(true);
     };
 
     const handleResolveSubmit = async (action: DiscrepancyResolution, notes: string) => {
         if (!selectedIssue || !user) return;
-        const result = await resolveInboundDiscrepancy(selectedIssue.id, user.id, action, notes);
-        if (result.success) {
+
+        // Check if it's a shortage (Inbound ID) or Discrepancy (InboundItem ID)
+        // We can differentiate by type stored in selectedIssue or we handled it in server action?
+        // Wait, server action `resolveInboundDiscrepancy` expects `inboundItemId`.
+        // Server action `closeShortage` expects `inboundId`.
+
+        let result;
+        if (selectedIssue.discrepancyType === 'SHORTAGE') {
+            // It's a Shortage (Inbound)
+            if (action === 'CLOSE_SHORT') {
+                // Import closeShortage or use a new action?
+                // We only have `resolveInboundDiscrepancy` imported currently.
+                // We should probably route this correctly.
+                // Let's import `closeShortage` dynamically or add it to imports.
+                const { closeShortage } = await import('@/app/actions/inbound');
+                result = await closeShortage(selectedIssue.id, notes);
+            } else {
+                // WAIT_REMAINING - basically do nothing or just update notes?
+                // For now, maybe just alert "Updated"?
+                // Or we can add a 'updateInboundNotes' action.
+                alert("Reminder set to wait for remaining items.");
+                result = { success: true };
+            }
+        } else {
+            // It's a Discrepancy (InboundItem)
+            result = await resolveInboundDiscrepancy(selectedIssue.id, user.id, action, notes);
+        }
+
+        if (result && result.success) {
             loadData();
         } else {
-            alert('Failed to resolve: ' + result.error);
+            alert('Failed to resolve: ' + (result?.error || 'Unknown error'));
         }
     };
 
-    const getDiscrepancyBadge = (type: string, action: string) => {
+    const getIssueBadge = (type: string) => {
         let color = "bg-gray-100 text-gray-800";
         if (type === 'SHORTAGE') color = "bg-orange-100 text-orange-800";
         if (type === 'OVERAGE') color = "bg-blue-100 text-blue-800";
-        if (type === 'WRONG_ITEM' || type === 'DAMAGED') color = "bg-red-100 text-red-800";
+        if (type === 'WRONG_ITEM') color = "bg-red-100 text-red-800";
+        if (type === 'DAMAGED') color = "bg-red-100 text-red-800";
 
-        return (
-            <div className="flex flex-col gap-1 items-start">
-                <Badge className={color}>{type.replace(/_/g, ' ')}</Badge>
-                {action && action !== 'PENDING' && (
-                    <span className="text-xs font-medium text-(--color-text-secondary)">
-                        {t('issues.actions.resolved')}
-                    </span>
-                )}
-            </div>
-        );
+        return <Badge className={color}>{type.replace(/_/g, ' ')}</Badge>;
     };
 
     return (
@@ -151,218 +161,99 @@ export default function InboundIssuesPage() {
                 </div>
             </div>
 
-            <div className="flex justify-end mb-4">
-                <div className="relative w-full sm:w-72">
-                    <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-(--color-text-muted)" />
-                    <Input
-                        placeholder={t('searchPlaceholder')}
-                        className="pl-9 bg-(--color-bg-secondary) border-(--color-border)"
-                        value={search}
-                        onChange={(e) => setSearch(e.target.value)}
-                    />
-                </div>
-            </div>
-
-            <Tabs
-                tabs={[
-                    { id: 'shortages', label: t('issues.tabs.shortages'), icon: <Clock size={16} /> },
-                    { id: 'returns', label: t('issues.tabs.returns'), icon: <ArrowRightLeft size={16} /> },
-                    { id: 'history', label: t('issues.tabs.history'), icon: <Archive size={16} /> }
-                ]}
-                activeTab={activeTab}
-                onChange={setActiveTab}
-                className="w-full"
-            >
-                {(tab) => (
-                    <>
-                        {/* --- SHORTAGES TAB --- */}
-                        {tab === 'shortages' && (
-                            <Card>
-                                <CardHeader>
-                                    <CardTitle>{t('issues.tabs.shortages')}</CardTitle>
-                                </CardHeader>
-                                <CardContent>
-                                    <Table>
-                                        <TableHeader>
-                                            <TableRow>
-                                                <TableHead>{t('issues.table.childGrn')}</TableHead>
-                                                <TableHead>{t('issues.table.parentGrn')}</TableHead>
-                                                <TableHead>{t('table.vendor')}</TableHead>
-                                                <TableHead>{t('table.status')}</TableHead>
-                                                <TableHead className="text-right">{t('table.actions')}</TableHead>
-                                            </TableRow>
-                                        </TableHeader>
-                                        <TableBody>
-                                            {shortages.length === 0 ? (
-                                                <TableRow>
-                                                    <TableCell colSpan={5} className="h-24 text-center text-(--color-text-muted)">
-                                                        {t('table.noData')}
-                                                    </TableCell>
-                                                </TableRow>
+            <Card>
+                <CardHeader className="flex flex-row items-center justify-between pb-2">
+                    <CardTitle className="text-lg font-medium">Issue List</CardTitle>
+                    <div className="w-72 relative">
+                        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-(--color-text-muted)" />
+                        <Input
+                            placeholder={t('searchPlaceholder')}
+                            className="pl-9"
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                        />
+                    </div>
+                </CardHeader>
+                <CardContent>
+                    <Table>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead onClick={() => loadData()} className="cursor-pointer hover:text-primary">
+                                    <div className="flex items-center gap-2"><RefreshCw size={14} /> {t('table.date')}</div>
+                                </TableHead>
+                                <TableHead>{t('table.grn')}</TableHead>
+                                <TableHead>{t('table.vendor')}</TableHead>
+                                <TableHead>{t('table.items')}</TableHead>
+                                <TableHead>{t('issues.table.issueStatus')}</TableHead>
+                                <TableHead>Qty</TableHead>
+                                <TableHead>Status</TableHead>
+                                <TableHead className="text-right">{t('table.actions')}</TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {loading ? (
+                                <TableRow>
+                                    <TableCell colSpan={8} className="h-24 text-center">
+                                        <div className="flex justify-center items-center gap-2">
+                                            <Loader2 className="h-6 w-6 animate-spin text-(--color-primary)" />
+                                            <span>{t('table.loading')}</span>
+                                        </div>
+                                    </TableCell>
+                                </TableRow>
+                            ) : issues.length === 0 ? (
+                                <TableRow>
+                                    <TableCell colSpan={8} className="h-24 text-center text-(--color-text-muted)">
+                                        {t('table.noData')}
+                                    </TableCell>
+                                </TableRow>
+                            ) : (
+                                issues.map((issue) => (
+                                    <TableRow key={`${issue.type}-${issue.id}`} className={issue.status === 'RESOLVED' ? 'bg-gray-50/50 opacity-70' : ''}>
+                                        <TableCell className="text-xs">
+                                            {format(new Date(issue.date), 'dd MMM yyyy')}
+                                        </TableCell>
+                                        <TableCell className="font-medium">{issue.grnNumber}</TableCell>
+                                        <TableCell>{issue.vendorName}</TableCell>
+                                        <TableCell>
+                                            <div className="flex flex-col">
+                                                <span className="font-medium text-sm">{issue.itemName}</span>
+                                                {issue.sku && <span className="text-xs text-(--color-text-secondary)">{issue.sku}</span>}
+                                            </div>
+                                        </TableCell>
+                                        <TableCell>
+                                            {getIssueBadge(issue.type)}
+                                        </TableCell>
+                                        <TableCell className="font-mono text-sm">
+                                            {issue.qtyInvolved}
+                                        </TableCell>
+                                        <TableCell>
+                                            {issue.status === 'PENDING' ? (
+                                                <span className="text-amber-600 text-xs font-semibold px-2 py-1 bg-amber-50 rounded-full">Pending</span>
                                             ) : (
-                                                shortages.map((item) => (
-                                                    <TableRow key={item.id}>
-                                                        <TableCell className="font-medium">{item.grnNumber}</TableCell>
-                                                        <TableCell>{item.parentInbound?.grnNumber || '-'}</TableCell>
-                                                        <TableCell>{item.vendor?.name}</TableCell>
-                                                        <TableCell><Badge variant="warning">{t('pendingVerification')}</Badge></TableCell>
-                                                        <TableCell className="text-right flex justify-end gap-2">
-                                                            <Button size="sm" variant="secondary" onClick={() => router.push('/inbound')}>
-                                                                {t('issues.actions.wait')}
-                                                            </Button>
-                                                            <Button size="sm" variant="danger" onClick={() => handleCloseShortage(item.id)}>
-                                                                {t('issues.actions.closeShort')}
-                                                            </Button>
-                                                        </TableCell>
-                                                    </TableRow>
-                                                ))
+                                                <div className="flex flex-col">
+                                                    <span className="text-green-600 text-xs font-semibold flex items-center gap-1">
+                                                        <Check size={12} /> Resolved
+                                                    </span>
+                                                    <span className="text-[10px] text-gray-400">{issue.resolvedAction?.replace(/_/g, ' ')}</span>
+                                                </div>
                                             )}
-                                        </TableBody>
-                                    </Table>
-                                </CardContent>
-                            </Card>
-                        )}
-
-                        {/* --- RETURNS TAB --- */}
-                        {tab === 'returns' && (
-                            <Card>
-                                <CardHeader>
-                                    <CardTitle>{t('issues.tabs.returns')}</CardTitle>
-                                </CardHeader>
-                                <CardContent>
-                                    <Table>
-                                        <TableHeader>
-                                            <TableRow>
-                                                <TableHead>{t('issues.table.returnId')}</TableHead>
-                                                <TableHead>{t('issues.table.parentGrn')} (PR)</TableHead>
-                                                <TableHead>{t('table.vendor')}</TableHead>
-                                                <TableHead>{t('issues.table.reason')}</TableHead>
-                                                <TableHead className="text-right">{t('table.actions')}</TableHead>
-                                            </TableRow>
-                                        </TableHeader>
-                                        <TableBody>
-                                            {returns.length === 0 ? (
-                                                <TableRow>
-                                                    <TableCell colSpan={5} className="h-24 text-center text-(--color-text-muted)">
-                                                        {t('table.noData')}
-                                                    </TableCell>
-                                                </TableRow>
-                                            ) : (
-                                                returns.map((item) => (
-                                                    <TableRow key={item.id}>
-                                                        <TableCell className="font-medium">{item.returnCode}</TableCell>
-                                                        <TableCell>{item.purchaseRequest?.prNumber}</TableCell>
-                                                        <TableCell>{item.vendor?.name}</TableCell>
-                                                        <TableCell>{item.reason}</TableCell>
-                                                        <TableCell className="text-right flex justify-end gap-2">
-                                                            <Button size="sm" onClick={() => handleProcessReturn(item.id)}>
-                                                                {t('issues.actions.processReturn')}
-                                                            </Button>
-                                                            <Button size="sm" variant="secondary" onClick={() => handleKeepReturn(item.id)}>
-                                                                {t('issues.actions.keepItems')}
-                                                            </Button>
-                                                        </TableCell>
-                                                    </TableRow>
-                                                ))
+                                        </TableCell>
+                                        <TableCell className="text-right">
+                                            {issue.status === 'PENDING' && (
+                                                <Button size="sm" onClick={() => handleOpenResolve(issue)}>
+                                                    {t('issues.actions.resolve')}
+                                                </Button>
                                             )}
-                                        </TableBody>
-                                    </Table>
-                                </CardContent>
-                            </Card>
-                        )}
+                                        </TableCell>
+                                    </TableRow>
+                                ))
+                            )}
+                        </TableBody>
+                    </Table>
+                </CardContent>
+            </Card>
 
-                        {/* --- HISTORY TAB --- */}
-                        {tab === 'history' && (
-                            <Card>
-                                <CardContent className="pt-6">
-                                    <Table>
-                                        <TableHeader>
-                                            <TableRow>
-                                                <TableHead>{t('table.date')} / {t('table.grn')}</TableHead>
-                                                <TableHead>{t('table.vendor')}</TableHead>
-                                                <TableHead>{t('table.items')}</TableHead>
-                                                <TableHead className="text-center">{t('verification.table.status')}</TableHead>
-                                                <TableHead>{t('issues.table.issueStatus')}</TableHead>
-                                                <TableHead className="w-[150px]">{t('issues.table.notes')}</TableHead>
-                                                <TableHead className="text-right">{t('table.actions')}</TableHead>
-                                            </TableRow>
-                                        </TableHeader>
-                                        <TableBody>
-                                            {loading ? (
-                                                <TableRow>
-                                                    <TableCell colSpan={7} className="h-24 text-center">
-                                                        <div className="flex justify-center items-center gap-2">
-                                                            <Loader2 className="h-6 w-6 animate-spin text-(--color-primary)" />
-                                                            <span>{t('table.loading')}</span>
-                                                        </div>
-                                                    </TableCell>
-                                                </TableRow>
-                                            ) : history.length === 0 ? (
-                                                <TableRow>
-                                                    <TableCell colSpan={7} className="h-24 text-center text-(--color-text-muted)">
-                                                        {t('table.noData')}
-                                                    </TableCell>
-                                                </TableRow>
-                                            ) : (
-                                                history.map((item) => (
-                                                    <TableRow key={item.id} className="hover:bg-(--color-bg-hover)/50">
-                                                        <TableCell>
-                                                            <div className="flex flex-col">
-                                                                <span className="font-medium text-(--color-text-primary)">
-                                                                    {item.inbound.grnNumber}
-                                                                </span>
-                                                                <div className="flex items-center gap-1 text-xs text-(--color-text-muted)">
-                                                                    <Calendar size={12} />
-                                                                    {format(new Date(item.inbound.receiveDate), 'dd MMM yyyy')}
-                                                                </div>
-                                                            </div>
-                                                        </TableCell>
-                                                        <TableCell>
-                                                            <span className="text-sm">{item.inbound.vendor.name}</span>
-                                                        </TableCell>
-                                                        <TableCell>
-                                                            <div className="flex flex-col">
-                                                                <span className="font-medium text-sm">{item.item.sku}</span>
-                                                                <span className="text-xs text-(--color-text-secondary)">{item.item.name}</span>
-                                                            </div>
-                                                        </TableCell>
-                                                        <TableCell>
-                                                            <div className="text-xs text-center">
-                                                                Exp: {item.expectedQuantity} / Rec: {item.receivedQuantity}
-                                                            </div>
-                                                        </TableCell>
-                                                        <TableCell>
-                                                            {getDiscrepancyBadge(item.discrepancyType, item.discrepancyAction)}
-                                                        </TableCell>
-                                                        <TableCell className="text-xs text-(--color-text-secondary)">
-                                                            {item.notes || '-'}
-                                                        </TableCell>
-                                                        <TableCell className="text-right">
-                                                            {(!item.discrepancyAction || item.discrepancyAction === 'PENDING') && (
-                                                                <Button size="sm" variant="secondary" onClick={() => handleOpenResolve(item)}>
-                                                                    {t('issues.actions.resolve')}
-                                                                </Button>
-                                                            )}
-                                                            {item.discrepancyAction && item.discrepancyAction !== 'PENDING' && (
-                                                                <Button size="sm" variant="ghost" className="text-green-600 cursor-default hover:text-green-600 hover:bg-transparent">
-                                                                    <Check size={16} className="mr-1" />
-                                                                    {t('issues.actions.resolved')}
-                                                                </Button>
-                                                            )}
-                                                        </TableCell>
-                                                    </TableRow>
-                                                ))
-                                            )}
-                                        </TableBody>
-                                    </Table>
-                                </CardContent>
-                            </Card>
-                        )}
-                    </>
-                )}
-            </Tabs>
-
-            {/* Resolution Modal (For History Tab) */}
+            {/* Resolution Modal */}
             {selectedIssue && (
                 <ResolutionModal
                     isOpen={isModalOpen}

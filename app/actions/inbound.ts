@@ -510,3 +510,142 @@ export async function closeShortage(inboundId: string, notes?: string) {
         return { success: false, error: error.message };
     }
 }
+
+export type UnifiedInboundIssue = {
+    id: string; // inbound.id (Shortage) OR inboundItem.id (Discrepancy)
+    type: 'SHORTAGE' | 'OVERAGE' | 'WRONG_ITEM' | 'DAMAGED';
+    date: Date | string;
+    grnNumber: string;
+    vendorName: string;
+    itemName?: string;
+    sku?: string;
+    qtyInvolved: number;
+    status: 'PENDING' | 'RESOLVED';
+    resolvedAction?: string;
+    data: any; // Original Object
+};
+
+export async function getUnifiedInboundIssues(
+    page = 1,
+    limit = 20,
+    search = ''
+): Promise<ActionResponse> {
+    try {
+        // 1. Fetch Shortages (Inbound with PENDING_VERIFICATION and parentInboundId)
+        const shortageWhere: Prisma.InboundWhereInput = {
+            status: 'PENDING_VERIFICATION',
+            parentInboundId: { not: null }
+        };
+        if (search) {
+            shortageWhere.OR = [
+                { grnNumber: { contains: search, mode: 'insensitive' } },
+                { vendor: { name: { contains: search, mode: 'insensitive' } } }
+            ];
+        }
+
+        const shortages = await prisma.inbound.findMany({
+            where: shortageWhere,
+            orderBy: { createdAt: 'desc' },
+            include: {
+                vendor: true,
+                items: { include: { item: true } }, // To calculate expected qty
+            }
+        });
+
+        // 2. Fetch Discrepancies (InboundItem with discrepancyType != NONE)
+        const discrepancyWhere: Prisma.InboundItemWhereInput = {
+            discrepancyType: { not: 'NONE' },
+            // Filter only pending? User wants all issues, maybe filter by status separately?
+            // Let's separate resolved vs pending at UI level if needed, or sort pending first.
+            // discrepancyAction: { equals: null } // If we want only pending
+        };
+        if (search) {
+            discrepancyWhere.OR = [
+                { inbound: { grnNumber: { contains: search, mode: 'insensitive' } } },
+                { item: { name: { contains: search, mode: 'insensitive' } } },
+                { item: { sku: { contains: search, mode: 'insensitive' } } }
+            ];
+        }
+
+        const discrepancies = await prisma.inboundItem.findMany({
+            where: discrepancyWhere,
+            orderBy: { inbound: { receiveDate: 'desc' } },
+            include: {
+                inbound: { include: { vendor: true } },
+                item: true
+            }
+        });
+
+        // 3. Map to Unified Format
+        const unifiedList: UnifiedInboundIssue[] = [];
+
+        // Map Shortages
+        shortages.forEach(s => {
+            // Calculate total expected qty for this child inbound
+            const totalQty = s.items.reduce((acc, i) => acc + i.expectedQuantity, 0);
+            unifiedList.push({
+                id: s.id,
+                type: 'SHORTAGE',
+                date: s.receiveDate,
+                grnNumber: s.grnNumber,
+                vendorName: s.vendor.name,
+                itemName: s.items.length === 1 ? s.items[0].item.name : `${s.items.length} Items`,
+                sku: s.items.length === 1 ? s.items[0].item.sku : undefined,
+                qtyInvolved: totalQty,
+                status: 'PENDING', // Shortages fetched are always pending verification
+                data: serializeDecimal(s)
+            });
+        });
+
+        // Map Discrepancies
+        discrepancies.forEach(d => {
+            let qty = 0;
+            if (d.discrepancyType === 'OVERAGE') {
+                qty = d.receivedQuantity - d.expectedQuantity;
+            } else {
+                qty = d.rejectedQuantity;
+            }
+
+            unifiedList.push({
+                id: d.id,
+                type: d.discrepancyType as any,
+                date: d.inbound.receiveDate,
+                grnNumber: d.inbound.grnNumber,
+                vendorName: d.inbound.vendor.name,
+                itemName: d.item.name,
+                sku: d.item.sku,
+                qtyInvolved: qty,
+                status: (d.discrepancyAction && d.discrepancyAction !== 'PENDING') ? 'RESOLVED' : 'PENDING',
+                resolvedAction: d.discrepancyAction || undefined,
+                data: serializeDecimal(d)
+            });
+        });
+
+        // 4. Sort (Pending first, then Date desc)
+        unifiedList.sort((a, b) => {
+            if (a.status === 'PENDING' && b.status !== 'PENDING') return -1;
+            if (a.status !== 'PENDING' && b.status === 'PENDING') return 1;
+            return new Date(b.date).getTime() - new Date(a.date).getTime();
+        });
+
+        // 5. Pagination (Manual slicing)
+        const total = unifiedList.length;
+        const totalPages = Math.ceil(total / limit);
+        const slicedData = unifiedList.slice((page - 1) * limit, page * limit);
+
+        return {
+            success: true,
+            data: slicedData,
+            pagination: {
+                total,
+                page,
+                limit,
+                totalPages
+            }
+        };
+
+    } catch (error: any) {
+        console.error('Failed to fetch Unified Inbound Issues:', error);
+        return { success: false, error: error.message };
+    }
+}

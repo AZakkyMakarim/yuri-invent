@@ -1,0 +1,6 @@
+app/(dashboard)/opname/[id]/sheet/[sheetId]/page.tsx(66,17): error TS18048: 'result.data' is possibly 'undefined'.
+prisma/seed.ts(3,26): error TS2307: Cannot find module '@prisma/adapter-pg' or its corresponding type declarations.
+scripts/check_pr_status.ts(2,30): error TS2307: Cannot find module '../generated_client/client' or its corresponding type declarations.
+scripts/check_pr_status.ts(4,26): error TS2307: Cannot find module '@prisma/adapter-pg' or its corresponding type declarations.
+scripts/seed-items-vendors.ts(5,26): error TS2307: Cannot find module '@prisma/adapter-pg' or its corresponding type declarations.
+scripts/verify-seed.ts(3,26): error TS2307: Cannot find module '@prisma/adapter-pg' or its corresponding type declarations.
