@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter, useParams } from 'next/navigation';
+import { useRouter, useParams, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, FileText, Calendar, DollarSign, Package, User, Clock, CheckCircle } from 'lucide-react';
 import { formatCurrency } from '@/lib/utils';
@@ -10,7 +10,9 @@ import { getRABDetails } from '@/app/actions/rab';
 export default function RABDetailPage() {
     const router = useRouter();
     const params = useParams();
+    const searchParams = useSearchParams();
     const rabId = params.id as string;
+    const backTo = searchParams.get('from') || '/budget';
 
     const [rab, setRab] = useState<any>(null);
     const [isLoading, setIsLoading] = useState(true);
@@ -53,8 +55,8 @@ export default function RABDetailPage() {
             <div className="animate-fadeIn p-6">
                 <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
                     <p className="text-red-700 dark:text-red-400">{error || 'RAB not found'}</p>
-                    <Link href="/budget" className="text-[var(--color-primary)] hover:underline mt-2 inline-block">
-                        ← Back to Budget List
+                    <Link href={backTo} className="text-[var(--color-primary)] hover:underline mt-2 inline-block">
+                        ← Back to {backTo.includes('verification') ? 'Verification' : 'Budget List'}
                     </Link>
                 </div>
             </div>
@@ -78,11 +80,11 @@ export default function RABDetailPage() {
             <div className="flex items-start justify-between">
                 <div className="space-y-2">
                     <Link
-                        href="/budget"
+                        href={backTo}
                         className="flex items-center gap-2 text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] transition-colors"
                     >
                         <ArrowLeft size={18} />
-                        Back to Budget List
+                        Back to {backTo.includes('verification') ? 'Verification' : 'Budget List'}
                     </Link>
                     <div className="flex items-center gap-3">
                         <FileText className="text-[var(--color-primary)]" size={32} />

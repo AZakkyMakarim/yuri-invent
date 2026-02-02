@@ -127,7 +127,7 @@ export default function RABListPage() {
                                         <td className="px-6 py-4 text-sm">{rab.createdBy?.name || 'Unknown'}</td>
                                         <td className="px-6 py-4 text-right flex justify-end gap-2">
                                             <button
-                                                onClick={() => router.push(`/budget/${rab.id}`)}
+                                                onClick={() => router.push(`/budget/${rab.id}?from=/budget`)}
                                                 className="p-1.5 hover:bg-(--color-bg-tertiary) rounded text-(--color-text-secondary)"
                                                 title={t('table.viewDetails')}
                                             >
