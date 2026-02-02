@@ -1,5 +1,5 @@
 // import { prisma } from '@/lib/prisma';
-import { PrismaClient } from '../generated_client/client';
+import { PrismaClient } from '@prisma/client';
 import { Pool } from 'pg';
 import { PrismaPg } from '@prisma/adapter-pg';
 
@@ -22,5 +22,4 @@ async function main() {
     }
 }
 
-main();
 main();
