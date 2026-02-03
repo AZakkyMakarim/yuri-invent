@@ -251,6 +251,13 @@ export default function ClientPRForm({ vendors: initialVendors, rabs, initialDat
             alert(t('warnings.noVendor'));
             return;
         }
+
+        // Validate Warehouse
+        if (!selectedWarehouseId) {
+            alert('Please select a Destination Warehouse');
+            return;
+        }
+
         if (items.length === 0) {
             alert(t('warnings.noItems'));
             return;
@@ -405,20 +412,15 @@ export default function ClientPRForm({ vendors: initialVendors, rabs, initialDat
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-(--color-text-secondary) mb-1">
-                                Destination Warehouse
+                                Destination Warehouse <span className="text-red-500">*</span>
                             </label>
-                            <select
-                                className="w-full h-10 px-3 rounded-md border border-input bg-background"
+                            <SearchableDropdown
+                                options={warehouses.map(w => ({ value: w.id, label: `${w.name} ${w.isDefault ? '(Default)' : ''}` }))}
                                 value={selectedWarehouseId}
-                                onChange={e => setSelectedWarehouseId(e.target.value)}
-                            >
-                                <option value="">Select Warehouse (Optional)</option>
-                                {warehouses.map(w => (
-                                    <option key={w.id} value={w.id}>
-                                        {w.name} {w.isDefault ? '(Default)' : ''}
-                                    </option>
-                                ))}
-                            </select>
+                                onChange={(val) => setSelectedWarehouseId(val as string)}
+                                placeholder="Select Destination Warehouse"
+                                className="w-full"
+                            />
                             <p className="text-xs text-(--color-text-muted) mt-1">If empty, will default to Main Warehouse during receiving.</p>
                         </div>
                     </CardContent>

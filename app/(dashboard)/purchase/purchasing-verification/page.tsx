@@ -98,7 +98,8 @@ export default function PurchasingVerificationPage() {
                     poDocumentPath: data.poDocumentPath,
                     shippingTrackingNumber: data.shippingTrackingNumber,
                     estimatedShippingDate: data.estimatedShippingDate,
-                    notes: data.purchasingNotes
+                    notes: data.purchasingNotes,
+                    verifiedItems: data.verifiedItems
                 }
             );
 
@@ -188,9 +189,9 @@ export default function PurchasingVerificationPage() {
                                             <TableCell>{pr.vendor?.name}</TableCell>
                                             <TableCell className="text-xs font-medium">
                                                 <span className={`px-2 py-1 rounded text-[10px] ${pr.status === 'CONFIRMED' ? 'bg-blue-100 text-blue-800' :
-                                                        pr.status === 'WAITING_PAYMENT' ? 'bg-orange-100 text-orange-800' :
-                                                            pr.status === 'PAYMENT_RELEASED' ? 'bg-green-100 text-green-800' :
-                                                                'bg-gray-100 text-gray-800'
+                                                    pr.status === 'WAITING_PAYMENT' ? 'bg-orange-100 text-orange-800' :
+                                                        pr.status === 'PAYMENT_RELEASED' ? 'bg-green-100 text-green-800' :
+                                                            'bg-gray-100 text-gray-800'
                                                     }`}>
                                                     {pr.status.replace(/_/g, ' ')}
                                                 </span>
@@ -256,6 +257,7 @@ export default function PurchasingVerificationPage() {
                     }}
                     onVerify={handleVerify}
                     purchaseRequest={selectedPR}
+                    vendorType={selectedPR.vendor?.vendorType}
                 />
             )}
         </div>

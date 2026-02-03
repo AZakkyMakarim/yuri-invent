@@ -527,7 +527,10 @@
             "DRAFT": "Draft",
             "PENDING_MANAGER_APPROVAL": "Pending Manager",
             "PENDING_PURCHASING_APPROVAL": "Pending Purchasing",
+            "CONFIRMED": "Confirmed",
+            "WAITING_PAYMENT": "Waiting Payment",
             "PAYMENT_RELEASED": "Payment Released",
+            "PO_ISSUED": "PO Issued",
             "APPROVED": "Approved",
             "REJECTED": "Rejected",
             "CANCELLED": "Cancelled"

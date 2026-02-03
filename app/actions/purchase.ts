@@ -216,7 +216,16 @@ export async function getPurchaseRequestById(id: string) {
                 vendor: { include: { suppliedItems: { include: { item: true } } } },
                 rab: true,
                 targetWarehouse: true,
-                items: { include: { item: true } },
+                items: {
+                    include: {
+                        item: {
+                            include: {
+                                category: true,
+                                uom: true
+                            }
+                        }
+                    }
+                },
                 createdBy: { select: { name: true } },
                 managerApprovedBy: { select: { name: true } },
                 purchasingAcceptedBy: { select: { name: true } }
@@ -379,31 +388,75 @@ export async function confirmPurchaseRequest(
     prId: string,
     userId: string,
     paymentType: 'SPK' | 'NON_SPK',
-    vendorId: string, // Purchasing can override vendor here
-    notes?: string
+    vendorId: string,
+    notes?: string,
+    proofDocumentPath?: string,
+    verifiedItems?: Array<{ itemId: string; realPrice: number; notes?: string }>
 ) {
     try {
         const pr = await prisma.purchaseRequest.findUnique({
-            where: { id: prId }
+            where: { id: prId },
+            include: { items: true }
         });
 
         if (!pr) throw new Error('PR not found');
         if (pr.status !== 'PENDING_PURCHASING_APPROVAL') {
-            throw new Error('PR is not pending purchasing approval');
+            throw new Error(`PR is not pending purchasing approval. Current status: ${pr.status}`);
         }
 
         const newStatus = paymentType === 'SPK' ? 'CONFIRMED' : 'WAITING_PAYMENT';
 
-        await prisma.purchaseRequest.update({
-            where: { id: prId },
-            data: {
-                status: newStatus,
-                paymentType: paymentType,
-                vendorId: vendorId, // Update vendor if changed
-                purchasingAcceptedById: userId,
-                purchasingAcceptedAt: new Date(),
-                purchasingNotes: notes
+        await prisma.$transaction(async (tx) => {
+            let totalAmount = pr.totalAmount;
+
+            // Update items with real price if provided
+            if (verifiedItems && verifiedItems.length > 0) {
+                let newTotal = 0;
+                for (const vItem of verifiedItems) {
+                    // Fix: Directly query PRItem using itemId (ItemMaster ID) and prId
+                    const prItem = await tx.purchaseRequestItem.findFirst({
+                        where: {
+                            purchaseRequestId: prId,
+                            itemId: vItem.itemId
+                        }
+                    });
+
+                    if (prItem) {
+                        const quantity = Number(prItem.quantity);
+                        const realPrice = Number(vItem.realPrice);
+                        const totalPrice = quantity * realPrice;
+
+                        await tx.purchaseRequestItem.update({
+                            where: { id: prItem.id },
+                            data: {
+                                unitPrice: realPrice,
+                                totalPrice: totalPrice,
+                                notes: vItem.notes || prItem.notes
+                            }
+                        });
+                        newTotal += totalPrice;
+                    }
+                }
+                // Recalculate total if items were updated
+                // Use default import or cast to any to bypass strict Decimal check if simple number fails
+                totalAmount = newTotal as any;
             }
+
+            // Update PR header
+            await tx.purchaseRequest.update({
+                where: { id: prId },
+                data: {
+                    status: newStatus,
+                    paymentType: paymentType,
+                    vendorId: vendorId,
+                    purchasingAcceptedById: userId,
+                    purchasingAcceptedAt: new Date(),
+                    purchasingNotes: notes,
+                    totalAmount: totalAmount,
+                    // Use poDocumentPath to store the proof document (SPK/Invoice)
+                    poDocumentPath: proofDocumentPath
+                }
+            });
         });
 
         revalidatePath('/purchase');
@@ -411,6 +464,7 @@ export async function confirmPurchaseRequest(
 
         return { success: true };
     } catch (error: any) {
+        console.error('Confirm PR Error:', error);
         return { success: false, error: error.message };
     }
 }
@@ -481,11 +535,17 @@ export async function createPurchaseOrder(
         shippingTrackingNumber?: string;
         estimatedShippingDate?: Date;
         notes?: string;
+        verifiedItems: Array<{
+            itemId: string;
+            realPrice: number;
+            notes: string;
+        }>;
     }
 ) {
     try {
         const pr = await prisma.purchaseRequest.findUnique({
-            where: { id: prId }
+            where: { id: prId },
+            include: { items: true }
         });
 
         if (!pr) throw new Error('PR not found');
@@ -514,16 +574,49 @@ export async function createPurchaseOrder(
 
         // 4. Update PR and Create Inbound in transaction
         const result = await prisma.$transaction(async (tx) => {
+            // A. Update Item Prices & Notes FIRST
+            let newTotalAmount = 0;
+
+            // Map verified items for easy lookup
+            const verifiedMap = new Map(details.verifiedItems?.map(v => [v.itemId, v]) || []);
+
+            // We need to loop through existing items to update them
+            // Since we can't easily do bulk update with different values, we iterate.
+            // But to avoid N queries, we can try to be smart, or just accept N queries for now (items usually < 20).
+            for (const item of pr.items) {
+                const verified = verifiedMap.get(item.itemId);
+                if (verified) {
+                    const quantity = item.quantity; // Keep original qty
+                    const newPrice = new Prisma.Decimal(verified.realPrice);
+                    const newTotal = new Prisma.Decimal(quantity * verified.realPrice);
+
+                    await tx.purchaseRequestItem.update({
+                        where: { id: item.id },
+                        data: {
+                            unitPrice: newPrice,
+                            totalPrice: newTotal,
+                            notes: verified.notes ? (item.notes ? `${item.notes}\n${verified.notes}` : verified.notes) : item.notes
+                        }
+                    });
+                    newTotalAmount += (quantity * verified.realPrice);
+                } else {
+                    // If not in verified map, keep old price (shouldn't happen if UI passes all)
+                    newTotalAmount += Number(item.totalPrice);
+                }
+            }
+
+            // B. Update PR Header
             const updatedPR = await tx.purchaseRequest.update({
                 where: { id: prId },
                 data: {
                     status: 'PO_ISSUED',
+                    totalAmount: new Prisma.Decimal(newTotalAmount), // Update with Real Total
                     poNumber,
                     poSentAt: new Date(),
                     poDocumentPath: details.poDocumentPath,
                     shippingTrackingNumber: details.shippingTrackingNumber,
                     estimatedShippingDate: details.estimatedShippingDate,
-                    purchasingNotes: details.notes ? (pr.purchasingNotes + '\n' + details.notes) : pr.purchasingNotes
+                    purchasingNotes: details.notes ? (pr.purchasingNotes ? `${pr.purchasingNotes}\n${details.notes}` : details.notes) : pr.purchasingNotes
                 },
                 include: { items: true }
             });
@@ -572,4 +665,8 @@ export async function searchPurchaseRequests(query: string) {
         console.error('Failed to search PRs:', error);
         return [];
     }
+}
+
+export async function getPurchaseRequestsPendingConfirmation() {
+    return getPurchaseRequests(1, 100, '', 'PENDING_PURCHASING_APPROVAL');
 }

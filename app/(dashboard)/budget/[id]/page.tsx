@@ -42,8 +42,8 @@ export default function RABDetailPage() {
             <div className="animate-fadeIn p-6">
                 <div className="flex items-center justify-center h-96">
                     <div className="text-center">
-                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--color-primary)] mx-auto mb-4"></div>
-                        <p className="text-[var(--color-text-secondary)]">Loading Budget Plan...</p>
+                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-(--color-primary) mx-auto mb-4"></div>
+                        <p className="text-(--color-text-secondary)">Loading Budget Plan...</p>
                     </div>
                 </div>
             </div>
@@ -55,7 +55,7 @@ export default function RABDetailPage() {
             <div className="animate-fadeIn p-6">
                 <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
                     <p className="text-red-700 dark:text-red-400">{error || 'RAB not found'}</p>
-                    <Link href={backTo} className="text-[var(--color-primary)] hover:underline mt-2 inline-block">
+                    <Link href={backTo} className="text-(--color-primary) hover:underline mt-2 inline-block">
                         ← Back to {backTo.includes('verification') ? 'Verification' : 'Budget List'}
                     </Link>
                 </div>
@@ -83,16 +83,16 @@ export default function RABDetailPage() {
                 <div className="space-y-2">
                     <Link
                         href={backTo}
-                        className="flex items-center gap-2 text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] transition-colors"
+                        className="flex items-center gap-2 text-(--color-text-secondary) hover:text-(--color-primary) transition-colors"
                     >
                         <ArrowLeft size={18} />
                         Back to {backTo.includes('verification') ? 'Verification' : 'Budget List'}
                     </Link>
                     <div className="flex items-center gap-3">
-                        <FileText className="text-[var(--color-primary)]" size={32} />
+                        <FileText className="text-(--color-primary)" size={32} />
                         <div>
                             <h1 className="text-3xl font-bold">{rab.code}</h1>
-                            <p className="text-[var(--color-text-secondary)]">Budget Plan Detail</p>
+                            <p className="text-(--color-text-secondary)">Budget Plan Detail</p>
                         </div>
                     </div>
                 </div>
@@ -130,52 +130,52 @@ export default function RABDetailPage() {
             {/* Summary Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 {/* Period Card */}
-                <div className="bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-lg p-4">
+                <div className="bg-(--color-bg-card) border border-(--color-border) rounded-lg p-4">
                     <div className="flex items-center gap-3">
                         <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
                             <Calendar className="text-blue-600 dark:text-blue-400" size={24} />
                         </div>
                         <div>
-                            <p className="text-xs text-[var(--color-text-secondary)]">Period</p>
+                            <p className="text-xs text-(--color-text-secondary)">Period</p>
                             <p className="text-lg font-bold">{rab.fiscalMonth}/{rab.fiscalYear}</p>
                         </div>
                     </div>
                 </div>
 
                 {/* Total Budget Card */}
-                <div className="bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-lg p-4">
+                <div className="bg-(--color-bg-card) border border-(--color-border) rounded-lg p-4">
                     <div className="flex items-center gap-3">
                         <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-lg">
                             <DollarSign className="text-green-600 dark:text-green-400" size={24} />
                         </div>
                         <div>
-                            <p className="text-xs text-[var(--color-text-secondary)]">Total Budget</p>
+                            <p className="text-xs text-(--color-text-secondary)">Total Budget</p>
                             <p className="text-lg font-bold font-mono">{formatCurrency(Number(rab.totalBudget), rab.currency)}</p>
                         </div>
                     </div>
                 </div>
 
                 {/* Items Count Card */}
-                <div className="bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-lg p-4">
+                <div className="bg-(--color-bg-card) border border-(--color-border) rounded-lg p-4">
                     <div className="flex items-center gap-3">
                         <div className="p-2 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
                             <Package className="text-purple-600 dark:text-purple-400" size={24} />
                         </div>
                         <div>
-                            <p className="text-xs text-[var(--color-text-secondary)]">Total Items</p>
+                            <p className="text-xs text-(--color-text-secondary)">Total Items</p>
                             <p className="text-lg font-bold">{rab.rabLines?.length || 0}</p>
                         </div>
                     </div>
                 </div>
 
                 {/* Created By Card */}
-                <div className="bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-lg p-4">
+                <div className="bg-(--color-bg-card) border border-(--color-border) rounded-lg p-4">
                     <div className="flex items-center gap-3">
                         <div className="p-2 bg-orange-100 dark:bg-orange-900/30 rounded-lg">
                             <User className="text-orange-600 dark:text-orange-400" size={24} />
                         </div>
                         <div>
-                            <p className="text-xs text-[var(--color-text-secondary)]">Created By</p>
+                            <p className="text-xs text-(--color-text-secondary)">Created By</p>
                             <p className="text-sm font-semibold truncate">{rab.createdBy?.name || 'Unknown'}</p>
                         </div>
                     </div>
@@ -183,13 +183,13 @@ export default function RABDetailPage() {
             </div>
 
             {/* Line Items Table */}
-            <div className="bg-[var(--color-bg-card)] rounded-xl border border-[var(--color-border)] overflow-hidden shadow-sm">
-                <div className="px-6 py-4 border-b border-[var(--color-border)]">
+            <div className="bg-(--color-bg-card) rounded-xl border border-(--color-border) overflow-hidden shadow-sm">
+                <div className="px-6 py-4 border-b border-(--color-border)">
                     <h2 className="text-lg font-semibold">Line Items</h2>
                 </div>
                 <div className="overflow-x-auto">
                     <table className="w-full text-left text-sm">
-                        <thead className="bg-[var(--color-bg-secondary)] border-b border-[var(--color-border)]">
+                        <thead className="bg-(--color-bg-secondary) border-b border-(--color-border)">
                             <tr>
                                 <th className="px-4 py-4 w-12 text-center font-bold text-xs tracking-wide">NO</th>
                                 <th className="px-4 py-4 font-bold text-xs tracking-wide">ITEM NAME</th>
@@ -200,15 +200,15 @@ export default function RABDetailPage() {
                                 <th className="px-4 py-4 w-40 text-right font-bold text-xs tracking-wide">TOTAL COST</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-[var(--color-border)]">
+                        <tbody className="divide-y divide-(--color-border)">
                             {rab.rabLines && rab.rabLines.length > 0 ? (
                                 rab.rabLines.map((line: any, index: number) => (
-                                    <tr key={line.id} className="hover:bg-[var(--color-bg-hover)] transition-all">
-                                        <td className="px-4 py-3 text-center font-medium text-[var(--color-text-secondary)]">{index + 1}</td>
+                                    <tr key={line.id} className="hover:bg-(--color-bg-hover) transition-all">
+                                        <td className="px-4 py-3 text-center font-medium text-(--color-text-secondary)">{index + 1}</td>
                                         <td className="px-4 py-3">
                                             <div className="font-medium">{line.item?.name || 'N/A'}</div>
                                             {line.item?.sku && (
-                                                <div className="text-xs text-[var(--color-text-muted)]">{line.item.sku}</div>
+                                                <div className="text-xs text-(--color-text-muted)">{line.item.sku}</div>
                                             )}
                                         </td>
                                         <td className="px-4 py-3 text-right">
@@ -223,13 +223,13 @@ export default function RABDetailPage() {
                                                 )}
                                             </div>
                                         </td>
-                                        <td className="px-4 py-3 text-right text-[var(--color-text-muted)] font-mono text-sm">
+                                        <td className="px-4 py-3 text-right text-(--color-text-muted) font-mono text-sm">
                                             {Number(line.lastStockSnapshot).toLocaleString('id-ID')}
                                         </td>
                                         <td className="px-4 py-3 text-right font-semibold text-green-600 dark:text-green-400 font-mono text-sm">
                                             {Number(line.replenishQty).toLocaleString('id-ID')}
                                         </td>
-                                        <td className="px-4 py-3 text-right text-[var(--color-text-secondary)] font-mono text-sm">
+                                        <td className="px-4 py-3 text-right text-(--color-text-secondary) font-mono text-sm">
                                             {formatCurrency(Number(line.unitPrice), rab.currency)}
                                         </td>
                                         <td className="px-4 py-3 text-right font-bold text-lg text-blue-600 dark:text-blue-400 font-mono">
@@ -239,13 +239,13 @@ export default function RABDetailPage() {
                                 ))
                             ) : (
                                 <tr>
-                                    <td colSpan={7} className="px-4 py-8 text-center text-[var(--color-text-muted)]">
+                                    <td colSpan={7} className="px-4 py-8 text-center text-(--color-text-muted)">
                                         No line items found
                                     </td>
                                 </tr>
                             )}
                         </tbody>
-                        <tfoot className="bg-[var(--color-bg-secondary)] border-t-2 border-[var(--color-border)]">
+                        <tfoot className="bg-(--color-bg-secondary) border-t-2 border-(--color-border)">
                             <tr>
                                 <td colSpan={2} className="px-4 py-4 text-right font-bold tracking-wide">TOTAL</td>
                                 <td className="px-4 py-4 text-right font-bold font-mono">
@@ -269,37 +269,37 @@ export default function RABDetailPage() {
 
             {/* Metadata */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-lg p-4">
+                <div className="bg-(--color-bg-card) border border-(--color-border) rounded-lg p-4">
                     <div className="flex items-center gap-2 mb-3">
-                        <Clock size={18} className="text-[var(--color-text-secondary)]" />
+                        <Clock size={18} className="text-(--color-text-secondary)" />
                         <h3 className="font-semibold">Timeline</h3>
                     </div>
                     <div className="space-y-2 text-sm">
                         <div className="flex justify-between">
-                            <span className="text-[var(--color-text-secondary)]">Created:</span>
+                            <span className="text-(--color-text-secondary)">Created:</span>
                             <span className="font-medium">{new Date(rab.createdAt).toLocaleString('id-ID')}</span>
                         </div>
                         <div className="flex justify-between">
-                            <span className="text-[var(--color-text-secondary)]">Last Updated:</span>
+                            <span className="text-(--color-text-secondary)">Last Updated:</span>
                             <span className="font-medium">{new Date(rab.updatedAt).toLocaleString('id-ID')}</span>
                         </div>
                     </div>
                 </div>
 
                 {rab.status === 'APPROVED' && rab.approvedBy && (
-                    <div className="bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-lg p-4">
+                    <div className="bg-(--color-bg-card) border border-(--color-border) rounded-lg p-4">
                         <div className="flex items-center gap-2 mb-3">
                             <CheckCircle size={18} className="text-green-600 dark:text-green-400" />
                             <h3 className="font-semibold">Approval Info</h3>
                         </div>
                         <div className="space-y-2 text-sm">
                             <div className="flex justify-between">
-                                <span className="text-[var(--color-text-secondary)]">Approved By:</span>
+                                <span className="text-(--color-text-secondary)">Approved By:</span>
                                 <span className="font-medium">{rab.approvedBy.name}</span>
                             </div>
                             {rab.approvedAt && (
                                 <div className="flex justify-between">
-                                    <span className="text-[var(--color-text-secondary)]">Approved At:</span>
+                                    <span className="text-(--color-text-secondary)">Approved At:</span>
                                     <span className="font-medium">{new Date(rab.approvedAt).toLocaleString('id-ID')}</span>
                                 </div>
                             )}

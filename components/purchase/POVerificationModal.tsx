@@ -23,6 +23,7 @@ interface POVerificationModalProps {
         totalAmount: number;
         items: Array<{
             item: {
+                id: string;
                 code: string;
                 name: string;
             };
@@ -30,6 +31,7 @@ interface POVerificationModalProps {
             unitPrice: number;
         }>;
     };
+    vendorType?: string;
 }
 
 export interface POVerificationData {
@@ -37,22 +39,60 @@ export interface POVerificationData {
     shippingTrackingNumber?: string;
     estimatedShippingDate?: Date;
     purchasingNotes?: string;
+    verifiedItems: Array<{
+        itemId: string;
+        realPrice: number;
+        notes: string;
+    }>;
+}
+
+interface EditableItem {
+    itemId: string;
+    itemCode: string;
+    itemName: string;
+    qty: number;
+    originalPrice: number;
+    realPrice: number;
+    notes: string;
 }
 
 export default function POVerificationModal({
     isOpen,
     onClose,
     onVerify,
-    purchaseRequest
+    purchaseRequest,
+    vendorType
 }: POVerificationModalProps) {
     const [isSubmitting, setIsSubmitting] = useState(false);
     // Removed isUploading, as it will be part of submitting process
+
 
     // Form state
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [shippingTrackingNumber, setShippingTrackingNumber] = useState('');
     const [estimatedShippingDate, setEstimatedShippingDate] = useState('');
     const [purchasingNotes, setPurchasingNotes] = useState('');
+
+    // Items state
+    const [items, setItems] = useState<EditableItem[]>(() =>
+        purchaseRequest.items.map(i => ({
+            itemId: i.item.id || '', // Ensure valid ID, might need correction based on actual PR structure
+            itemCode: i.item.code,
+            itemName: i.item.name,
+            qty: i.quantity,
+            originalPrice: i.unitPrice,
+            realPrice: i.unitPrice,
+            notes: ''
+        }))
+    );
+
+    const totalAmount = items.reduce((sum, item) => sum + (item.qty * item.realPrice), 0);
+
+    const handleItemChange = (index: number, field: keyof EditableItem, value: any) => {
+        const newItems = [...items];
+        newItems[index] = { ...newItems[index], [field]: value };
+        setItems(newItems);
+    };
 
     const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
@@ -78,6 +118,11 @@ export default function POVerificationModal({
         // Validation
         if (!estimatedShippingDate) {
             alert('Please select estimated shipping date');
+            return;
+        }
+
+        if (!selectedFile) {
+            alert('Proof document (PO/SPK/Invoice) is mandatory');
             return;
         }
 
@@ -120,7 +165,12 @@ export default function POVerificationModal({
                 poDocumentPath,
                 shippingTrackingNumber: shippingTrackingNumber || undefined,
                 estimatedShippingDate: new Date(estimatedShippingDate),
-                purchasingNotes
+                purchasingNotes,
+                verifiedItems: items.map(i => ({
+                    itemId: i.itemId,
+                    realPrice: i.realPrice,
+                    notes: i.notes
+                }))
             });
 
             // Reset form
@@ -141,33 +191,75 @@ export default function POVerificationModal({
     return (
         <Modal isOpen={isOpen} onClose={onClose} title="Verify Purchase Order & Create Inbound">
             <div className="space-y-6">
-                {/* PR Summary */}
-                <div className="p-4 bg-(--color-bg-secondary) border border-(--color-border) rounded-lg">
-                    <h4 className="font-medium text-(--color-text-primary) mb-3">Purchase Request Summary</h4>
-                    <div className="space-y-2 text-sm">
-                        <div className="flex justify-between">
-                            <span className="text-(--color-text-secondary)">PR Number:</span>
-                            <span className="font-medium text-(--color-text-primary)">{purchaseRequest.prNumber}</span>
-                        </div>
-                        <div className="flex justify-between">
-                            <span className="text-(--color-text-secondary)">Vendor:</span>
-                            <span className="font-medium text-(--color-text-primary)">{purchaseRequest.vendor.name}</span>
-                        </div>
-                        <div className="flex justify-between">
-                            <span className="text-(--color-text-secondary)">Total Items:</span>
-                            <span className="font-medium text-(--color-text-primary)">{purchaseRequest.items.length}</span>
-                        </div>
-                        <div className="flex justify-between">
-                            <span className="text-(--color-text-secondary)">Total Amount:</span>
-                            <span className="font-semibold text-primary">{formatCurrency(purchaseRequest.totalAmount)}</span>
-                        </div>
+                {/* Vendor Type Badge */}
+                {vendorType && (
+                    <div className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${vendorType === 'SPK'
+                        ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300'
+                        : 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300'
+                        }`}>
+                        Vendor Type: {vendorType}
                     </div>
+                )}
+
+
+                {/* Items Table (Editable) */}
+                <div className="border border-(--color-border) rounded-lg overflow-hidden">
+                    <table className="w-full text-sm text-left">
+                        <thead className="bg-(--color-bg-secondary) text-(--color-text-secondary) font-medium border-b border-(--color-border)">
+                            <tr>
+                                <th className="px-4 py-3">Item</th>
+                                <th className="px-4 py-3 text-right">Qty</th>
+                                <th className="px-4 py-3 text-right">Est. Price</th>
+                                <th className="px-4 py-3 text-right w-40">Real Price *</th>
+                                <th className="px-4 py-3 w-48">Notes</th>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y divide-(--color-border)">
+                            {items.map((item, index) => (
+                                <tr key={index} className="bg-(--color-bg-card)">
+                                    <td className="px-4 py-3">
+                                        <div className="font-medium text-(--color-text-primary)">{item.itemName}</div>
+                                        <div className="text-xs text-(--color-text-muted)">{item.itemCode}</div>
+                                    </td>
+                                    <td className="px-4 py-3 text-right">{item.qty}</td>
+                                    <td className="px-4 py-3 text-right text-(--color-text-muted)">
+                                        {formatCurrency(item.originalPrice)}
+                                    </td>
+                                    <td className="px-4 py-3 text-right">
+                                        <Input
+                                            type="number"
+                                            value={item.realPrice}
+                                            onChange={(e) => handleItemChange(index, 'realPrice', Number(e.target.value))}
+                                            className="text-right h-8 bg-(--color-bg-secondary)"
+                                            min="0"
+                                        />
+                                    </td>
+                                    <td className="px-4 py-3">
+                                        <Input
+                                            value={item.notes}
+                                            onChange={(e) => handleItemChange(index, 'notes', e.target.value)}
+                                            placeholder="Item notes..."
+                                            className="h-8 bg-(--color-bg-secondary)"
+                                        />
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                        <tfoot className="bg-(--color-bg-secondary) font-bold border-t border-(--color-border)">
+                            <tr>
+                                <td colSpan={3} className="px-4 py-3 text-right text-(--color-text-secondary)">Total Amount:</td>
+                                <td colSpan={2} className="px-4 py-3 text-primary text-lg">
+                                    {formatCurrency(totalAmount)}
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
                 </div>
 
                 {/* PO Document Upload */}
                 <div>
                     <label className="block text-sm font-medium text-(--color-text-primary) mb-2">
-                        PO Document *(Optional but Recommended)*
+                        Proof Document (SPK/Invoice) <span className="text-red-500">*</span>
                     </label>
                     <div className="Border border-(--color-border) border-dashed rounded-lg p-6 text-center">
                         {selectedFile ? (

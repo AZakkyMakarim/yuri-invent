@@ -532,7 +532,10 @@
             "DRAFT": "Draf",
             "PENDING_MANAGER_APPROVAL": "Menunggu Manager",
             "PENDING_PURCHASING_APPROVAL": "Menunggu Purchasing",
+            "CONFIRMED": "Terkonfirmasi",
+            "WAITING_PAYMENT": "Menunggu Pembayaran",
             "PAYMENT_RELEASED": "Pembayaran Dikeluarkan",
+            "PO_ISSUED": "PO Diterbitkan",
             "APPROVED": "Disetujui",
             "REJECTED": "Ditolak",
             "CANCELLED": "Dibatalkan"
