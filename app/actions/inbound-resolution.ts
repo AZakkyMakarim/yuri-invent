@@ -135,7 +135,8 @@ export async function resolveInboundDiscrepancy(
                                     expectedQuantity: item.rejectedQuantity, // We expect the replacement for what we rejected
                                     receivedQuantity: 0
                                 }
-                            }
+                            },
+                            warehouseId: item.inbound.warehouseId // Inherit warehouse
                         }
                     });
                 }

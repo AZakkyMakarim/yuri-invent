@@ -322,7 +322,8 @@ export async function verifyInbound(input: VerifyInboundInput): Promise<ActionRe
                                 expectedQuantity: s.qty,
                                 receivedQuantity: 0
                             }))
-                        }
+                        },
+                        warehouseId: existingInbound.warehouseId // Inherit warehouse
                     }
                 });
             }
