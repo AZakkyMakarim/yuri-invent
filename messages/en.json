@@ -52,6 +52,7 @@
         "prVerification": "PR Verification (Manager)",
         "prConfirmation": "PR Confirmation (Purchasing)",
         "poVerification": "PO Verification (Purchasing)",
+        "finance": "Finance",
         "stockOpname": "Stock Opname",
         "opnameList": "Opname List",
         "opnameSchedule": "Opname Schedule",

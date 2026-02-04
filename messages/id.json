@@ -52,6 +52,7 @@
         "prVerification": "Verifikasi Pengajuan (Manager)",
         "prConfirmation": "Konfirmasi Pengajuan (Purchasing)",
         "poVerification": "Verifikasi Pembelian (Purchasing)",
+        "finance": "Finance",
         "stockOpname": "Stock Opname",
         "opnameList": "Rekap Stock Opname",
         "opnameSchedule": "Jadwal Stock Opname",
