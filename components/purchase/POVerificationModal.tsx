@@ -61,11 +61,10 @@ export default function POVerificationModal({
     onClose,
     onVerify,
     purchaseRequest,
-    vendorType
-}: POVerificationModalProps) {
+    vendorType,
+    isFinalizing = false
+}: POVerificationModalProps & { isFinalizing?: boolean }) {
     const [isSubmitting, setIsSubmitting] = useState(false);
-    // Removed isUploading, as it will be part of submitting process
-
 
     // Form state
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -76,19 +75,21 @@ export default function POVerificationModal({
     // Items state
     const [items, setItems] = useState<EditableItem[]>(() =>
         purchaseRequest.items.map(i => ({
-            itemId: i.item.id || '', // Ensure valid ID, might need correction based on actual PR structure
+            itemId: i.item.id || '',
             itemCode: i.item.code,
             itemName: i.item.name,
             qty: i.quantity,
             originalPrice: i.unitPrice,
-            realPrice: i.unitPrice,
-            notes: ''
+            // If finalizing, show the verified price if available, else unitPrice
+            realPrice: (i as any).verifiedUnitPrice ? Number((i as any).verifiedUnitPrice) : i.unitPrice,
+            notes: i.notes || ''
         }))
     );
 
     const totalAmount = items.reduce((sum, item) => sum + (item.qty * item.realPrice), 0);
 
     const handleItemChange = (index: number, field: keyof EditableItem, value: any) => {
+        if (isFinalizing && field === 'realPrice') return;
         const newItems = [...items];
         newItems[index] = { ...newItems[index], [field]: value };
         setItems(newItems);
@@ -116,15 +117,12 @@ export default function POVerificationModal({
 
     const handleSubmit = async () => {
         // Validation
-        if (!estimatedShippingDate) {
-            alert('Please select estimated shipping date');
+        if (isFinalizing && !estimatedShippingDate) {
+            alert('Please select estimated shipping date for finalization');
             return;
         }
 
-        if (!selectedFile) {
-            alert('Proof document (PO/SPK/Invoice) is mandatory');
-            return;
-        }
+        // Optional file upload for Step 1, unless defined otherwise.
 
         setIsSubmitting(true);
 
@@ -161,10 +159,11 @@ export default function POVerificationModal({
             }
 
             // Proceed with PO Verification
+            // Proceed with PO Verification
             await onVerify({
                 poDocumentPath,
                 shippingTrackingNumber: shippingTrackingNumber || undefined,
-                estimatedShippingDate: new Date(estimatedShippingDate),
+                estimatedShippingDate: estimatedShippingDate ? new Date(estimatedShippingDate) : undefined,
                 purchasingNotes,
                 verifiedItems: items.map(i => ({
                     itemId: i.itemId,
@@ -189,7 +188,11 @@ export default function POVerificationModal({
     };
 
     return (
-        <Modal isOpen={isOpen} onClose={onClose} title="Verify Purchase Order & Create Inbound">
+        <Modal
+            isOpen={isOpen}
+            onClose={onClose}
+            title={isFinalizing ? "Finalize Purchase Order & Create Inbound" : "Verify Prices & Items"}
+        >
             <div className="space-y-6">
                 {/* Vendor Type Badge */}
                 {vendorType && (
@@ -230,8 +233,9 @@ export default function POVerificationModal({
                                             type="number"
                                             value={item.realPrice}
                                             onChange={(e) => handleItemChange(index, 'realPrice', Number(e.target.value))}
-                                            className="text-right h-8 bg-(--color-bg-secondary)"
+                                            className={`text-right h-8 bg-(--color-bg-secondary) ${isFinalizing ? 'bg-gray-100 text-gray-600 cursor-not-allowed' : ''}`}
                                             min="0"
+                                            disabled={isFinalizing}
                                         />
                                     </td>
                                     <td className="px-4 py-3">
@@ -259,7 +263,7 @@ export default function POVerificationModal({
                 {/* PO Document Upload */}
                 <div>
                     <label className="block text-sm font-medium text-(--color-text-primary) mb-2">
-                        Proof Document (SPK/Invoice) <span className="text-red-500">*</span>
+                        {isFinalizing ? "Signed PO / Final Document (Optional)" : "Quote / Price Proof (Optional)"}
                     </label>
                     <div className="Border border-(--color-border) border-dashed rounded-lg p-6 text-center">
                         {selectedFile ? (
@@ -298,35 +302,43 @@ export default function POVerificationModal({
                 </div>
 
                 {/* Shipping Tracking Number */}
-                <div>
-                    <label className="block text-sm font-medium text-(--color-text-primary) mb-2">
-                        <Package size={16} className="inline mr-2" />
-                        Shipping Tracking Number (Optional)
-                    </label>
-                    <Input
-                        type="text"
-                        value={shippingTrackingNumber}
-                        onChange={(e) => setShippingTrackingNumber(e.target.value)}
-                        placeholder="e.g., JNE123456789"
-                        className="bg-(--color-bg-secondary) border-(--color-border)"
-                    />
-                </div>
+                {isFinalizing && (
+                    <div>
+                        <label className="block text-sm font-medium text-(--color-text-primary) mb-2">
+                            <Package size={16} className="inline mr-2" />
+                            Shipping Tracking Number (Optional)
+                        </label>
+                        <Input
+                            type="text"
+                            value={shippingTrackingNumber}
+                            onChange={(e) => setShippingTrackingNumber(e.target.value)}
+                            placeholder="e.g., JNE123456789"
+                            className="bg-(--color-bg-secondary) border-(--color-border)"
+                        />
+                    </div>
+                )}
 
                 {/* Estimated Shipping Date */}
-                <div>
-                    <label className="block text-sm font-medium text-(--color-text-primary) mb-2">
-                        <Calendar size={16} className="inline mr-2" />
-                        Estimated Delivery Date *
-                    </label>
-                    <Input
-                        type="date"
-                        value={estimatedShippingDate}
-                        onChange={(e) => setEstimatedShippingDate(e.target.value)}
-                        min={format(new Date(), 'yyyy-MM-dd')}
-                        className="bg-(--color-bg-secondary) border-(--color-border)"
-                        required
-                    />
-                </div>
+                {isFinalizing ? (
+                    <div>
+                        <label className="block text-sm font-medium text-(--color-text-primary) mb-2">
+                            <Calendar size={16} className="inline mr-2" />
+                            Estimated Delivery Date *
+                        </label>
+                        <Input
+                            type="date"
+                            value={estimatedShippingDate}
+                            onChange={(e) => setEstimatedShippingDate(e.target.value)}
+                            min={format(new Date(), 'yyyy-MM-dd')}
+                            className="bg-(--color-bg-secondary) border-(--color-border)"
+                            required
+                        />
+                    </div>
+                ) : (
+                    <div className="text-xs text-gray-500 italic">
+                        Note: Shipping details will be collected during Finalization.
+                    </div>
+                )}
 
                 {/* Notes */}
                 <div>
@@ -347,11 +359,19 @@ export default function POVerificationModal({
                     <p className="text-sm text-blue-900 dark:text-blue-100">
                         <strong>ℹ️ What happens next:</strong>
                         <br />
-                        • PO Number will be generated automatically
-                        <br />
-                        • Inbound (GRN) entry will be created
-                        <br />
-                        • Warehouse staff can track incoming goods
+                        {isFinalizing ? (
+                            <>
+                                • PO Status will change to PO ISSUED<br />
+                                • Inbound (GRN) entry will be created<br />
+                                • Warehouse staff can track incoming goods
+                            </>
+                        ) : (
+                            <>
+                                {vendorType === 'SPK'
+                                    ? "• PO will be generated (Status: PO GENERATED)\n• You must then 'Finalize' to create Inbound"
+                                    : "• Status will update to WAITING PAYMENT\n• Finance must release payment before Finalization"}
+                            </>
+                        )}
 
                     </p>
                 </div>
@@ -372,7 +392,9 @@ export default function POVerificationModal({
                         className="bg-(--color-primary) hover:bg-(--color-primary)/90 text-white flex items-center gap-2"
                     >
                         {isSubmitting && <Loader2 className="animate-spin" size={16} />}
-                        {isSubmitting ? 'Verifying...' : 'Verify & Create PO'}
+                        {isSubmitting
+                            ? (isFinalizing ? 'Finalizing...' : 'Verifying...')
+                            : (isFinalizing ? 'Finalize & Create Inbound' : 'Verify Prices & Proceed')}
                     </Button>
                 </div>
             </div>

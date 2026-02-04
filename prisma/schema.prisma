@@ -37,7 +37,8 @@ enum POStatus {
   CONFIRMED // Purchasing confirms intent
   WAITING_PAYMENT // Non-SPK waiting for finance
   PAYMENT_RELEASED // Finance processed payment
-  PO_ISSUED // Final PO generated
+  PO_GENERATED // Auto-generated after Initial Verification (SPK) or Payment (Non-SPK)
+  PO_ISSUED // Final PO generated and Verified
   SENT_TO_VENDOR
   PARTIALLY_RECEIVED
   FULLY_RECEIVED
@@ -165,6 +166,7 @@ model User {
   validatedPayments        Payment[]          @relation("PaymentValidatedBy")
   createdRABs              RAB[]              @relation("RABCreatedBy")
   approvedRABs             RAB[]              @relation("RABApprovedBy")
+  realizedPaymentsPRs      PurchaseRequest[]  @relation("PRPaymentRealizedBy")
   createdCategories        Category[]         @relation("CategoryCreatedBy")
   createdUOMs              UOM[]              @relation("UOMCreatedBy")
   createdItems             Item[]             @relation("ItemCreatedBy")
@@ -480,6 +482,13 @@ model PurchaseRequest {
   purchasingNotes        String?
   paymentType            String? // SPK | NON_SPK (or reuse VendorType enum)
 
+  // Finance / Payment Realization (Non-SPK)
+  paymentProofImage   String?
+  paymentAmount       Decimal?  @db.Decimal(18, 2)
+  paymentDate         DateTime?
+  financeNotes        String?
+  paymentRealizedById String?
+  
   // PO Processing (Step 2)
   poNumber               String? // Generated when accepted by purchasing (Step 2)
   poSentAt               DateTime?
@@ -503,6 +512,7 @@ model PurchaseRequest {
   createdBy            User                  @relation("PRCreatedBy", fields: [createdById], references: [id])
   managerApprovedBy    User?                 @relation("PRApprovedByManager", fields: [managerApprovedById], references: [id])
   purchasingAcceptedBy User?                 @relation("PRAcceptedByPurchasing", fields: [purchasingAcceptedById], references: [id])
+  paymentRealizedBy    User?                 @relation("PRPaymentRealizedBy", fields: [paymentRealizedById], references: [id])
   items                PurchaseRequestItem[]
   inbounds             Inbound[]
   bills                Bill[]
@@ -518,6 +528,7 @@ model PurchaseRequestItem {
   quantity          Int
   unitPrice         Decimal @db.Decimal(18, 2)
   totalPrice        Decimal @db.Decimal(18, 2)
+  verifiedUnitPrice Decimal? @db.Decimal(18, 2) // Real price input by Purchasing
   receivedQuantity  Int     @default(0)
   notes             String?
 

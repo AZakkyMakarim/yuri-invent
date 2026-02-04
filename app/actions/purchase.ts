@@ -527,21 +527,118 @@ export async function releasePayment(prId: string, userId: string) {
     }
 }
 
-export async function createPurchaseOrder(
+// NEW FLOW IMPLEMENTATION
+
+export async function submitPriceVerification(
     prId: string,
-    userId: string,
     details: {
-        poDocumentPath?: string;
-        shippingTrackingNumber?: string;
-        estimatedShippingDate?: Date;
-        notes?: string;
         verifiedItems: Array<{
             itemId: string;
             realPrice: number;
             notes: string;
         }>;
+        poDocumentPath?: string;
+        shippingTrackingNumber?: string; // Optional at this stage
+        estimatedShippingDate?: Date; // Optional at this stage
+        notes?: string;
     }
 ) {
+    try {
+        const pr = await prisma.purchaseRequest.findUnique({
+            where: { id: prId },
+            include: { items: true, vendor: true }
+        });
+
+        if (!pr) throw new Error('PR not found');
+
+        // Allowed statuses to enter Verification
+        // CONFIRMED is the state coming from Purchasing Confirmation
+        if (pr.status !== 'CONFIRMED') {
+            throw new Error(`Invalid PR status for verification: ${pr.status}`);
+        }
+
+        const poNumber = await generatePONumber(new Date());
+
+        await prisma.$transaction(async (tx) => {
+            // 1. Update Item Prices
+            let newTotalAmount = 0;
+            const verifiedMap = new Map(details.verifiedItems?.map(v => [v.itemId, v]) || []);
+
+            for (const item of pr.items) {
+                const verified = verifiedMap.get(item.itemId);
+                const quantity = item.quantity;
+
+                let priceToUse = item.unitPrice; // Fallback to original
+                let notesToUse = item.notes;
+
+                if (verified) {
+                    priceToUse = new Prisma.Decimal(verified.realPrice);
+                    if (verified.notes) {
+                        notesToUse = item.notes ? `${item.notes}\n${verified.notes}` : verified.notes;
+                    }
+                }
+
+                // Track 'verifiedUnitPrice' separately to preserve original estimate if needed, 
+                // but user requirement implies "Input harga asli", so we update unitPrice or add verification field.
+                // Plan said: Update items with verifiedUnitPrice.
+                // Let's update `verifiedUnitPrice` AND `unitPrice` (to reflect real cost in PR).
+                // Actually, let's keep `unitPrice` as "Estimated/Original" if we want to track variance?
+                // The schema update added `verifiedUnitPrice`. So let's use that.
+
+                const verifiedPriceDecimal = verified ? new Prisma.Decimal(verified.realPrice) : item.unitPrice;
+
+                await tx.purchaseRequestItem.update({
+                    where: { id: item.id },
+                    data: {
+                        verifiedUnitPrice: verifiedPriceDecimal,
+                        // Optional: update main unitPrice too? Project usually treats unitPrice as "The Price".
+                        // Let's update unitPrice too so totals match reality for Payment/PO.
+                        unitPrice: verifiedPriceDecimal,
+                        totalPrice: new Prisma.Decimal(Number(verifiedPriceDecimal) * quantity),
+                        notes: notesToUse
+                    }
+                });
+                newTotalAmount += (Number(verifiedPriceDecimal) * quantity);
+            }
+
+            // 2. Determine Next Status
+            // SPK -> PO_GENERATED
+            // Non-SPK -> WAITING_PAYMENT
+            let newStatus: any = 'WAITING_PAYMENT';
+            let poNumToSet = null; // Only set PO Number for SPK here? Or both?
+            // "Untuk SPK... Dokumen PO nya sudah tergenerate" -> So SPK gets PO Number.
+            // "Non-SPK... otomatis tergenerate dokumen PO... setelah di verifikasi (pembayaran)"
+            // Actually user said: "Jika diverifikasi (Step 1) maka akan otomatis tergenerate dokumen PO yang bisa diakses... Namun setelah verifikasi (Step 1), akan ada tombol Realisasi Pembayaran... Setelah itu baru masuk ke Verifikasi Pembelian (Step 2)... kecuali untuk Dokumen PO nantinya kalau sudah di verifikasi pembelian juga bisa diakses melalui barang masuk"
+            // Wait, for Non-SPK: "Jika diverifikasi (Step 1) maka akan otomatis tergenerate dokumen PO yang bisa diakses melalui Detail PR."
+            // So BOTH generate PO Number at Step 1.
+
+            newStatus = pr.paymentType === 'SPK' ? 'PO_GENERATED' : 'WAITING_PAYMENT';
+            poNumToSet = poNumber;
+
+            // 3. Update PR Header
+            await tx.purchaseRequest.update({
+                where: { id: prId },
+                data: {
+                    status: newStatus,
+                    totalAmount: new Prisma.Decimal(newTotalAmount),
+                    poNumber: poNumToSet,
+                    poSentAt: new Date(), // Date PO generated
+                    poDocumentPath: details.poDocumentPath,
+                    purchasingNotes: details.notes ? (pr.purchasingNotes ? `${pr.purchasingNotes}\n${details.notes}` : details.notes) : pr.purchasingNotes
+                }
+            });
+        });
+
+        revalidatePath('/purchase');
+        revalidatePath(`/purchase/${prId}`);
+        return { success: true };
+
+    } catch (error: any) {
+        return { success: false, error: error.message };
+    }
+}
+
+export async function finalizePurchaseOrder(prId: string, userId: string) {
     try {
         const pr = await prisma.purchaseRequest.findUnique({
             where: { id: prId },
@@ -549,108 +646,65 @@ export async function createPurchaseOrder(
         });
 
         if (!pr) throw new Error('PR not found');
-        // Must be CONFIRMED (SPK) or PAYMENT_RELEASED (Non-SPK) to create PO
-        const validStatuses = ['CONFIRMED', 'PAYMENT_RELEASED'];
-        if (!validStatuses.includes(pr.status)) {
-            throw new Error('PR is not ready for PO creation');
+
+        // Prerequisites:
+        // SPK: Must be PO_GENERATED
+        // Non-SPK: Must be PAYMENT_RELEASED
+        const isSPK = pr.paymentType === 'SPK';
+
+        if (isSPK && pr.status !== 'PO_GENERATED') {
+            throw new Error('SPK PR must be in PO_GENERATED status to finalize.');
+        }
+        if (!isSPK && pr.status !== 'PAYMENT_RELEASED') {
+            // Allow PO_GENERATED for Non-SPK if logic changes, but Plan says PAYMENT_RELEASED
+            throw new Error('Non-SPK PR must be Payment Released to finalize.');
         }
 
-        const poNumber = await generatePONumber(new Date());
-
-        // 3. Generate GRN (Goods Received Note) number
+        // Generate GRN Number
         const year = new Date().getFullYear();
         const month = String(new Date().getMonth() + 1).padStart(2, '0');
-
         const grnCount = await prisma.inbound.count({
-            where: {
-                grnNumber: {
-                    startsWith: `GRN-${year}${month}`
-                }
-            }
+            where: { grnNumber: { startsWith: `GRN-${year}${month}` } }
         });
+        const grnNumber = `GRN-${year}${month}-${String(grnCount + 1).padStart(4, '0')}`;
 
-        const grnSequence = String(grnCount + 1).padStart(4, '0');
-        const grnNumber = `GRN-${year}${month}-${grnSequence}`;
-
-        // 4. Update PR and Create Inbound in transaction
-        const result = await prisma.$transaction(async (tx) => {
-            // A. Update Item Prices & Notes FIRST
-            let newTotalAmount = 0;
-
-            // Map verified items for easy lookup
-            const verifiedMap = new Map(details.verifiedItems?.map(v => [v.itemId, v]) || []);
-
-            // We need to loop through existing items to update them
-            // Since we can't easily do bulk update with different values, we iterate.
-            // But to avoid N queries, we can try to be smart, or just accept N queries for now (items usually < 20).
-            for (const item of pr.items) {
-                const verified = verifiedMap.get(item.itemId);
-                if (verified) {
-                    const quantity = item.quantity; // Keep original qty
-                    const newPrice = new Prisma.Decimal(verified.realPrice);
-                    const newTotal = new Prisma.Decimal(quantity * verified.realPrice);
-
-                    await tx.purchaseRequestItem.update({
-                        where: { id: item.id },
-                        data: {
-                            unitPrice: newPrice,
-                            totalPrice: newTotal,
-                            notes: verified.notes ? (item.notes ? `${item.notes}\n${verified.notes}` : verified.notes) : item.notes
-                        }
-                    });
-                    newTotalAmount += (quantity * verified.realPrice);
-                } else {
-                    // If not in verified map, keep old price (shouldn't happen if UI passes all)
-                    newTotalAmount += Number(item.totalPrice);
-                }
-            }
-
-            // B. Update PR Header
-            const updatedPR = await tx.purchaseRequest.update({
+        await prisma.$transaction(async (tx) => {
+            // Update PR to PO_ISSUED
+            await tx.purchaseRequest.update({
                 where: { id: prId },
-                data: {
-                    status: 'PO_ISSUED',
-                    totalAmount: new Prisma.Decimal(newTotalAmount), // Update with Real Total
-                    poNumber,
-                    poSentAt: new Date(),
-                    poDocumentPath: details.poDocumentPath,
-                    shippingTrackingNumber: details.shippingTrackingNumber,
-                    estimatedShippingDate: details.estimatedShippingDate,
-                    purchasingNotes: details.notes ? (pr.purchasingNotes ? `${pr.purchasingNotes}\n${details.notes}` : details.notes) : pr.purchasingNotes
-                },
-                include: { items: true }
+                data: { status: 'PO_ISSUED' }
             });
 
-            const inbound = await tx.inbound.create({
+            // Create Inbound
+            await tx.inbound.create({
                 data: {
                     grnNumber,
                     purchaseRequestId: prId,
                     vendorId: pr.vendorId,
-                    warehouseId: pr.targetWarehouseId, // Use target warehouse from PR
-                    receiveDate: details.estimatedShippingDate || new Date(),
+                    warehouseId: pr.targetWarehouseId,
+                    receiveDate: new Date(), // Default to now, or carry over from PR if we stored it
                     status: 'PENDING_VERIFICATION',
-                    notes: `Created from PO ${poNumber}`,
+                    notes: `Created from PO ${pr.poNumber}`,
                     createdById: userId,
                     items: {
-                        create: updatedPR.items.map(item => ({
+                        create: pr.items.map(item => ({
                             itemId: item.itemId,
                             expectedQuantity: item.quantity,
                             receivedQuantity: 0,
-                            notes: item.notes || null
+                            notes: item.notes
                         }))
                     }
                 }
             });
-
-            return { updatedPR, inbound };
         });
 
         revalidatePath('/purchase');
-        revalidatePath(`/purchase/requests/${prId}`);
         revalidatePath('/inbound');
 
-        return { success: true, data: { poNumber, grnNumber } };
+        return { success: true };
+
     } catch (error: any) {
+        console.error('Finalize PO Error:', error);
         return { success: false, error: error.message };
     }
 }

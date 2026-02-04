@@ -46,11 +46,13 @@ export default function PurchasingVerificationPage() {
     const loadData = async () => {
         setLoading(true);
         // Step 2: Confirmation done. Ready for PO.
-        // Include WAITING_PAYMENT to allow Finance Release simulation
+        // Include statuses for both Step 1 and Step 2 of verification
         const checkStatuses = [
             'CONFIRMED',
+            'PO_GENERATED', // SPK intermediate status
             'WAITING_PAYMENT',
             'PAYMENT_RELEASED'
+            // PO_ISSUED is "Done", so not here usually, unless for history
         ].join(',');
 
         const result = await getPurchaseRequests(1, 50, search, checkStatuses);
@@ -67,23 +69,11 @@ export default function PurchasingVerificationPage() {
         setIsPOModalOpen(true);
     };
 
-    const handleSimulatePayment = async (pr: any) => {
-        if (!confirm("Simulate Finance releasing payment for this Non-SPK request?")) return;
-        if (!user?.id) return;
-
-        setProcessingId(pr.id);
-        try {
-            const res = await releasePayment(pr.id, user.id);
-            if (res.success) {
-                alert("Payment released (Simulated). You can now create PO.");
-                loadData();
-            } else {
-                alert("Failed: " + res.error);
-            }
-        } finally {
-            setProcessingId(null);
-        }
-    };
+    // Keep simulation for now if needed, or remove if creating proper page.
+    // User requested Payment Reference, so we should direct them to Payment Page usually.
+    // But let's leave this simulation button but update it to use correct action if strictly needed.
+    // Ideally we remove it to force use of correct flow.
+    // But since I haven't built the Payment Page yet, I will HIDE the button for now or just remove the handler ref.
 
     const handleVerify = async (data: POVerificationData) => {
         if (!selectedPR || !user?.id) return;
@@ -91,23 +81,39 @@ export default function PurchasingVerificationPage() {
         setProcessingId(selectedPR.id);
 
         try {
-            const result = await createPurchaseOrder(
-                selectedPR.id,
-                user.id,
-                {
-                    poDocumentPath: data.poDocumentPath,
-                    shippingTrackingNumber: data.shippingTrackingNumber,
-                    estimatedShippingDate: data.estimatedShippingDate,
-                    notes: data.purchasingNotes,
-                    verifiedItems: data.verifiedItems
-                }
-            );
+            // DECISION: Which action to call?
+            // If CONFIRMED -> submitPriceVerification
+            // If PO_GENERATED or PAYMENT_RELEASED -> finalizePurchaseOrder
+
+            let result;
+            if (selectedPR.status === 'CONFIRMED') {
+                result = await submitPriceVerification(
+                    selectedPR.id,
+                    {
+                        verifiedItems: data.verifiedItems,
+                        poDocumentPath: data.poDocumentPath,
+                        notes: data.purchasingNotes,
+                        estimatedShippingDate: data.estimatedShippingDate,
+                        shippingTrackingNumber: data.shippingTrackingNumber
+                    }
+                );
+            } else if (selectedPR.status === 'PO_GENERATED' || selectedPR.status === 'PAYMENT_RELEASED') {
+                // Finalize
+                result = await finalizePurchaseOrder(selectedPR.id, user.id);
+            } else {
+                throw new Error("Invalid status for verification action.");
+            }
 
             if (result.success) {
-                // Determine message based on result fields
-                let msg = `✅ PO Created Successfully!\n\nPO Number: ${result.data?.poNumber}`;
-                if (result.data?.grnNumber) {
-                    msg += `\nGRN Number: ${result.data.grnNumber}\nInbound Created.`;
+                let msg = '✅ Processed Successfully!';
+                if (selectedPR.status === 'CONFIRMED') {
+                    if (selectedPR.paymentType === 'SPK') {
+                        msg = "Price Verified. PO Generated. \nPlease click 'Finalize' to create Inbound.";
+                    } else {
+                        msg = "Price Verified. Status updated to WAITING PAYMENT.";
+                    }
+                } else {
+                    msg = "Purchase Order Issued! Inbound Created.";
                 }
 
                 alert(msg);
@@ -183,15 +189,17 @@ export default function PurchasingVerificationPage() {
                                         <TableRow key={pr.id} className="hover:bg-(--color-bg-hover)/50">
                                             <TableCell className="font-medium text-(--color-text-primary)">
                                                 {pr.prNumber}
+                                                {pr.poNumber && <div className="text-xs font-bold text-blue-600">{pr.poNumber}</div>}
                                                 {pr.notes && <div className="text-xs text-(--color-text-muted) truncate max-w-[200px]">{pr.notes}</div>}
                                             </TableCell>
                                             <TableCell>{format(new Date(pr.requestDate), 'dd MMM yyyy')}</TableCell>
                                             <TableCell>{pr.vendor?.name}</TableCell>
                                             <TableCell className="text-xs font-medium">
                                                 <span className={`px-2 py-1 rounded text-[10px] ${pr.status === 'CONFIRMED' ? 'bg-blue-100 text-blue-800' :
-                                                    pr.status === 'WAITING_PAYMENT' ? 'bg-orange-100 text-orange-800' :
-                                                        pr.status === 'PAYMENT_RELEASED' ? 'bg-green-100 text-green-800' :
-                                                            'bg-gray-100 text-gray-800'
+                                                        pr.status === 'PO_GENERATED' ? 'bg-purple-100 text-purple-800' :
+                                                            pr.status === 'WAITING_PAYMENT' ? 'bg-orange-100 text-orange-800' :
+                                                                pr.status === 'PAYMENT_RELEASED' ? 'bg-teal-100 text-teal-800' :
+                                                                    'bg-gray-100 text-gray-800'
                                                     }`}>
                                                     {pr.status.replace(/_/g, ' ')}
                                                 </span>
@@ -210,30 +218,50 @@ export default function PurchasingVerificationPage() {
                                                         <Eye size={18} className="text-(--color-text-secondary)" />
                                                     </Button>
 
-                                                    {/* Waiting Payment (Non-SPK) */}
+                                                    {/* WAITING PAYMENT - Information Only Here (Action moved to Finance Page) */}
                                                     {pr.status === 'WAITING_PAYMENT' && (
+                                                        <span className="text-xs text-orange-500 italic flex items-center">
+                                                            Pending Finance
+                                                        </span>
+                                                    )}
+
+                                                    {/* Step 1: Verification (Initial) */}
+                                                    {pr.status === 'CONFIRMED' && (
                                                         <Button
-                                                            variant="secondary"
+                                                            variant="primary"
                                                             size="sm"
-                                                            onClick={() => handleSimulatePayment(pr)}
-                                                            className="border-orange-200 bg-orange-50 text-orange-700 hover:bg-orange-100"
+                                                            onClick={() => handleCreatePOOpen(pr)}
+                                                            className="bg-blue-600 hover:bg-blue-700 text-white"
                                                             disabled={processingId === pr.id}
                                                         >
-                                                            {processingId === pr.id ? <Loader2 className="animate-spin h-4 w-4" /> : <span className="mr-1">💰</span>}
-                                                            Release Pay
+                                                            <FileText size={16} className="mr-2" />
+                                                            Verify & PO
                                                         </Button>
                                                     )}
 
-                                                    {/* Step 2: Create PO */}
-                                                    {(pr.status === 'CONFIRMED' || pr.status === 'PAYMENT_RELEASED') && (
+                                                    {/* Step 2: Finalize PO (After SPK Gen or Payment) */}
+                                                    {(pr.status === 'PO_GENERATED' || pr.status === 'PAYMENT_RELEASED') && (
                                                         <Button
                                                             variant="primary"
                                                             size="sm"
                                                             onClick={() => handleCreatePOOpen(pr)}
                                                             className="bg-green-600 hover:bg-green-700 text-white"
+                                                            disabled={processingId === pr.id}
                                                         >
                                                             <FileText size={16} className="mr-2" />
-                                                            Create PO
+                                                            Finalize PO
+                                                        </Button>
+                                                    )}
+
+                                                    {/* Print Preview Button for Generated POs */}
+                                                    {pr.poNumber && (
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="sm"
+                                                            onClick={() => window.open(`/purchase/po/${pr.id}/print`, '_blank')}
+                                                            title="Print Preview"
+                                                        >
+                                                            <span className="text-xs">🖨️</span>
                                                         </Button>
                                                     )}
                                                 </div>
@@ -258,6 +286,7 @@ export default function PurchasingVerificationPage() {
                     onVerify={handleVerify}
                     purchaseRequest={selectedPR}
                     vendorType={selectedPR.vendor?.vendorType}
+                    isFinalizing={selectedPR.status === 'PO_GENERATED' || selectedPR.status === 'PAYMENT_RELEASED'}
                 />
             )}
         </div>

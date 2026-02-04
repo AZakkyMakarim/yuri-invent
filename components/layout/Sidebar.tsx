@@ -27,7 +27,8 @@ import {
     User,
     LogOut,
     Sun,
-    Moon
+    Moon,
+    Banknote
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -75,6 +76,13 @@ const navItems: NavItem[] = [
             { key: 'prVerification', href: '/purchase/manager-verification', permission: 'pr_verification' },
             { key: 'prConfirmation', href: '/purchase/confirmation', permission: 'pr_verification' }, // Should use distinct permission in real app
             { key: 'poVerification', href: '/purchase/purchasing-verification', permission: 'po_verification' },
+        ],
+    },
+    {
+        key: 'finance',
+        icon: <Banknote size={20} />,
+        children: [
+            { key: 'paymentRealization', href: '/finance/payment-realization', permission: 'payment_realization' },
         ],
     },
     {
