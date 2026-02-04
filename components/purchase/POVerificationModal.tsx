@@ -24,11 +24,13 @@ interface POVerificationModalProps {
         items: Array<{
             item: {
                 id: string;
-                code: string;
+                sku: string;
                 name: string;
             };
             quantity: number;
             unitPrice: number;
+            notes?: string | null;
+            verifiedUnitPrice?: number | null;
         }>;
     };
     vendorType?: string;
@@ -76,12 +78,12 @@ export default function POVerificationModal({
     const [items, setItems] = useState<EditableItem[]>(() =>
         purchaseRequest.items.map(i => ({
             itemId: i.item.id || '',
-            itemCode: i.item.code,
+            itemCode: i.item.sku,
             itemName: i.item.name,
             qty: i.quantity,
-            originalPrice: i.unitPrice,
+            originalPrice: Number(i.unitPrice),
             // If finalizing, show the verified price if available, else unitPrice
-            realPrice: (i as any).verifiedUnitPrice ? Number((i as any).verifiedUnitPrice) : i.unitPrice,
+            realPrice: (i as any).verifiedUnitPrice ? Number((i as any).verifiedUnitPrice) : Number(i.unitPrice),
             notes: i.notes || ''
         }))
     );

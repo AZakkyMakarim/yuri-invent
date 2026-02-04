@@ -8,6 +8,7 @@ import { formatCurrency } from '@/lib/utils';
 import { ArrowLeft, User, Clock, CheckCircle2, XCircle, AlertTriangle, FileText, ImageIcon } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
+import POActions from '@/components/purchase/POActions';
 
 interface PageProps {
     params: Promise<{ id: string }>
@@ -300,106 +301,83 @@ export default async function PRDetailPage({ params }: PageProps) {
                                     </div>
                                 </div>
                             </CardContent>
-                        </CardContent>
-                    </Card>
+                        </Card>
 
-                    {/* Payment Information Card (Conditional) */}
-                    {(pr.paymentAmount || pr.status === 'WAITING_PAYMENT' || pr.status === 'PAYMENT_RELEASED') && (
-                        <Card className="border-(--color-border) shadow-sm mt-6">
-                            <CardHeader className="pb-3 border-b border-(--color-border) bg-(--color-bg-secondary)/20">
-                                <CardTitle className="text-base font-semibold flex items-center gap-2">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-green-500"></div>
-                                    Payment Information
-                                </CardTitle>
-                            </CardHeader>
-                            <CardContent className="p-5 space-y-4">
-                                {pr.paymentAmount ? (
-                                    <>
-                                        <div className="flex justify-between items-center border-b border-(--color-border) pb-2">
-                                            <span className="text-sm text-(--color-text-secondary)">Amount Paid</span>
-                                            <span className="font-semibold text-green-600">{formatCurrency(Number(pr.paymentAmount))}</span>
-                                        </div>
-                                        <div className="flex justify-between items-center border-b border-(--color-border) pb-2">
-                                            <span className="text-sm text-(--color-text-secondary)">Payment Date</span>
-                                            <span className="font-medium text-(--color-text-primary)">
-                                                {pr.paymentDate ? format(new Date(pr.paymentDate), 'dd MMM yyyy') : '-'}
-                                            </span>
-                                        </div>
-                                        {pr.financeNotes && (
-                                            <div className="space-y-1">
-                                                <span className="text-xs font-bold uppercase text-(--color-text-muted)">Notes</span>
-                                                <div className="text-sm bg-(--color-bg-secondary) p-2 rounded italic text-(--color-text-secondary)">
-                                                    {pr.financeNotes}
+                        {/* Payment Information Card (Conditional) */}
+                        {(pr.paymentAmount || pr.status === 'WAITING_PAYMENT' || pr.status === 'PAYMENT_RELEASED') && (
+                            <Card className="border-(--color-border) shadow-sm mt-6">
+                                <CardHeader className="pb-3 border-b border-(--color-border) bg-(--color-bg-secondary)/20">
+                                    <CardTitle className="text-base font-semibold flex items-center gap-2">
+                                        <div className="w-1.5 h-1.5 rounded-full bg-green-500"></div>
+                                        Payment Information
+                                    </CardTitle>
+                                </CardHeader>
+                                <CardContent className="p-5 space-y-4">
+                                    {pr.paymentAmount ? (
+                                        <>
+                                            <div className="flex justify-between items-center border-b border-(--color-border) pb-2">
+                                                <span className="text-sm text-(--color-text-secondary)">Amount Paid</span>
+                                                <span className="font-semibold text-green-600">{formatCurrency(Number(pr.paymentAmount))}</span>
+                                            </div>
+                                            <div className="flex justify-between items-center border-b border-(--color-border) pb-2">
+                                                <span className="text-sm text-(--color-text-secondary)">Payment Date</span>
+                                                <span className="font-medium text-(--color-text-primary)">
+                                                    {pr.paymentDate ? format(new Date(pr.paymentDate), 'dd MMM yyyy') : '-'}
+                                                </span>
+                                            </div>
+                                            {pr.financeNotes && (
+                                                <div className="space-y-1">
+                                                    <span className="text-xs font-bold uppercase text-(--color-text-muted)">Notes</span>
+                                                    <div className="text-sm bg-(--color-bg-secondary) p-2 rounded italic text-(--color-text-secondary)">
+                                                        {pr.financeNotes}
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        )}
-                                        {pr.paymentProofImage && (
-                                            <div className="pt-2">
-                                                <a
-                                                    href={pr.paymentProofImage}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className="text-sm text-blue-600 hover:underline flex items-center gap-1"
-                                                >
-                                                    <FileText size={14} /> View Transfer Proof
-                                                </a>
-                                            </div>
-                                        )}
-                                    </>
-                                ) : (
-                                    <div className="text-sm text-amber-600 bg-amber-50 p-3 rounded flex items-center gap-2">
-                                        <Clock size={16} />
-                                        Pending Payment from Finance
-                                    </div>
-                                )}
-                            </CardContent>
-                        </Card>
-                    )}
-
-                    {/* PO Information Card (For SPK/Finalized) */}
-                    {pr.poNumber && (
-                        <Card className="border-(--color-border) shadow-sm mt-6">
-                            <CardHeader className="pb-3 border-b border-(--color-border) bg-(--color-bg-secondary)/20">
-                                <CardTitle className="text-base font-semibold flex items-center gap-2">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-purple-500"></div>
-                                    Purchase Order
-                                </CardTitle>
-                            </CardHeader>
-                            <CardContent className="p-5 space-y-4">
-                                <div className="flex justify-between items-center">
-                                    <span className="text-sm text-(--color-text-secondary)">PO Number</span>
-                                    <span className="font-mono font-bold text-(--color-text-primary) bg-(--color-bg-secondary) px-2 py-1 rounded">
-                                        {pr.poNumber}
-                                    </span>
-                                </div>
-                                <div className="grid grid-cols-2 gap-3 pt-2">
-                                    <Button
-                                        variant="outline"
-                                        size="sm"
-                                        className="w-full"
-                                        asChild
-                                    >
-                                        <a href={`/purchase/po/${pr.id}/print`} target="_blank">
-                                            <FileText size={14} className="mr-2" /> Print PO
-                                        </a>
-                                    </Button>
-                                    {(pr.poDocumentPath) && (
-                                        <Button
-                                            variant="outline"
-                                            size="sm"
-                                            className="w-full"
-                                            asChild
-                                        >
-                                            <a href={pr.poDocumentPath} target="_blank">
-                                                <ArrowLeft size={14} className="mr-2 rotate-90" /> Download
-                                            </a>
-                                        </Button>
+                                            )}
+                                            {pr.paymentProofImage && (
+                                                <div className="pt-2">
+                                                    <a
+                                                        href={pr.paymentProofImage}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="text-sm text-blue-600 hover:underline flex items-center gap-1"
+                                                    >
+                                                        <FileText size={14} /> View Transfer Proof
+                                                    </a>
+                                                </div>
+                                            )}
+                                        </>
+                                    ) : (
+                                        <div className="text-sm text-amber-600 bg-amber-50 p-3 rounded flex items-center gap-2">
+                                            <Clock size={16} />
+                                            Pending Payment from Finance
+                                        </div>
                                     )}
-                                </div>
-                            </CardContent>
-                        </Card>
-                    )}
+                                </CardContent>
+                            </Card>
+                        )}
 
+                        {/* PO Information Card (For SPK/Finalized) */}
+                        {pr.poNumber && (
+                            <Card className="border-(--color-border) shadow-sm mt-6">
+                                <CardHeader className="pb-3 border-b border-(--color-border) bg-(--color-bg-secondary)/20">
+                                    <CardTitle className="text-base font-semibold flex items-center gap-2">
+                                        <div className="w-1.5 h-1.5 rounded-full bg-purple-500"></div>
+                                        Purchase Order
+                                    </CardTitle>
+                                </CardHeader>
+                                <CardContent className="p-5 space-y-4">
+                                    <div className="flex justify-between items-center">
+                                        <span className="text-sm text-(--color-text-secondary)">PO Number</span>
+                                        <span className="font-mono font-bold text-(--color-text-primary) bg-(--color-bg-secondary) px-2 py-1 rounded">
+                                            {pr.poNumber}
+                                        </span>
+                                    </div>
+                                    <POActions prId={pr.id} poDocumentPath={pr.poDocumentPath} />
+                                </CardContent>
+                            </Card>
+                        )}
+
+                    </div>
                 </div>
 
                 {/* Items Table (Full Width) */}

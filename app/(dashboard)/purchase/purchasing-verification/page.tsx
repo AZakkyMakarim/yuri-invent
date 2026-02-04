@@ -21,7 +21,7 @@ import {
     TableRow,
 } from "@/components/ui/Table";
 import { formatCurrency } from '@/lib/utils';
-import { getPurchaseRequests, createPurchaseOrder, releasePayment } from '@/app/actions/purchase';
+import { getPurchaseRequests, submitPriceVerification, finalizePurchaseOrder } from '@/app/actions/purchase';
 import POVerificationModal, { POVerificationData } from '@/components/purchase/POVerificationModal';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTranslations } from 'next-intl';
@@ -196,10 +196,10 @@ export default function PurchasingVerificationPage() {
                                             <TableCell>{pr.vendor?.name}</TableCell>
                                             <TableCell className="text-xs font-medium">
                                                 <span className={`px-2 py-1 rounded text-[10px] ${pr.status === 'CONFIRMED' ? 'bg-blue-100 text-blue-800' :
-                                                        pr.status === 'PO_GENERATED' ? 'bg-purple-100 text-purple-800' :
-                                                            pr.status === 'WAITING_PAYMENT' ? 'bg-orange-100 text-orange-800' :
-                                                                pr.status === 'PAYMENT_RELEASED' ? 'bg-teal-100 text-teal-800' :
-                                                                    'bg-gray-100 text-gray-800'
+                                                    pr.status === 'PO_GENERATED' ? 'bg-purple-100 text-purple-800' :
+                                                        pr.status === 'WAITING_PAYMENT' ? 'bg-orange-100 text-orange-800' :
+                                                            pr.status === 'PAYMENT_RELEASED' ? 'bg-teal-100 text-teal-800' :
+                                                                'bg-gray-100 text-gray-800'
                                                     }`}>
                                                     {pr.status.replace(/_/g, ' ')}
                                                 </span>

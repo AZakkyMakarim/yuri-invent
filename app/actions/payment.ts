@@ -1,7 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
-import { getCurrentUser } from "@/lib/session";
+import { getAuthenticatedUser } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 
 export type PaymentRealizationResult = {
@@ -18,7 +18,7 @@ export async function submitPaymentRealization(
     paymentDate: Date
 ): Promise<PaymentRealizationResult> {
     try {
-        const user = await getCurrentUser();
+        const user = await getAuthenticatedUser();
         if (!user) {
             return { success: false, error: "Unauthorized" };
         }
