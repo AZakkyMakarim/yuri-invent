@@ -86,7 +86,7 @@ export default function PurchasingVerificationPage() {
             // If PO_GENERATED or PAYMENT_RELEASED -> finalizePurchaseOrder
 
             let result;
-            if (selectedPR.status === 'CONFIRMED') {
+            if (selectedPR.status === 'CONFIRMED' || selectedPR.status === 'PAYMENT_RELEASED') {
                 result = await submitPriceVerification(
                     selectedPR.id,
                     {
@@ -97,7 +97,7 @@ export default function PurchasingVerificationPage() {
                         shippingTrackingNumber: data.shippingTrackingNumber
                     }
                 );
-            } else if (selectedPR.status === 'PO_GENERATED' || selectedPR.status === 'PAYMENT_RELEASED') {
+            } else if (selectedPR.status === 'PO_GENERATED') {
                 // Finalize
                 result = await finalizePurchaseOrder(selectedPR.id, user.id);
             } else {
@@ -239,8 +239,22 @@ export default function PurchasingVerificationPage() {
                                                         </Button>
                                                     )}
 
-                                                    {/* Step 2: Finalize PO (After SPK Gen or Payment) */}
-                                                    {(pr.status === 'PO_GENERATED' || pr.status === 'PAYMENT_RELEASED') && (
+                                                    {/* Step 2a: Generate PO (Non-SPK after Payment) */}
+                                                    {pr.status === 'PAYMENT_RELEASED' && (
+                                                        <Button
+                                                            variant="primary"
+                                                            size="sm"
+                                                            onClick={() => handleCreatePOOpen(pr)}
+                                                            className="bg-purple-600 hover:bg-purple-700 text-white"
+                                                            disabled={processingId === pr.id}
+                                                        >
+                                                            <FileText size={16} className="mr-2" />
+                                                            Generate PO
+                                                        </Button>
+                                                    )}
+
+                                                    {/* Step 2b: Finalize PO (After PO Generated) */}
+                                                    {pr.status === 'PO_GENERATED' && (
                                                         <Button
                                                             variant="primary"
                                                             size="sm"

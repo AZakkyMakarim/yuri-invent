@@ -57,6 +57,8 @@ async function generatePRNumber(date: Date): Promise<string> {
     return `${prefix}/${seq.toString().padStart(4, '0')}`;
 }
 
+
+
 export async function createPurchaseRequest(input: CreatePRInput) {
     try {
         const {
@@ -553,7 +555,8 @@ export async function submitPriceVerification(
 
         // Allowed statuses to enter Verification
         // CONFIRMED is the state coming from Purchasing Confirmation
-        if (pr.status !== 'CONFIRMED') {
+        // PAYMENT_RELEASED is for Non-SPK after Finance payment
+        if (pr.status !== 'CONFIRMED' && pr.status !== 'PAYMENT_RELEASED') {
             throw new Error(`Invalid PR status for verification: ${pr.status}`);
         }
 
@@ -603,23 +606,25 @@ export async function submitPriceVerification(
 
             // 2. Determine Next Status
             // SPK -> PO_GENERATED
-            // Non-SPK -> WAITING_PAYMENT
-            let newStatus: any = 'WAITING_PAYMENT';
-            let poNumToSet = null; // Only set PO Number for SPK here? Or both?
-            // "Untuk SPK... Dokumen PO nya sudah tergenerate" -> So SPK gets PO Number.
-            // "Non-SPK... otomatis tergenerate dokumen PO... setelah di verifikasi (pembayaran)"
-            // Actually user said: "Jika diverifikasi (Step 1) maka akan otomatis tergenerate dokumen PO yang bisa diakses... Namun setelah verifikasi (Step 1), akan ada tombol Realisasi Pembayaran... Setelah itu baru masuk ke Verifikasi Pembelian (Step 2)... kecuali untuk Dokumen PO nantinya kalau sudah di verifikasi pembelian juga bisa diakses melalui barang masuk"
-            // Wait, for Non-SPK: "Jika diverifikasi (Step 1) maka akan otomatis tergenerate dokumen PO yang bisa diakses melalui Detail PR."
-            // So BOTH generate PO Number at Step 1.
+            // Non-SPK (CONFIRMED -> WAITING_PAYMENT)
+            // Non-SPK (PAYMENT_RELEASED -> PO_GENERATED)
 
-            newStatus = pr.paymentType === 'SPK' ? 'PO_GENERATED' : 'WAITING_PAYMENT';
+            let newStatus: string;
+            let poNumToSet: string | null;
+
+            if (pr.paymentType === 'SPK') {
+                newStatus = 'PO_GENERATED';
+            } else {
+                newStatus = pr.status === 'PAYMENT_RELEASED' ? 'PO_GENERATED' : 'WAITING_PAYMENT';
+            }
+
             poNumToSet = poNumber;
 
             // 3. Update PR Header
             await tx.purchaseRequest.update({
                 where: { id: prId },
                 data: {
-                    status: newStatus,
+                    status: newStatus as any,
                     totalAmount: new Prisma.Decimal(newTotalAmount),
                     poNumber: poNumToSet,
                     poSentAt: new Date(), // Date PO generated
@@ -655,9 +660,9 @@ export async function finalizePurchaseOrder(prId: string, userId: string) {
         if (isSPK && pr.status !== 'PO_GENERATED') {
             throw new Error('SPK PR must be in PO_GENERATED status to finalize.');
         }
-        if (!isSPK && pr.status !== 'PAYMENT_RELEASED') {
+        if (!isSPK && pr.status !== 'PAYMENT_RELEASED' && pr.status !== 'PO_GENERATED') {
             // Allow PO_GENERATED for Non-SPK if logic changes, but Plan says PAYMENT_RELEASED
-            throw new Error('Non-SPK PR must be Payment Released to finalize.');
+            throw new Error('Non-SPK PR must be Payment Released or PO Generated to finalize.');
         }
 
         // Generate GRN Number

@@ -21,7 +21,6 @@ interface Vendor {
     phone: string | null;
     address: string | null;
     email: string | null;
-    contactName: string | null;
     bank: string | null;
     bankBranch: string | null;
     bankAccount: string | null;
@@ -291,17 +290,6 @@ export default function VendorDetailPage() {
                                 <div className="flex-1">
                                     <div className="text-xs text-(--color-text-muted) mb-1">Vendor Code</div>
                                     <div className="text-lg font-bold font-mono">{vendor.code}</div>
-                                </div>
-                            </div>
-
-                            {/* Contact Person */}
-                            <div className="flex items-center gap-3">
-                                <div className="p-3 bg-orange-500 bg-opacity-10 rounded-lg shadow-md">
-                                    <User size={20} className="text-white" />
-                                </div>
-                                <div className="flex-1">
-                                    <div className="text-xs text-(--color-text-muted) mb-1">Contact Person</div>
-                                    <div className="text-sm font-medium">{vendor.contactName || "-"}</div>
                                 </div>
                             </div>
 
