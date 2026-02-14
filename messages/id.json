@@ -463,6 +463,7 @@
     },
     "inbound": {
         "title": "Daftar Barang Masuk",
+        "viewDetails": "Lihat Detail",
         "description": "Lacak barang masuk dan riwayat GRN",
         "searchPlaceholder": "Cari GRN, PO, atau Vendor...",
         "allStatus": "Semua Status",

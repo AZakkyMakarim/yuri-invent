@@ -52,19 +52,24 @@ export default function InboundListPage() {
 
     const getStatusBadge = (status: string) => {
         const styles: Record<string, string> = {
-            PENDING_VERIFICATION: "bg-yellow-100 text-yellow-800",
-            VERIFIED: "bg-green-100 text-green-800",
-            REJECTED: "bg-red-100 text-red-800",
+            PENDING: "bg-yellow-100 text-yellow-800",
+            PARTIAL: "bg-orange-100 text-orange-800",
+            COMPLETED: "bg-green-100 text-green-800",
+            READY_FOR_PAYMENT: "bg-blue-100 text-blue-800",
+            PAID: "bg-purple-100 text-purple-800",
         };
 
-        let label = status.replace(/_/g, ' ');
-        if (status === 'PENDING_VERIFICATION') label = t('pendingVerification');
-        if (status === 'VERIFIED') label = t('verified');
-        if (status === 'REJECTED') label = t('rejected');
+        const labels: Record<string, string> = {
+            PENDING: 'Pending',
+            PARTIAL: 'Partial',
+            COMPLETED: 'Completed',
+            READY_FOR_PAYMENT: 'Ready for Payment',
+            PAID: 'Paid'
+        };
 
         return (
             <Badge className={styles[status] || "bg-gray-100 text-gray-800"}>
-                {label}
+                {labels[status] || status.replace(/_/g, ' ')}
             </Badge>
         );
     };
@@ -101,9 +106,11 @@ export default function InboundListPage() {
                                 onChange={(e) => setStatusFilter(e.target.value)}
                             >
                                 <option value="">{t('allStatus')}</option>
-                                <option value="PENDING_VERIFICATION">{t('pendingVerification')}</option>
-                                <option value="VERIFIED">{t('verified')}</option>
-                                <option value="REJECTED">{t('rejected')}</option>
+                                <option value="PENDING">Pending</option>
+                                <option value="PARTIAL">Partial</option>
+                                <option value="COMPLETED">Completed</option>
+                                <option value="READY_FOR_PAYMENT">Ready for Payment</option>
+                                <option value="PAID">Paid</option>
                             </select>
                         </div>
                     </div>
@@ -169,18 +176,15 @@ export default function InboundListPage() {
                                                 {getStatusBadge(inbound.status)}
                                             </TableCell>
                                             <TableCell className="text-right">
-                                                <Button
-                                                    variant="ghost"
-                                                    size="sm"
-                                                    // onClick={() => router.push(`/inbound/${inbound.id}`)} // Detail page to be implemented? 
-                                                    // For now just placeholder or maybe verification modal in read-only? 
-                                                    // Let's leave action minimal for verification flow.
-                                                    onClick={() => { }}
-                                                    title="View Details"
-                                                    disabled
-                                                >
-                                                    <Eye size={16} className="text-(--color-text-secondary)" />
-                                                </Button>
+                                                <Link href={`/inbound/${inbound.id}`}>
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="sm"
+                                                        title={t('viewDetails') || "View Details"}
+                                                    >
+                                                        <Eye size={16} className="text-(--color-text-secondary)" />
+                                                    </Button>
+                                                </Link>
                                             </TableCell>
                                         </TableRow>
                                     ))

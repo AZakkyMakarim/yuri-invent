@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { signIn } from '@/lib/auth';
+import { syncUserProfile } from '@/app/actions/auth';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { LogIn, Lock, Mail } from 'lucide-react';
@@ -21,6 +22,14 @@ export default function SignInPage() {
 
         try {
             await signIn(email, password);
+
+            // Ensure profile exists (in case of DB reset while Auth persists)
+            const syncResult = await syncUserProfile();
+            if (!syncResult.success) {
+                console.warn('Profile sync warning:', syncResult.error);
+                // We don't block login, but it might fail later
+            }
+
             router.push('/dashboard');
         } catch (err) {
             setError(err instanceof Error ? err.message : 'Failed to sign in');

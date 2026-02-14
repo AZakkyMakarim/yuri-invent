@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { ArrowLeft, Building2, Edit, MapPin, Phone, Mail, User, CreditCard, Package, Plus, Trash2, DollarSign, FileText, Image as ImageIcon } from 'lucide-react';
+import { ArrowLeft, Building2, Edit, MapPin, Phone, Mail, User, CreditCard, Package, Plus, Trash2, DollarSign, FileText, Image as ImageIcon, Globe } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Table, TableHead, TableBody, TableRow, TableCell, TableHeader } from '@/components/ui/Table';
@@ -11,6 +11,7 @@ import { Modal } from '@/components/ui/Modal';
 import { Input } from '@/components/ui/Input';
 import { Dropdown } from '@/components/ui/Dropdown';
 import { apiFetch } from '@/lib/utils';
+import { getVendorPurchaseHistory, getVendorPriceHistory } from '@/app/actions/vendors';
 import { formatDate } from '@/lib/format';
 
 interface Vendor {
@@ -21,6 +22,7 @@ interface Vendor {
     phone: string | null;
     address: string | null;
     email: string | null;
+    link: string | null;
     bank: string | null;
     bankBranch: string | null;
     bankAccount: string | null;
@@ -59,6 +61,28 @@ interface VendorItem {
     item: Item & { imagePath: string | null };
 }
 
+interface PurchaseHistoryItem {
+    id: string;
+    prNumber: string;
+    requestDate: string;
+    status: string;
+    totalAmount: number;
+    poNumber: string | null;
+    inbounds: { grnNumber: string }[];
+}
+
+interface PriceHistoryItem {
+    id: string;
+    date: string;
+    itemId: string;
+    sku: string;
+    itemName: string;
+    uom: string;
+    price: number;
+    prNumber: string;
+    poNumber: string | null;
+}
+
 interface AddItemForm {
     itemId: string;
     cogsPerUom: string;
@@ -75,6 +99,10 @@ export default function VendorDetailPage() {
     const [allItems, setAllItems] = useState<Item[]>([]);
     const [loading, setLoading] = useState(true);
     const [itemsLoading, setItemsLoading] = useState(false);
+    const [purchaseHistory, setPurchaseHistory] = useState<PurchaseHistoryItem[]>([]);
+    const [priceHistory, setPriceHistory] = useState<PriceHistoryItem[]>([]);
+    const [historyLoading, setHistoryLoading] = useState(false);
+    const [selectedPriceItemId, setSelectedPriceItemId] = useState<string>('');
 
     // Modal states
     const [addItemModalOpen, setAddItemModalOpen] = useState(false);
@@ -115,6 +143,28 @@ export default function VendorDetailPage() {
         }
     }, [vendorId]);
 
+    // Fetch history data
+    const fetchHistory = useCallback(async () => {
+        try {
+            setHistoryLoading(true);
+            const [purchaseRes, priceRes] = await Promise.all([
+                getVendorPurchaseHistory(vendorId),
+                getVendorPriceHistory(vendorId)
+            ]);
+
+            if (purchaseRes.success) {
+                setPurchaseHistory(purchaseRes.data as PurchaseHistoryItem[]);
+            }
+            if (priceRes.success) {
+                setPriceHistory(priceRes.data as PriceHistoryItem[]);
+            }
+        } catch (error) {
+            console.error('Failed to fetch history:', error);
+        } finally {
+            setHistoryLoading(false);
+        }
+    }, [vendorId]);
+
     // Fetch all items for dropdown
     const fetchAllItems = useCallback(async () => {
         try {
@@ -129,7 +179,8 @@ export default function VendorDetailPage() {
         fetchVendor();
         fetchVendorItems();
         fetchAllItems();
-    }, [fetchVendor, fetchVendorItems, fetchAllItems]);
+        fetchHistory();
+    }, [fetchVendor, fetchVendorItems, fetchAllItems, fetchHistory]);
 
     // Add item to vendor
     const handleAddItem = async () => {
@@ -247,6 +298,26 @@ export default function VendorDetailPage() {
 
     const selectedItem = allItems.find(item => item.id === addItemForm.itemId);
 
+    // Prepare Price History Data
+    const uniquePriceItems = Array.from(new Set(priceHistory.map(h => h.itemId)))
+        .map(id => {
+            const historyItem = priceHistory.find(h => h.itemId === id);
+            return {
+                value: id,
+                label: `${historyItem?.sku} - ${historyItem?.itemName}`
+            };
+        });
+
+    const filteredPriceHistory = selectedPriceItemId
+        ? priceHistory.filter(h => h.itemId === selectedPriceItemId)
+        : [];
+
+    const chartData = filteredPriceHistory.map(h => ({
+        label: new Date(h.date).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' }),
+        value: h.price,
+        tooltip: `Rp ${h.price.toLocaleString('id-ID')}`
+    }));
+
     return (
         <div className="p-8">
             {/* Header */}
@@ -314,6 +385,26 @@ export default function VendorDetailPage() {
                                     <div className="text-sm font-medium break-all">{vendor.email || "-"}</div>
                                 </div>
                             </div>
+
+                            {/* Link */}
+                            {vendor.link && (
+                                <div className="flex items-center gap-3">
+                                    <div className="p-3 bg-blue-500 bg-opacity-10 rounded-lg shadow-md">
+                                        <Globe size={20} className="text-white-500" />
+                                    </div>
+                                    <div className="flex-1">
+                                        <div className="text-xs text-(--color-text-muted) mb-1">Website / Link</div>
+                                        <a
+                                            href={vendor.link}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="text-sm font-medium text-(--color-primary) hover:underline break-all"
+                                        >
+                                            {vendor.link}
+                                        </a>
+                                    </div>
+                                </div>
+                            )}
                         </div>
 
                         {/* Address Section */}
@@ -534,18 +625,120 @@ export default function VendorDetailPage() {
                                     )}
 
                                     {activeTab === 'purchases' && (
-                                        <div className="text-center py-16 text-(--color-text-muted)">
-                                            <DollarSign size={48} className="mx-auto mb-4 opacity-40" />
-                                            <h3 className="text-lg font-medium mb-2">Purchase History</h3>
-                                            <p className="text-sm">Coming soon - View all purchases from this vendor</p>
+                                        <div className="space-y-4">
+                                            {historyLoading ? (
+                                                <div className="text-center py-12 text-(--color-text-muted)">Loading history...</div>
+                                            ) : purchaseHistory.length === 0 ? (
+                                                <div className="text-center py-12 text-(--color-text-muted)">
+                                                    <DollarSign size={48} className="mx-auto mb-4 opacity-40" />
+                                                    <h3 className="text-lg font-medium mb-2">No Purchase History</h3>
+                                                    <p className="text-sm">No completed purchases found for this vendor.</p>
+                                                </div>
+                                            ) : (
+                                                <Table>
+                                                    <TableHeader>
+                                                        <TableRow>
+                                                            <TableHead>No</TableHead>
+                                                            <TableHead>Date</TableHead>
+                                                            <TableHead>PR Number</TableHead>
+                                                            <TableHead>PO Number</TableHead>
+                                                            <TableHead>GRN Number</TableHead>
+                                                            <TableHead>Status</TableHead>
+                                                            <TableHead className="text-right">Total Amount</TableHead>
+                                                        </TableRow>
+                                                    </TableHeader>
+                                                    <TableBody>
+                                                        {purchaseHistory.map((pr, index) => (
+                                                            <TableRow key={pr.id}>
+                                                                <TableCell>
+                                                                    {index + 1}
+                                                                </TableCell>
+                                                                <TableCell>{formatDate(pr.requestDate)}</TableCell>
+                                                                <TableCell className="font-mono text-sm">{pr.prNumber}</TableCell>
+                                                                <TableCell className="font-mono text-sm">{pr.poNumber || '-'}</TableCell>
+                                                                <TableCell className="font-mono text-sm">
+                                                                    {pr.inbounds.length > 0 ? pr.inbounds.map(i => i.grnNumber).join(', ') : '-'}
+                                                                </TableCell>
+                                                                <TableCell>
+                                                                    <Badge variant="info" className="text-xs">
+                                                                        {pr.status.replace(/_/g, ' ')}
+                                                                    </Badge>
+                                                                </TableCell>
+                                                                <TableCell className="text-right font-medium">
+                                                                    Rp {pr.totalAmount.toLocaleString('id-ID')}
+                                                                </TableCell>
+                                                            </TableRow>
+                                                        ))}
+                                                    </TableBody>
+                                                </Table>
+                                            )}
                                         </div>
                                     )}
 
                                     {activeTab === 'prices' && (
-                                        <div className="text-center py-16 text-(--color-text-muted)">
-                                            <FileText size={48} className="mx-auto mb-4 opacity-40" />
-                                            <h3 className="text-lg font-medium mb-2">Price History</h3>
-                                            <p className="text-sm">Coming soon - Track price changes over time</p>
+                                        <div className="space-y-6">
+                                            {/* Item Selector */}
+                                            <div className="max-w-md">
+                                                <label className="text-sm font-medium mb-2 block">Select Item to View History</label>
+                                                <Dropdown
+                                                    options={uniquePriceItems}
+                                                    value={selectedPriceItemId}
+                                                    onChange={setSelectedPriceItemId}
+                                                    placeholder="Choose an item..."
+                                                />
+                                            </div>
+
+                                            {selectedPriceItemId && (
+                                                <div className="bg-(--color-bg-tertiary) p-6 rounded-lg border border-(--color-border)">
+                                                    <h4 className="text-sm font-semibold mb-4 text-(--color-text-muted) uppercase tracking-wider">Price Trend</h4>
+                                                    <SimpleLineChart data={chartData} />
+                                                </div>
+                                            )}
+
+                                            <div className="pt-4">
+                                                <h4 className="text-sm font-semibold mb-4">Detailed Price Records</h4>
+                                                {priceHistory.length === 0 ? (
+                                                    <div className="text-center py-8 text-(--color-text-muted)">No price records found.</div>
+                                                ) : (
+                                                    <Table>
+                                                        <TableHeader>
+                                                            <TableRow>
+                                                                <TableHead>No</TableHead>
+                                                                <TableHead>Date</TableHead>
+                                                                <TableHead>Item / SKU</TableHead>
+                                                                <TableHead>UOM</TableHead>
+                                                                <TableHead>Price</TableHead>
+                                                                <TableHead>Source</TableHead>
+                                                            </TableRow>
+                                                        </TableHeader>
+                                                        <TableBody>
+                                                            {(selectedPriceItemId ? filteredPriceHistory : priceHistory).map((history, index) => (
+                                                                <TableRow key={`${history.id}-${history.date}`}>
+                                                                    <TableCell>
+                                                                        {index + 1}
+                                                                    </TableCell>
+                                                                    <TableCell>{formatDate(history.date)}</TableCell>
+                                                                    <TableCell>
+                                                                        <div className="font-medium">{history.itemName}</div>
+                                                                        <div className="text-xs text-(--color-text-muted) font-mono">{history.sku}</div>
+                                                                    </TableCell>
+                                                                    <TableCell>{history.uom}</TableCell>
+                                                                    <TableCell className="font-semibold text-(--color-primary)">
+                                                                        Rp {history.price.toLocaleString('id-ID')}
+                                                                    </TableCell>
+                                                                    <TableCell className="text-sm text-(--color-text-muted)">
+                                                                        {history.poNumber ? (
+                                                                            <span title={`PO: ${history.poNumber}`}>PO: {history.poNumber}</span>
+                                                                        ) : (
+                                                                            <span title={`PR: ${history.prNumber}`}>PR: {history.prNumber}</span>
+                                                                        )}
+                                                                    </TableCell>
+                                                                </TableRow>
+                                                            ))}
+                                                        </TableBody>
+                                                    </Table>
+                                                )}
+                                            </div>
                                         </div>
                                     )}
                                 </div>
@@ -778,6 +971,72 @@ function ImageOverlay({
                     {alt}
                 </div>
             </div>
+        </div>
+    );
+}
+
+function SimpleLineChart({ data, height = 200 }: { data: { label: string; value: number; tooltip: string }[]; height?: number }) {
+    if (data.length === 0) return <div className="h-full flex items-center justify-center text-gray-400">No data available</div>;
+
+    const padding = { top: 20, right: 30, bottom: 30, left: 60 };
+    const width = 800; // SVG viewBox width
+    const chartWidth = width - padding.left - padding.right;
+    const chartHeight = height - padding.top - padding.bottom;
+
+    const maxValue = Math.max(...data.map(d => d.value)) * 1.1; // 10% headroom
+    const minValue = 0; // Always start from 0 for price context
+
+    const getX = (index: number) => padding.left + (index / (data.length - 1 || 1)) * chartWidth;
+    const getY = (value: number) => padding.top + chartHeight - ((value - minValue) / (maxValue - minValue)) * chartHeight;
+
+    const points = data.map((d, i) => `${getX(i)},${getY(d.value)}`).join(' ');
+
+    return (
+        <div className="w-full overflow-x-auto">
+            <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-auto min-w-[600px]">
+                {/* Y Axis */}
+                <line x1={padding.left} y1={padding.top} x2={padding.left} y2={height - padding.bottom} stroke="#e5e7eb" strokeWidth="1" />
+                {/* X Axis */}
+                <line x1={padding.left} y1={height - padding.bottom} x2={width - padding.right} y2={height - padding.bottom} stroke="#e5e7eb" strokeWidth="1" />
+
+                {/* Y Axis Labels */}
+                {[0, 0.25, 0.5, 0.75, 1].map((ratio) => {
+                    const value = minValue + (maxValue - minValue) * ratio;
+                    const y = height - padding.bottom - (ratio * chartHeight);
+                    return (
+                        <g key={ratio}>
+                            <line x1={padding.left - 5} y1={y} x2={padding.left} y2={y} stroke="#e5e7eb" />
+                            <text x={padding.left - 10} y={y + 4} textAnchor="end" fontSize="10" fill="#6b7280">
+                                {value >= 1000 ? (value / 1000).toFixed(0) + 'k' : value.toFixed(0)}
+                            </text>
+                        </g>
+                    );
+                })}
+
+                {/* X Axis Labels */}
+                {data.map((d, i) => (
+                    <text key={i} x={getX(i)} y={height - padding.bottom + 15} textAnchor="middle" fontSize="10" fill="#6b7280">
+                        {d.label}
+                    </text>
+                ))}
+
+                {/* Line Path */}
+                <polyline fill="none" stroke="currentColor" strokeWidth="2" points={points} className="text-(--color-primary)" />
+
+                {/* Data Points */}
+                {data.map((d, i) => (
+                    <g key={i} className="group">
+                        <circle cx={getX(i)} cy={getY(d.value)} r="4" fill="currentColor" className="text-(--color-primary)" />
+                        {/* Tooltip */}
+                        <g className="invisible group-hover:visible transition-opacity">
+                            <rect x={getX(i) - 40} y={getY(d.value) - 35} width="80" height="25" rx="4" fill="black" fillOpacity="0.8" />
+                            <text x={getX(i)} y={getY(d.value) - 19} textAnchor="middle" fill="white" fontSize="10" fontWeight="bold">
+                                {d.value.toLocaleString('id-ID')}
+                            </text>
+                        </g>
+                    </g>
+                ))}
+            </svg>
         </div>
     );
 }

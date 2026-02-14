@@ -126,7 +126,7 @@ export async function resolveInboundDiscrepancy(
                             vendorId: item.inbound.vendorId,
                             parentInboundId: item.inboundId,
                             receiveDate: new Date(),
-                            status: 'PENDING_VERIFICATION',
+                            status: 'PENDING',
                             notes: `Replacement for ${item.inbound.grnNumber} (${item.discrepancyType}). ${notes || ''}`,
                             createdById: userId,
                             items: {

@@ -65,10 +65,10 @@ export default function ReturnsPage() {
                 <CardContent className="p-6">
                     <div className="flex items-center gap-4 mb-6">
                         <div className="relative flex-1 max-w-sm">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-4 w-4" />
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-(--color-text-muted) h-4 w-4" />
                             <Input
                                 placeholder="Search by code, vendor, or PR..."
-                                className="pl-10"
+                                className="pl-10 bg-(--color-bg-primary) border-(--color-border)"
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value)}
                             />
@@ -91,32 +91,32 @@ export default function ReturnsPage() {
                             <tbody className="divide-y divide-(--color-border)">
                                 {loading ? (
                                     <tr>
-                                        <td colSpan={7} className="px-4 py-8 text-center text-gray-500">
+                                        <td colSpan={7} className="px-4 py-8 text-center text-(--color-text-muted)">
                                             <Loader2 className="h-6 w-6 animate-spin mx-auto mb-2" />
                                             Loading returns...
                                         </td>
                                     </tr>
                                 ) : returns.length === 0 ? (
                                     <tr>
-                                        <td colSpan={7} className="px-4 py-8 text-center text-gray-500">
+                                        <td colSpan={7} className="px-4 py-8 text-center text-(--color-text-muted)">
                                             No returns found
                                         </td>
                                     </tr>
                                 ) : (
                                     returns.map((ret: any) => (
                                         <tr key={ret.id} className="hover:bg-(--color-bg-hover) transition-colors">
-                                            <td className="px-4 py-3 font-medium">{ret.returnCode}</td>
-                                            <td className="px-4 py-3">{ret.vendor.name}</td>
-                                            <td className="px-4 py-3 text-gray-500">{ret.purchaseRequest?.prNumber || '-'}</td>
-                                            <td className="px-4 py-3">{formatDate(ret.returnDate)}</td>
-                                            <td className="px-4 py-3">{ret._count.items}</td>
+                                            <td className="px-4 py-3 font-medium text-(--color-text-primary)">{ret.returnCode}</td>
+                                            <td className="px-4 py-3 text-(--color-text-primary)">{ret.vendor.name}</td>
+                                            <td className="px-4 py-3 text-(--color-text-secondary)">{ret.purchaseRequest?.prNumber || '-'}</td>
+                                            <td className="px-4 py-3 text-(--color-text-secondary)">{formatDate(ret.returnDate)}</td>
+                                            <td className="px-4 py-3 text-(--color-text-primary)">{ret._count.items}</td>
                                             <td className="px-4 py-3">
                                                 <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(ret.status)}`}>
                                                     {ret.status.replace(/_/g, ' ')}
                                                 </span>
                                             </td>
                                             <td className="px-4 py-3 text-right">
-                                                <Link href={`/return/${ret.id}`}>
+                                                <Link href={`/returns/${ret.id}`}>
                                                     <Button variant="ghost" size="sm">
                                                         View <ArrowRight className="ml-1 h-3 w-3" />
                                                     </Button>
@@ -140,7 +140,7 @@ export default function ReturnsPage() {
                             >
                                 Previous
                             </Button>
-                            <span className="flex items-center px-4 text-sm text-gray-600">
+                            <span className="flex items-center px-4 text-sm text-(--color-text-secondary)">
                                 Page {page} of {totalPages}
                             </span>
                             <Button

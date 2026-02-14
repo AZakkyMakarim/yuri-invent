@@ -48,8 +48,8 @@ export default function InboundVerificationPage() {
 
     const loadData = async () => {
         setLoading(true);
-        // Always filter by PENDING_VERIFICATION
-        const result = await getInbounds(1, 50, search, 'PENDING_VERIFICATION');
+        // Filter by PENDING status (waiting for verification)
+        const result = await getInbounds(1, 50, search, 'PENDING');
         if (result.success) {
             setData(result.data || []);
         } else {

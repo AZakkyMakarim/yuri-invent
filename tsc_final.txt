@@ -1,0 +1,2 @@
+app/actions/inbound.ts(499,17): error TS2367: This comparison appears to be unintentional because the types '"SHORTAGE" | "OVERAGE" | "WRONG_ITEM" | "DAMAGED"' and '"NONE"' have no overlap.
+app/actions/inbound.ts(499,36): error TS2367: This comparison appears to be unintentional because the types '"SHORTAGE" | "OVERAGE" | "WRONG_ITEM" | "DAMAGED"' and '"NONE"' have no overlap.

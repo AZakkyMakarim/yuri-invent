@@ -153,7 +153,7 @@ export function serializeDecimal(obj: any): any {
 /**
  * Format date to local string
  */
-export function formatDate(date: Date | string): string {
+export function formatDate(date: Date | string | null | undefined): string {
     if (!date) return '-';
     return new Date(date).toLocaleDateString('id-ID', {
         day: 'numeric',

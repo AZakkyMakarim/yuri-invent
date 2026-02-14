@@ -3,6 +3,7 @@
 import { prisma } from '@/lib/prisma';
 import { serializeDecimal } from '@/lib/utils';
 import { revalidatePath } from 'next/cache';
+import { InboundStatus } from '@prisma/client';
 
 interface VerifyPOParams {
     prId: string;
@@ -108,7 +109,7 @@ export async function verifyPurchaseOrder(params: VerifyPOParams) {
                     vendorId: pr.vendorId,
                     warehouseId: pr.targetWarehouseId,
                     receiveDate: estimatedShippingDate || new Date(),
-                    status: 'PENDING_VERIFICATION',
+                    status: InboundStatus.PENDING,
                     notes: `Created from PO ${poNumber}`,
                     createdById: userId,
                     items: {

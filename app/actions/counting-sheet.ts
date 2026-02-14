@@ -547,13 +547,14 @@ export async function confirmFinalization(
                             createdById: user.id,
                             // approvedById: user.id, // Removed auto-approval
                             // approvedAt: new Date(), // Removed auto-approval
-                            items: {
+                            adjustmentItems: {
                                 create: varianceItems.map(item => ({
                                     itemId: item.itemId,
-                                    systemQty: item.systemQty,
-                                    adjustedQty: item.finalQty,
-                                    variance: item.variance,
-                                    reason: 'Stock Opname Result'
+                                    qtySystem: item.systemQty,
+                                    qtyInput: item.finalQty,
+                                    qtyVariance: item.variance,
+                                    adjustmentMethod: 'REAL_QTY',
+                                    notes: 'Stock Opname Result'
                                 }))
                             }
                         }

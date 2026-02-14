@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo, useEffect } from 'react';
-import { Search, X, AlertTriangle, Check } from 'lucide-react';
+import { Search, X, AlertTriangle, Check, Package, ImageIcon, PackageCheck } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Modal } from '@/components/ui/Modal';
@@ -22,6 +22,10 @@ interface ItemOption {
     brand?: string | null;
     type?: string | null;
     movementType?: string | null;
+    categoryName?: string;
+    color?: string | null;
+    weight?: number | null;
+    dimensions?: { length: number; width: number; height: number } | null;
 }
 
 // ... (props interface remains same)
@@ -84,7 +88,17 @@ export default function ItemPickerModal({
                         fromRabLineId: line.id,
                         rabQty: line.replenishQty,
                         isSuppliedByVendor: isSupplied,
-                        imagePath: line.item.imagePath
+                        imagePath: line.item.imagePath,
+                        categoryName: line.item.category?.name || '-',
+                        brand: line.item.brand,
+                        type: line.item.type,
+                        color: line.item.color,
+                        weight: line.item.weight,
+                        dimensions: (line.item.length || line.item.width || line.item.height) ? {
+                            length: line.item.length || 0,
+                            width: line.item.width || 0,
+                            height: line.item.height || 0
+                        } : null
                     });
                 }
             });
@@ -116,7 +130,15 @@ export default function ItemPickerModal({
                 imagePath: catalogItem.imagePath,
                 brand: catalogItem.brand,
                 type: catalogItem.type,
-                movementType: catalogItem.movementType
+                movementType: catalogItem.movementType,
+                categoryName: catalogItem.category?.name || '-',
+                color: catalogItem.color,
+                weight: catalogItem.weight,
+                dimensions: (catalogItem.length || catalogItem.width || catalogItem.height) ? {
+                    length: catalogItem.length || 0,
+                    width: catalogItem.width || 0,
+                    height: catalogItem.height || 0
+                } : null
             });
         });
 
@@ -218,86 +240,132 @@ export default function ItemPickerModal({
                                 {filteredItems.map((item) => (
                                     <div
                                         key={item.itemId}
-                                        className="flex items-center justify-between p-3 rounded-lg bg-(--color-bg-primary) border border-(--color-border) hover:border-(--color-primary)/50 hover:shadow-sm transition-all group"
+                                        className="flex items-stretch gap-3 p-3 rounded-lg bg-(--color-bg-primary) border border-(--color-border) hover:border-(--color-primary)/50 hover:shadow-sm transition-all group"
                                     >
-                                        <div className="flex-1 min-w-0 pr-4">
-                                            <div className="flex items-center gap-2 mb-1">
-                                                <span className="font-mono text-xs text-(--color-text-muted) bg-(--color-bg-secondary) px-1.5 py-0.5 rounded-sm">
-                                                    {item.code}
-                                                </span>
-                                                {item.fromRabLineId ? (
-                                                    <span className="text-[10px] uppercase font-bold text-blue-600 bg-blue-100 dark:bg-blue-900/30 dark:text-blue-400 px-1.5 py-0.5 rounded-full">
-                                                        {t('badges.rab')}
-                                                    </span>
-                                                ) : (
-                                                    <span className="text-[10px] uppercase font-bold text-slate-500 bg-slate-100 dark:bg-slate-800 dark:text-slate-400 px-1.5 py-0.5 rounded-full">
-                                                        {t('badges.catalog')}
-                                                    </span>
-                                                )}
+                                        {/* Main Content - Fluid */}
+                                        <div className="flex-1 min-w-0 flex flex-col justify-between">
+                                            {/* Header: Badges & Name */}
+                                            <div className="flex flex-col mb-2">
+                                                <div className="flex">
+                                                    <div className="flex flex-col w-3/4">
+                                                        <div className="flex flex-wrap items-center gap-1.5 mb-1.5">
+                                                            <span className="font-mono text-[10px] font-medium text-(--color-text-muted) bg-(--color-bg-secondary) px-1.5 py-0.5 rounded border border-(--color-border)">
+                                                                {item.code}
+                                                            </span>
+                                                            {item.fromRabLineId ? (
+                                                                <span className="text-[10px] font-bold text-blue-600 bg-blue-50 border border-blue-100 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-800 px-1.5 py-0.5 rounded">
+                                                                    {t('badges.rab')}
+                                                                </span>
+                                                            ) : (
+                                                                <span className="text-[10px] font-bold text-slate-500 bg-slate-100 border border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700 px-1.5 py-0.5 rounded">
+                                                                    {t('badges.catalog')}
+                                                                </span>
+                                                            )}
+                                                            {item.movementType && (
+                                                                <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded border ${item.movementType === 'FAST'
+                                                                    ? 'border-green-200 text-green-700 bg-green-50 dark:border-green-800 dark:bg-green-900/30 dark:text-green-400'
+                                                                    : 'border-(--color-border) text-(--color-text-secondary) bg-(--color-bg-secondary)'
+                                                                    }`}>
+                                                                    {item.movementType}
+                                                                </span>
+                                                            )}
+                                                            {!item.isSuppliedByVendor ? (
+                                                                <span className="inline-flex items-center gap-1 text-[9px] text-orange-600 dark:text-orange-400 bg-orange-50 dark:bg-orange-900/20 px-1.5 py-1 rounded font-medium leading-tight">
+                                                                    <AlertTriangle size={10} />
+                                                                    {t('notSupplied')}
+                                                                </span>
+                                                            ) : (
+                                                                <span className="inline-flex items-center gap-1 text-[9px] text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20 px-1.5 py-1 rounded font-medium leading-tight">
+                                                                    <PackageCheck size={10} />
+                                                                    Disuplai oleh vendor
+                                                                </span>
+                                                            )}
+                                                        </div>
+                                                        <h4 className="font-bold text-(--color-text-primary) text-base truncate" title={item.name}>
+                                                            {item.name}
+                                                        </h4>
+                                                    </div>
+                                                    <div className="flex flex-col text-right w-1/4 justify-center">
+                                                        {/* Price */}
+                                                        {item.unitPrice > 0 ? (
+                                                            <div className="mb-1">
+                                                                <div className="text-[10px] text-(--color-text-muted) uppercase tracking-wider mb-0.5">{t('estPrice')}</div>
+                                                                <div className="font-bold text-base text-(--color-primary) whitespace-nowrap">
+                                                                    {new Intl.NumberFormat('id-ID', {
+                                                                        style: 'currency',
+                                                                        currency: 'IDR',
+                                                                        maximumFractionDigits: 0
+                                                                    }).format(item.unitPrice)}
+                                                                </div>
+                                                                <div className="text-[10px] text-(--color-text-muted) mt-0.5">
+                                                                    / <span className="font-medium text-(--color-text-primary)">{item.uom}</span>
+                                                                </div>
+                                                            </div>
+                                                        ) : (
+                                                            <div className="mb-1">
+                                                                <div className="text-xs italic text-(--color-text-muted)">
+                                                                    Price N/A
+                                                                </div>
+                                                                <div className="text-[10px] text-(--color-text-muted) mt-0.5">
+                                                                    / <span className="font-medium text-(--color-text-primary)">{item.uom}</span>
+                                                                </div>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <h4 className="font-medium text-(--color-text-primary) truncate">
-                                                {item.name}
-                                            </h4>
-                                            <div className="flex flex-wrap gap-x-3 gap-y-1 mt-0.5 mb-1.5">
-                                                {item.brand && (
-                                                    <span className="text-[10px] text-(--color-text-secondary)">
-                                                        <span className="text-(--color-text-muted)">B:</span> {item.brand}
+
+                                            {/* Specs Row - Consistent Layout */}
+                                            <div className="flex items-center gap-4 text-xs mt-4 pt-2 border-t border-(--color-border)/50">
+                                                <div className="flex flex-col min-w-[60px]">
+                                                    <span className="text-[9px] text-(--color-text-muted) uppercase font-semibold tracking-wider mb-0.5">Kategori</span>
+                                                    <span className="font-medium text-(--color-text-primary) truncate max-w-[80px]" title={item.categoryName || '-'}>{item.categoryName || '-'}</span>
+                                                </div>
+                                                <div className="flex flex-col min-w-[60px] border-l border-(--color-border) pl-3">
+                                                    <span className="text-[9px] text-(--color-text-muted) uppercase font-semibold tracking-wider mb-0.5">Merk</span>
+                                                    <span className="font-medium text-(--color-text-primary) truncate max-w-[80px]" title={item.brand || '-'}>{item.brand || '-'}</span>
+                                                </div>
+                                                <div className="flex flex-col min-w-[60px] border-l border-(--color-border) pl-3">
+                                                    <span className="text-[9px] text-(--color-text-muted) uppercase font-semibold tracking-wider mb-0.5">Tipe</span>
+                                                    <span className="font-medium text-(--color-text-primary) truncate max-w-[80px]" title={item.type || '-'}>{item.type || '-'}</span>
+                                                </div>
+                                                <div className="flex flex-col min-w-[60px] border-l border-(--color-border) pl-3">
+                                                    <span className="text-[9px] text-(--color-text-muted) uppercase font-semibold tracking-wider mb-0.5">Warna</span>
+                                                    <span className="font-medium text-(--color-text-primary) truncate max-w-[80px]" title={item.color || '-'}>{item.color || '-'}</span>
+                                                </div>
+                                                <div className="flex flex-col min-w-[60px] border-l border-(--color-border) pl-3">
+                                                    <span className="text-[9px] text-(--color-text-muted) uppercase font-semibold tracking-wider mb-0.5">Dimensi</span>
+                                                    <span className="font-medium text-(--color-text-primary) truncate" title={item.dimensions ? `${item.dimensions.length}x${item.dimensions.width}x${item.dimensions.height}` : '-'}>
+                                                        {item.dimensions ? `${item.dimensions.length}x${item.dimensions.width}x${item.dimensions.height}` : '-'} <span className="text-[10px] text-(--color-text-muted) font-normal">cm</span>
                                                     </span>
-                                                )}
-                                                {item.type && (
-                                                    <span className="text-[10px] text-(--color-text-secondary)">
-                                                        <span className="text-(--color-text-muted)">T:</span> {item.type}
-                                                    </span>
-                                                )}
-                                                {item.movementType && (
-                                                    <span className="text-[10px] text-(--color-text-secondary)">
-                                                        <span className="text-(--color-text-muted)">M:</span> {item.movementType}
-                                                    </span>
-                                                )}
-                                            </div>
-                                            <div className="flex items-center gap-4 mt-1 text-xs text-(--color-text-secondary)">
-                                                <span>
-                                                    {t('uom')}: <span className="font-medium text-(--color-text-primary)">{item.uom}</span>
-                                                </span>
-                                                {item.rabQty && (
-                                                    <span>
-                                                        {t('rabQty')}: <span className="font-medium text-blue-600 dark:text-blue-400">{item.rabQty}</span>
-                                                    </span>
-                                                )}
-                                                {!item.isSuppliedByVendor && (
-                                                    <span className="flex items-center text-orange-600 dark:text-orange-400">
-                                                        <AlertTriangle size={12} className="mr-1" />
-                                                        {t('notSupplied')}
-                                                    </span>
-                                                )}
+                                                </div>
                                             </div>
                                         </div>
 
-                                        <div className="flex items-center gap-4">
-                                            {/* Price display if available */}
-                                            {item.unitPrice > 0 && (
-                                                <div className="text-right hidden sm:block">
-                                                    <div className="text-xs text-(--color-text-muted)">{t('estPrice')}</div>
-                                                    <div className="font-medium">
-                                                        {new Intl.NumberFormat('id-ID', {
-                                                            style: 'currency',
-                                                            currency: 'IDR',
-                                                            maximumFractionDigits: 0
-                                                        }).format(item.unitPrice)}
+                                        {/* Actions & Price - Fixed Width Column */}
+                                        <div className="w-24 shrink-0 flex flex-col justify-center items-center pl-4 border-l border-(--color-border)">
+                                            {/* Image - Fixed Size */}
+                                            <div className="h-20 w-full mb-2 shrink-0 bg-white rounded-lg border border-(--color-border) flex items-center justify-center overflow-hidden self-start shadow-sm">
+                                                {item.imagePath ? (
+                                                    <img src={item.imagePath} alt={item.name} className="h-full w-full object-cover transition-transform hover:scale-105 duration-300" />
+                                                ) : (
+                                                    <div className="flex flex-col items-center justify-center text-(--color-text-muted) p-1">
+                                                        <ImageIcon size={20} className="mb-1 opacity-30" />
                                                     </div>
-                                                </div>
-                                            )}
-
-                                            <Button
-                                                size="sm"
-                                                onClick={() => {
-                                                    onAddItem(item);
-                                                    onClose(); // Optional: close on add, or keep open for multiple
-                                                }}
-                                                className="whitespace-nowrap bg-(--color-primary) hover:bg-(--color-primary)/90 text-white"
-                                            >
-                                                {t('add')}
-                                            </Button>
+                                                )}
+                                            </div>
+                                            <div className="w-full space-y-2">
+                                                <Button
+                                                    size="sm"
+                                                    onClick={() => {
+                                                        onAddItem(item);
+                                                        onClose();
+                                                    }}
+                                                    className="w-full h-8 text-xs bg-(--color-primary) hover:bg-(--color-primary)/90 text-white shadow-sm font-medium"
+                                                >
+                                                    {t('add')}
+                                                </Button>
+                                            </div>
                                         </div>
                                     </div>
                                 ))}

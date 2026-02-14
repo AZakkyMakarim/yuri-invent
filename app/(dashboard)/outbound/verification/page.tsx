@@ -22,6 +22,7 @@ import {
     TableRow,
 } from "@/components/ui/Table";
 import { getOutboundList } from '@/app/actions/outbound';
+import Link from 'next/link';
 
 // Reusing list action but filtering in client or ideally creating a specific 'getPendingRelease' action
 // For interface speed, we will use mock data or filtered list
@@ -36,13 +37,10 @@ export default function OutboundVerificationPage() {
 
     const loadData = async () => {
         setLoading(true);
-        // In real impl, pass status='APPROVED' to filter server side
-        const result = await getOutboundList(1, 20);
+        // Pass status='APPROVED' to filter server side
+        const result = await getOutboundList(1, 20, '', 'APPROVED');
         if (result.success && result.data) {
-            // Mock filtering for 'APPROVED' status which represents "Ready for Verification/Release"
-            // Since we don't have seed data for approved outbounds, we might show empty or mock one.
-            const approved = result.data.filter((i: any) => i.status === 'APPROVED');
-            setData(approved);
+            setData(result.data);
         }
         setLoading(false);
     };
@@ -114,9 +112,11 @@ export default function OutboundVerificationPage() {
                                                 {item._count?.items || 0} Items
                                             </TableCell>
                                             <TableCell className="text-right">
-                                                <Button size="sm" className="bg-green-600 hover:bg-green-700 text-white">
-                                                    Verify & Release <ArrowRight size={16} className="ml-1" />
-                                                </Button>
+                                                <Link href={`/outbound/${item.id}`}>
+                                                    <Button size="sm" className="bg-green-600 hover:bg-green-700 text-white">
+                                                        Verify & Release <ArrowRight size={16} className="ml-1" />
+                                                    </Button>
+                                                </Link>
                                             </TableCell>
                                         </TableRow>
                                     ))

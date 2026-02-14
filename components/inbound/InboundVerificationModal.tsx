@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Textarea } from '@/components/ui/Textarea';
 import { Loader2, Check, AlertTriangle, Upload, FileText, X } from 'lucide-react';
-import { verifyInbound } from '@/app/actions/inbound';
+import { updateInboundVerification } from '@/app/actions/inbound';
 import type { InboundVerificationItem } from '@/app/actions/inbound';
 import { useAuth } from '@/contexts/AuthContext';
 import type { InboundDiscrepancyType } from '@prisma/client';
@@ -53,7 +53,7 @@ export default function InboundVerificationModal({
     const [proofPreview, setProofPreview] = useState<string | null>(null);
 
     // Items State
-    const [items, setItems] = useState<InboundVerificationItem[]>([]);
+    const [items, setItems] = useState<any[]>([]); // Use any for internal state to hold extra UI fields
 
     useEffect(() => {
         if (inbound) {
@@ -87,8 +87,7 @@ export default function InboundVerificationModal({
         const newItems = [...items];
         newItems[index].receivedQty = qty;
         // Auto-update accepted qty to match received initially
-        newItems[index].acceptedQty = qty;
-        newItems[index].rejectedQty = 0;
+        newItems[index].acceptedQty = Math.max(0, qty - newItems[index].rejectedQty);
         setItems(newItems);
     };
 
@@ -102,13 +101,10 @@ export default function InboundVerificationModal({
         newItems[index].rejectedQty = rejected;
         newItems[index].acceptedQty = received - rejected;
 
-        // Auto-select Wrong Item if filtered to all items rejected? optional.
-        // For now, reset discrepancy type if rejected is 0
         if (rejected === 0) {
             newItems[index].discrepancyType = 'NONE';
         } else if (newItems[index].discrepancyType === 'NONE') {
             // Optional: Default to WRONG_ITEM if user wants simplified flow?
-            // Let's NOT default it yet, to force user to choose (Damaged vs Wrong)
         }
 
         setItems(newItems);
@@ -160,7 +156,7 @@ export default function InboundVerificationModal({
             }
 
             // 2. Submit Verification
-            const result = await verifyInbound({
+            const result = await updateInboundVerification({
                 id: inbound.id,
                 userId: user.id,
                 proofDocumentPath: uploadResult.path,
@@ -170,18 +166,20 @@ export default function InboundVerificationModal({
                     const expected = inbound.items[idx].expectedQuantity;
                     let type = item.discrepancyType;
 
-                    if (item.receivedQty < expected) {
-                        type = 'SHORTAGE';
+                    if (item.receivedQty < expected && item.rejectedQty === 0) {
+                        // Shortage is implied by lack of quantity, usually explicit type not needed for shortage unless we want to flag logic.
+                        // But backend handles shortage detection based on qty.
                     } else if (item.receivedQty > expected) {
                         type = 'OVERAGE';
-                    } else if (item.rejectedQty > 0 && (!type || type === 'NONE')) {
-                        // If rejected but no reason selected, default to Damaged or force user to select (currently validation is loose)
-                        // Ideally we should validate this, but for now we default to NONE or let backend handle
                     }
 
                     return {
-                        ...item,
-                        discrepancyType: type
+                        itemId: item.itemId,
+                        receivedQty: item.receivedQty,
+                        rejectedQty: item.rejectedQty,
+                        notes: item.notes,
+                        discrepancyType: type,
+                        discrepancyReason: item.discrepancyReason
                     };
                 })
             });

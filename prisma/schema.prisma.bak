@@ -1,0 +1,1040 @@
+// Prisma Schema for Warehouse Management System (WMS)
+// Supports: RAB (Budget), PO, Inbound/Outbound, Stock Opname, Returns, Billing
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// =============================================================================
+// ENUMS
+// =============================================================================
+
+enum UserRole {
+  ADMIN
+  MANAGER
+  PURCHASING_STAFF
+  WAREHOUSE_STAFF
+}
+
+enum ApprovalStatus {
+  DRAFT
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum POStatus {
+  DRAFT
+  PENDING_MANAGER_APPROVAL
+  PENDING_PURCHASING_APPROVAL
+  APPROVED
+  CONFIRMED // Purchasing confirms intent
+  WAITING_PAYMENT // Non-SPK waiting for finance
+  PAYMENT_RELEASED // Finance processed payment
+  PO_GENERATED // Auto-generated after Initial Verification (SPK) or Payment (Non-SPK)
+  PO_ISSUED // Final PO generated and Verified
+  SENT_TO_VENDOR
+  PARTIALLY_RECEIVED
+  FULLY_RECEIVED
+  CANCELLED
+  REJECTED
+}
+
+enum InboundStatus {
+  PENDING_VERIFICATION
+  VERIFIED
+  REJECTED
+}
+
+enum OutboundStatus {
+  DRAFT
+  PENDING_APPROVAL
+  APPROVED
+  RELEASED
+  REJECTED
+}
+
+enum StockOpnameStatus {
+  SCHEDULED
+  COUNTING_IN_PROGRESS
+  PENDING_RECOUNT
+  COUNTING_COMPLETE
+  FINALIZED
+  COMPLETED_WITH_ADJUSTMENT
+}
+
+enum AdjustmentType {
+  OPNAME_RESULT
+  MANUAL_WRITEOFF
+  DAMAGED
+  EXPIRED
+  OTHER
+}
+
+enum ReturnReason {
+  LOW_QUALITY
+  DAMAGED
+  OVERSTOCK
+  WRONG_ITEM
+  OTHER
+}
+
+enum ReturnStatus {
+  DRAFT
+  PENDING_APPROVAL
+  APPROVED
+  SENT_TO_VENDOR
+  COMPLETED
+  REJECTED
+}
+
+enum BillStatus {
+  DRAFT
+  PENDING_VERIFICATION
+  VERIFIED
+  PARTIALLY_PAID
+  FULLY_PAID
+  REJECTED
+}
+
+enum PaymentStatus {
+  PENDING_VALIDATION
+  VALIDATED
+  REJECTED
+}
+
+enum StockMovementType {
+  INBOUND
+  OUTBOUND
+  ADJUSTMENT_IN
+  ADJUSTMENT_OUT
+  RETURN_OUT
+  RETURN_IN
+}
+
+enum VendorType {
+  SPK
+  NON_SPK
+}
+
+enum BankName {
+  BCA
+  BRI
+  BNI
+  MANDIRI
+}
+
+// =============================================================================
+// AUTHENTICATION & RBAC (Role-Based Access Control)
+// =============================================================================
+
+model User {
+  id         String   @id @default(cuid())
+  supabaseId String   @unique // Link to Supabase Auth user
+  email      String   @unique
+  name       String?
+  password   String? // Legacy - will use Supabase Auth
+  roleId     String?
+  role       Role?    @relation(fields: [roleId], references: [id])
+  isActive   Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  // Relations
+  createdPurchaseRequests  PurchaseRequest[]  @relation("PRCreatedBy")
+  approvedPurchaseRequests PurchaseRequest[]  @relation("PRApprovedByManager")
+  acceptedPurchaseRequests PurchaseRequest[]  @relation("PRAcceptedByPurchasing")
+  createdInbounds          Inbound[]          @relation("InboundCreatedBy")
+  verifiedInbounds         Inbound[]          @relation("InboundVerifiedBy")
+  createdOutbounds         Outbound[]         @relation("OutboundCreatedBy")
+  approvedOutbounds        Outbound[]         @relation("OutboundApprovedBy")
+  stockOpnamesCounterA     StockOpnameCount[] @relation("CounterA")
+  stockOpnamesCounterB     StockOpnameCount[] @relation("CounterB")
+  createdAdjustments       StockAdjustment[]  @relation("AdjustmentCreatedBy")
+  approvedAdjustments      StockAdjustment[]  @relation("AdjustmentApprovedBy")
+  createdReturns           Return[]           @relation("ReturnCreatedBy")
+  approvedReturns          Return[]           @relation("ReturnApprovedBy")
+  createdBills             Bill[]             @relation("BillCreatedBy")
+  verifiedBills            Bill[]             @relation("BillVerifiedBy")
+  createdPayments          Payment[]          @relation("PaymentCreatedBy")
+  validatedPayments        Payment[]          @relation("PaymentValidatedBy")
+  createdRABs              RAB[]              @relation("RABCreatedBy")
+  approvedRABs             RAB[]              @relation("RABApprovedBy")
+  realizedPaymentsPRs      PurchaseRequest[]  @relation("PRPaymentRealizedBy")
+  createdCategories        Category[]         @relation("CategoryCreatedBy")
+  createdUOMs              UOM[]              @relation("UOMCreatedBy")
+  createdItems             Item[]             @relation("ItemCreatedBy")
+  createdVendors           Vendor[]           @relation("VendorCreatedBy")
+
+  @@map("users")
+}
+
+model Role {
+  id          String       @id @default(cuid())
+  name        String       @unique
+  description String?
+  isSystem    Boolean      @default(false) // System roles can't be deleted
+  users       User[]
+  permissions Permission[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  @@map("roles")
+}
+
+model Permission {
+  id          String   @id @default(cuid())
+  name        String   @unique // e.g., "vendors.create", "items.delete"
+  description String?
+  module      String // e.g., "vendors", "items", "categories"
+  action      String // e.g., "create", "read", "update", "delete"
+  roles       Role[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("permissions")
+}
+
+// =============================================================================
+// MASTER DATA
+// =============================================================================
+
+model Category {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  code        String   @unique
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  createdById String?
+  createdBy   User?    @relation("CategoryCreatedBy", fields: [createdById], references: [id])
+
+  // Relations
+  items Item[]
+
+  @@map("categories")
+}
+
+model UOM {
+  id          String   @id @default(cuid())
+  name        String   @unique // e.g., "Pieces", "Kilogram", "Box"
+  symbol      String   @unique // e.g., "pcs", "kg", "box"
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  createdById String?
+  createdBy   User?    @relation("UOMCreatedBy", fields: [createdById], references: [id])
+
+  // Relations
+  items Item[]
+
+  @@map("uoms")
+}
+
+model Warehouse {
+  id        String   @id @default(cuid())
+  code      String   @unique
+  name      String
+  type      String   @default("MAIN") // MAIN, BRANCH
+  address   String?
+  isActive  Boolean  @default(true)
+  isDefault Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  warehouseStocks  WarehouseStock[]
+  purchaseRequests PurchaseRequest[]
+  inbounds         Inbound[]
+  outbounds        Outbound[]
+  stockCards       StockCard[]
+  stockOpnames     StockOpname[]
+
+  @@map("warehouses")
+}
+
+model WarehouseStock {
+  id           String   @id @default(cuid())
+  warehouseId  String
+  itemId       String
+  quantity     Int      @default(0)
+  reorderLevel Int?
+  updatedAt    DateTime @updatedAt
+
+  warehouse Warehouse @relation(fields: [warehouseId], references: [id])
+  item      Item      @relation(fields: [itemId], references: [id])
+
+  @@unique([warehouseId, itemId])
+  @@map("warehouse_stocks")
+}
+
+model Vendor {
+  id              String     @id @default(cuid())
+  code            String     @unique
+  name            String
+  address         String?
+  phone           String?
+  email           String?
+  contactName     String?
+  bankName        String?
+  bankAccount     String?
+  isActive        Boolean    @default(true)
+  vendorType      VendorType @default(NON_SPK)
+  bank            BankName?
+  bankBranch      String?
+  link            String? // Link/Website URL
+  spkDocumentPath String? // Path to uploaded SPK document for SPK vendors
+  createdById     String?
+  createdBy       User?      @relation("VendorCreatedBy", fields: [createdById], references: [id])
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+
+  // Relations
+  purchaseRequests PurchaseRequest[]
+  inbounds         Inbound[]
+  returns          Return[]
+  bills            Bill[]
+  priceHistories   ItemPriceHistory[]
+  suppliedItems    VendorItem[]       @relation("VendorSuppliedItems")
+
+  @@map("vendors")
+}
+
+model VendorItem {
+  id         String   @id @default(cuid())
+  vendorId   String
+  vendor     Vendor   @relation("VendorSuppliedItems", fields: [vendorId], references: [id], onDelete: Cascade)
+  itemId     String
+  item       Item     @relation("ItemVendorSupplies", fields: [itemId], references: [id], onDelete: Cascade)
+  cogsPerUom Float // Cost of Goods Sold per Unit of Measure
+  link       String? // Link/Website URL for this specific item from this vendor
+  isActive   Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@unique([vendorId, itemId])
+  @@map("vendor_items")
+}
+
+model Item {
+  id            String  @id @default(cuid())
+  sku           String  @unique
+  name          String
+  description   String?
+  categoryId    String
+  uomId         String
+  minStockLevel Int     @default(0)
+  maxStockLevel Int     @default(0)
+  currentStock  Int     @default(0)
+  isActive      Boolean @default(true)
+  imagePath     String? // URL/Path to product image
+  barcode       String? // Barcode/UPC/EAN
+
+  // New Fields (2026-01-26)
+  brand        String?
+  type         String?
+  color        String?
+  weight       Float? // In Grams
+  length       Float? // In cm (implied)
+  width        Float?
+  height       Float?
+  movementType String? // 'FAST', 'MEDIUM', 'SLOW'
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  createdById String?
+
+  // Relations
+  category             Category              @relation(fields: [categoryId], references: [id])
+  uom                  UOM                   @relation(fields: [uomId], references: [id])
+  createdBy            User?                 @relation("ItemCreatedBy", fields: [createdById], references: [id])
+  purchaseRequestItems PurchaseRequestItem[]
+  inboundItems         InboundItem[]
+  outboundItems        OutboundItem[]
+  stockCards           StockCard[]
+  stockOpnameCounts    StockOpnameCount[]
+  stockAdjustmentItems StockAdjustmentItem[]
+  returnItems          ReturnItem[]
+  priceHistories       ItemPriceHistory[]
+  vendorSupplies       VendorItem[]          @relation("ItemVendorSupplies")
+  rabLines             RABLine[]
+  partnerPrices        PartnerItemPrice[]
+  warehouseStocks      WarehouseStock[]
+  countingSheetItems   CountingSheetItem[]
+
+  @@map("items")
+}
+
+model ItemPriceHistory {
+  id        String    @id @default(cuid())
+  itemId    String
+  vendorId  String
+  unitPrice Decimal   @db.Decimal(18, 2)
+  currency  String    @default("IDR")
+  validFrom DateTime  @default(now())
+  validTo   DateTime?
+  createdAt DateTime  @default(now())
+
+  // Relations
+  item   Item   @relation(fields: [itemId], references: [id])
+  vendor Vendor @relation(fields: [vendorId], references: [id])
+
+  @@map("item_price_histories")
+}
+
+model Currency {
+  id           String   @id @default(cuid())
+  code         String   @unique // e.g., "IDR", "USD"
+  name         String // e.g., "Indonesian Rupiah"
+  symbol       String // e.g., "Rp", "$"
+  exchangeRate Decimal  @default(1.0) @db.Decimal(18, 6) // Rate to base currency
+  isBase       Boolean  @default(false)
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("currencies")
+}
+
+// =============================================================================
+// RAB (RENCANA ANGGARAN BIAYA - BUDGET PLAN)
+// =============================================================================
+
+model RAB {
+  id              String         @id @default(cuid())
+  code            String         @unique
+  name            String
+  fiscalYear      Int
+  fiscalMonth     Int
+  totalBudget     Decimal        @db.Decimal(18, 2)
+  usedBudget      Decimal        @default(0) @db.Decimal(18, 2)
+  remainingBudget Decimal        @db.Decimal(18, 2)
+  currency        String         @default("IDR")
+  status          ApprovalStatus @default(DRAFT)
+  notes           String?
+  createdById     String
+  approvedById    String?
+  approvedAt      DateTime?
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  rejectionReason String?
+
+  // Relations
+  createdBy        User              @relation("RABCreatedBy", fields: [createdById], references: [id])
+  approvedBy       User?             @relation("RABApprovedBy", fields: [approvedById], references: [id])
+  rabLines         RABLine[]
+  purchaseRequests PurchaseRequest[]
+
+  @@unique([fiscalYear, fiscalMonth])
+  @@map("rabs")
+}
+
+model RABLine {
+  id                String  @id @default(cuid())
+  rabId             String
+  itemId            String
+  requiredQty       Int
+  lastStockSnapshot Int // Stock at time of RAB creation
+  replenishQty      Int // requiredQty - lastStockSnapshot
+  unitPrice         Decimal @db.Decimal(18, 2) // Highest vendor price
+  totalAmount       Decimal @db.Decimal(18, 2) // replenishQty * unitPrice
+  usedAmount        Decimal @default(0) @db.Decimal(18, 2) // Track usage by PR
+  notes             String?
+
+  // Relations
+  rab  RAB  @relation(fields: [rabId], references: [id], onDelete: Cascade)
+  item Item @relation(fields: [itemId], references: [id])
+
+  @@map("rab_lines")
+}
+
+// =============================================================================
+// PURCHASE REQUEST & PURCHASE ORDER
+// =============================================================================
+
+model PurchaseRequest {
+  id                String   @id @default(cuid())
+  prNumber          String   @unique
+  vendorId          String
+  rabId             String?
+  targetWarehouseId String? // Added relation
+  totalAmount       Decimal  @db.Decimal(18, 2)
+  currency          String   @default("IDR")
+  status            POStatus @default(DRAFT)
+  notes             String?
+  requestDate       DateTime @default(now())
+
+  // Manager Approval
+  managerApprovalStatus ApprovalStatus @default(PENDING)
+  managerApprovedById   String?
+  managerApprovedAt     DateTime?
+  managerNotes          String?
+
+  // Purchasing Staff Acceptance (Confirmation - Step 1)
+  purchasingAcceptedById String?
+  purchasingAcceptedAt   DateTime?
+  purchasingNotes        String?
+  paymentType            String? // SPK | NON_SPK (or reuse VendorType enum)
+
+  // Finance / Payment Realization (Non-SPK)
+  paymentProofImage   String?
+  paymentAmount       Decimal?  @db.Decimal(18, 2)
+  paymentDate         DateTime?
+  financeNotes        String?
+  paymentRealizedById String?
+
+  // PO Processing (Step 2)
+  poNumber               String? // Generated when accepted by purchasing (Step 2)
+  poSentAt               DateTime?
+  poDocumentPath         String? // Uploaded PO document
+  shippingTrackingNumber String? // Optional shipping tracking number
+  estimatedShippingDate  DateTime? // Expected delivery date
+
+  // Justification for over-budget or non-RAB items
+  requiresJustification Boolean @default(false) // Auto-set if items exceed RAB
+  justificationReason   String? // Why exceeding budget?
+  justificationDocument String? // Path to supporting document
+
+  createdById String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  vendor               Vendor                @relation(fields: [vendorId], references: [id])
+  rab                  RAB?                  @relation(fields: [rabId], references: [id])
+  targetWarehouse      Warehouse?            @relation(fields: [targetWarehouseId], references: [id])
+  createdBy            User                  @relation("PRCreatedBy", fields: [createdById], references: [id])
+  managerApprovedBy    User?                 @relation("PRApprovedByManager", fields: [managerApprovedById], references: [id])
+  purchasingAcceptedBy User?                 @relation("PRAcceptedByPurchasing", fields: [purchasingAcceptedById], references: [id])
+  paymentRealizedBy    User?                 @relation("PRPaymentRealizedBy", fields: [paymentRealizedById], references: [id])
+  items                PurchaseRequestItem[]
+  inbounds             Inbound[]
+  bills                Bill[]
+  returns              Return[]
+
+  @@map("purchase_requests")
+}
+
+model PurchaseRequestItem {
+  id                String   @id @default(cuid())
+  purchaseRequestId String
+  itemId            String
+  quantity          Int
+  unitPrice         Decimal  @db.Decimal(18, 2)
+  totalPrice        Decimal  @db.Decimal(18, 2)
+  verifiedUnitPrice Decimal? @db.Decimal(18, 2) // Real price input by Purchasing
+  receivedQuantity  Int      @default(0)
+  notes             String?
+
+  // Relations
+  purchaseRequest PurchaseRequest @relation(fields: [purchaseRequestId], references: [id], onDelete: Cascade)
+  item            Item            @relation(fields: [itemId], references: [id])
+
+  @@map("purchase_request_items")
+}
+
+// =============================================================================
+// INBOUND (BARANG MASUK)
+// =============================================================================
+
+enum InboundDiscrepancyType {
+  NONE
+  SHORTAGE
+  OVERAGE
+  WRONG_ITEM
+  DAMAGED
+}
+
+enum DiscrepancyResolution {
+  PENDING
+  WAIT_REMAINING // For shortage
+  CLOSE_SHORT // For shortage
+  RETURN_TO_VENDOR // For overage/wrong
+  KEEP_EXCESS // For overage
+  REPLACE_ITEM // For wrong/damaged
+  REFUND // For wrong/damaged
+}
+
+enum InboundStatus {
+  PENDING
+  PARTIAL
+  COMPLETED     // All items resolved/completed
+  READY_FOR_PAYMENT // SPK only, after COMPLETED & approved for payment
+  PAID          // SPK only, payment realized
+  // Legacy support if needed, otherwise migrate old data to PENDING/COMPLETED
+}
+
+enum InboundItemStatus {
+  OPEN_ISSUE    // Default when created or if (accepted < expected) or (rejected > 0) or (received > expected)
+  COMPLETED     // accepted == expected && rejected == 0
+  RESOLVED      // Issue resolved (e.g. accepted shortage, replaced damaged)
+  CLOSED_SHORT  // Issue closed without full fulfillment
+}
+
+model Inbound {
+  id                String        @id @default(cuid())
+  grnNumber         String        @unique // Goods Received Note Number
+  purchaseRequestId String
+  vendorId          String
+  warehouseId       String?
+  receiveDate       DateTime      @default(now())
+  status            InboundStatus @default(PENDING)
+  notes             String?
+  proofDocumentUrl  String? // Proof of delivery (Surat Jalan)
+
+  // SPK Payment Fields
+  paymentAmount     Decimal?      @db.Decimal(18, 2)
+  paymentDate       DateTime?
+  paymentProofUrl   String?       // Bukti transfer/pembayaran
+
+  createdById       String
+  verifiedById      String?
+  verifiedAt        DateTime?
+  verificationNotes String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  parentInboundId String? // Legacy: For split shipments (Shortage) - Might be deprecated in new flow
+  parentInbound   Inbound?  @relation("InboundSplit", fields: [parentInboundId], references: [id])
+  childInbounds   Inbound[] @relation("InboundSplit")
+
+  // Relations
+  purchaseRequest PurchaseRequest @relation(fields: [purchaseRequestId], references: [id])
+  vendor          Vendor          @relation(fields: [vendorId], references: [id])
+  warehouse       Warehouse?      @relation(fields: [warehouseId], references: [id])
+  createdBy       User            @relation("InboundCreatedBy", fields: [createdById], references: [id])
+  verifiedBy      User?           @relation("InboundVerifiedBy", fields: [verifiedById], references: [id])
+  items           InboundItem[]
+  stockCards      StockCard[]
+  returns         Return[]        @relation("InboundReturns")
+
+  @@map("inbounds")
+}
+
+model InboundItem {
+  id               String            @id @default(cuid())
+  inboundId        String
+  itemId           String
+  
+  // Quantities
+  expectedQuantity Int               // Fixed from PO
+  receivedQuantity Int               @default(0) // Physical count
+  acceptedQuantity Int               @default(0) // received - rejected
+  rejectedQuantity Int               @default(0) // Damaged/Wrong
+  
+  // Stock Tracking
+  quantityAddedToStock Int           @default(0) // Amount already added to warehouse stock to calculate deltas
+
+  status           InboundItemStatus @default(OPEN_ISSUE)
+  notes            String?
+
+  // Discrepancy Tracking
+  discrepancyType        InboundDiscrepancyType @default(NONE)
+  discrepancyReason      String?
+  discrepancyAction      DiscrepancyResolution?
+  discrepancyDocumentUrl String? // Specific document for this issue (e.g. photo of damage)
+
+  // Relations
+  inbound Inbound @relation(fields: [inboundId], references: [id], onDelete: Cascade)
+  item    Item    @relation(fields: [itemId], references: [id])
+
+  @@map("inbound_items")
+}
+
+// =============================================================================
+// OUTBOUND (BARANG KELUAR)
+// =============================================================================
+
+model Outbound {
+  id           String         @id @default(cuid())
+  outboundCode String         @unique
+  warehouseId  String? // Added relation
+  partnerId    String?
+  requestDate  DateTime       @default(now())
+  releaseDate  DateTime?
+  status       OutboundStatus @default(DRAFT)
+  purpose      String? // Internal use, Sale, etc.
+  notes        String?
+
+  createdById   String
+  approvedById  String?
+  approvedAt    DateTime?
+  approvalNotes String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  // Relations
+  warehouse  Warehouse?     @relation(fields: [warehouseId], references: [id])
+  partner    Partner?       @relation(fields: [partnerId], references: [id])
+  createdBy  User           @relation("OutboundCreatedBy", fields: [createdById], references: [id])
+  approvedBy User?          @relation("OutboundApprovedBy", fields: [approvedById], references: [id])
+  items      OutboundItem[]
+  stockCards StockCard[]
+
+  @@map("outbounds")
+}
+
+model OutboundItem {
+  id           String  @id @default(cuid())
+  outboundId   String
+  itemId       String
+  requestedQty Int
+  releasedQty  Int     @default(0)
+  notes        String?
+
+  // Relations
+  outbound Outbound @relation(fields: [outboundId], references: [id], onDelete: Cascade)
+  item     Item     @relation(fields: [itemId], references: [id])
+
+  @@map("outbound_items")
+}
+
+model Partner {
+  id          String   @id @default(cuid())
+  code        String   @unique
+  name        String
+  address     String?
+  phone       String?
+  email       String?
+  contactName String?
+  bankName    String?
+  bankBranch  String?
+  bankAccount String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  outbounds  Outbound[]
+  itemPrices PartnerItemPrice[]
+
+  @@map("partners")
+}
+
+model PartnerItemPrice {
+  id        String   @id @default(cuid())
+  partnerId String
+  itemId    String
+  price     Decimal  @db.Decimal(18, 2)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  partner Partner @relation(fields: [partnerId], references: [id], onDelete: Cascade)
+  item    Item    @relation(fields: [itemId], references: [id], onDelete: Cascade)
+
+  @@unique([partnerId, itemId])
+  @@map("partner_item_prices")
+}
+
+// =============================================================================
+// STOCK CARD (KARTU STOK)
+// =============================================================================
+
+model StockCard {
+  id              String            @id @default(cuid())
+  itemId          String
+  warehouseId     String? // Added relation
+  movementType    StockMovementType
+  referenceType   String // "INBOUND", "OUTBOUND", "ADJUSTMENT", "RETURN"
+  referenceId     String
+  quantityBefore  Int
+  quantityChange  Int // Positive for IN, Negative for OUT
+  quantityAfter   Int
+  notes           String?
+  transactionDate DateTime          @default(now())
+  createdAt       DateTime          @default(now())
+
+  // Optional relations to reference documents
+  inboundId         String?
+  outboundId        String?
+  stockAdjustmentId String?
+  returnId          String?
+
+  // Relations
+  item            Item             @relation(fields: [itemId], references: [id])
+  warehouse       Warehouse?       @relation(fields: [warehouseId], references: [id])
+  inbound         Inbound?         @relation(fields: [inboundId], references: [id])
+  outbound        Outbound?        @relation(fields: [outboundId], references: [id])
+  stockAdjustment StockAdjustment? @relation(fields: [stockAdjustmentId], references: [id])
+  return          Return?          @relation(fields: [returnId], references: [id])
+
+  @@index([itemId, transactionDate])
+  @@map("stock_cards")
+}
+
+// =============================================================================
+// STOCK OPNAME (AUDIT)
+// =============================================================================
+
+model StockOpname {
+  id            String            @id @default(cuid())
+  opnameCode    String            @unique
+  warehouseId   String? // Added relation
+  scheduledDate DateTime
+  startedAt     DateTime?
+  completedAt   DateTime?
+  status        StockOpnameStatus @default(SCHEDULED)
+  notes         String?
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+
+  // Relations
+  warehouse  Warehouse?         @relation(fields: [warehouseId], references: [id])
+  counts     StockOpnameCount[]
+  adjustment StockAdjustment?
+  sheets     CountingSheet[]
+
+  @@map("stock_opnames")
+}
+
+model StockOpnameCount {
+  id            String @id @default(cuid())
+  stockOpnameId String
+  itemId        String
+  systemQty     Int // Snapshot of system quantity at opname start
+
+  // Counter A
+  counterAId  String?
+  counterAQty Int?
+  counterAAt  DateTime?
+
+  // Counter B
+  counterBId  String?
+  counterBQty Int?
+  counterBAt  DateTime?
+
+  // Comparison & Recount
+  isMatching   Boolean @default(false)
+  recountRound Int     @default(0)
+  finalQty     Int?
+  variance     Int? // finalQty - systemQty
+
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  stockOpname StockOpname @relation(fields: [stockOpnameId], references: [id], onDelete: Cascade)
+  item        Item        @relation(fields: [itemId], references: [id])
+  counterA    User?       @relation("CounterA", fields: [counterAId], references: [id])
+  counterB    User?       @relation("CounterB", fields: [counterBId], references: [id])
+
+  @@unique([stockOpnameId, itemId])
+  @@map("stock_opname_counts")
+}
+
+enum CountingSheetStatus {
+  DRAFT
+  COUNTING
+  SUBMITTED
+  MATCHED
+  REJECTED
+}
+
+model CountingSheet {
+  id            String              @id @default(cuid())
+  stockOpnameId String
+  sheetNumber   Int
+  counterName   String?
+  counterRole   String?
+  status        CountingSheetStatus @default(DRAFT)
+  submittedAt   DateTime?
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @updatedAt
+
+  // Relations
+  stockOpname StockOpname         @relation(fields: [stockOpnameId], references: [id], onDelete: Cascade)
+  items       CountingSheetItem[]
+
+  @@unique([stockOpnameId, sheetNumber])
+  @@map("counting_sheets")
+}
+
+model CountingSheetItem {
+  id              String   @id @default(cuid())
+  countingSheetId String
+  itemId          String
+  countedQty      Int?
+  notes           String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // Relations
+  countingSheet CountingSheet @relation(fields: [countingSheetId], references: [id], onDelete: Cascade)
+  item          Item          @relation(fields: [itemId], references: [id])
+
+  @@unique([countingSheetId, itemId])
+  @@map("counting_sheet_items")
+}
+
+// =============================================================================
+// STOCK ADJUSTMENT (PENYESUAIAN STOK)
+// =============================================================================
+
+model StockAdjustment {
+  id             String         @id @default(cuid())
+  adjustmentCode String         @unique
+  adjustmentType AdjustmentType
+  stockOpnameId  String?        @unique // Link if from Opname
+  status         ApprovalStatus @default(DRAFT)
+  notes          String?
+
+  createdById   String
+  approvedById  String?
+  approvedAt    DateTime?
+  approvalNotes String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  stockOpname StockOpname?          @relation(fields: [stockOpnameId], references: [id])
+  createdBy   User                  @relation("AdjustmentCreatedBy", fields: [createdById], references: [id])
+  approvedBy  User?                 @relation("AdjustmentApprovedBy", fields: [approvedById], references: [id])
+  items       StockAdjustmentItem[]
+  stockCards  StockCard[]
+
+  @@map("stock_adjustments")
+}
+
+model StockAdjustmentItem {
+  id                String  @id @default(cuid())
+  stockAdjustmentId String
+  itemId            String
+  systemQty         Int
+  adjustedQty       Int
+  variance          Int // adjustedQty - systemQty
+  reason            String?
+
+  // Relations
+  stockAdjustment StockAdjustment @relation(fields: [stockAdjustmentId], references: [id], onDelete: Cascade)
+  item            Item            @relation(fields: [itemId], references: [id])
+
+  @@map("stock_adjustment_items")
+}
+
+// =============================================================================
+// RETURN (RETUR)
+// =============================================================================
+
+model Return {
+  id                String       @id @default(cuid())
+  returnCode        String       @unique
+  purchaseRequestId String
+  inboundId         String? // Link to source GRN
+  vendorId          String
+  returnDate        DateTime     @default(now())
+  reason            ReturnReason
+  status            ReturnStatus @default(DRAFT)
+  notes             String?
+
+  createdById    String
+  approvedById   String?
+  approvedAt     DateTime?
+  approvalNotes  String?
+  sentToVendorAt DateTime?
+  completedAt    DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  purchaseRequest PurchaseRequest @relation(fields: [purchaseRequestId], references: [id])
+  inbound         Inbound?        @relation("InboundReturns", fields: [inboundId], references: [id])
+  vendor          Vendor          @relation(fields: [vendorId], references: [id])
+  createdBy       User            @relation("ReturnCreatedBy", fields: [createdById], references: [id])
+  approvedBy      User?           @relation("ReturnApprovedBy", fields: [approvedById], references: [id])
+  items           ReturnItem[]
+  stockCards      StockCard[]
+
+  @@map("returns")
+}
+
+model ReturnItem {
+  id         String  @id @default(cuid())
+  returnId   String
+  itemId     String
+  quantity   Int
+  unitPrice  Decimal @db.Decimal(18, 2)
+  totalPrice Decimal @db.Decimal(18, 2)
+  reason     String?
+
+  // Relations
+  return Return @relation(fields: [returnId], references: [id], onDelete: Cascade)
+  item   Item   @relation(fields: [itemId], references: [id])
+
+  @@map("return_items")
+}
+
+// =============================================================================
+// BILLING (TAGIHAN)
+// =============================================================================
+
+model Bill {
+  id                String     @id @default(cuid())
+  billNumber        String     @unique
+  vendorId          String
+  purchaseRequestId String
+  billDate          DateTime   @default(now())
+  dueDate           DateTime?
+  totalAmount       Decimal    @db.Decimal(18, 2)
+  paidAmount        Decimal    @default(0) @db.Decimal(18, 2)
+  remainingAmount   Decimal    @db.Decimal(18, 2)
+  currency          String     @default("IDR")
+  status            BillStatus @default(DRAFT)
+  notes             String?
+
+  createdById       String
+  verifiedById      String?
+  verifiedAt        DateTime?
+  verificationNotes String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  vendor          Vendor          @relation(fields: [vendorId], references: [id])
+  purchaseRequest PurchaseRequest @relation(fields: [purchaseRequestId], references: [id])
+  createdBy       User            @relation("BillCreatedBy", fields: [createdById], references: [id])
+  verifiedBy      User?           @relation("BillVerifiedBy", fields: [verifiedById], references: [id])
+  payments        Payment[]
+
+  @@map("bills")
+}
+
+model Payment {
+  id              String        @id @default(cuid())
+  paymentCode     String        @unique
+  billId          String
+  paymentDate     DateTime      @default(now())
+  amount          Decimal       @db.Decimal(18, 2)
+  currency        String        @default("IDR")
+  paymentMethod   String? // Bank Transfer, Cash, etc.
+  referenceNumber String? // Bank reference
+  status          PaymentStatus @default(PENDING_VALIDATION)
+  notes           String?
+
+  createdById     String
+  validatedById   String?
+  validatedAt     DateTime?
+  validationNotes String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  bill        Bill  @relation(fields: [billId], references: [id])
+  createdBy   User  @relation("PaymentCreatedBy", fields: [createdById], references: [id])
+  validatedBy User? @relation("PaymentValidatedBy", fields: [validatedById], references: [id])
+
+  @@map("payments")
+}

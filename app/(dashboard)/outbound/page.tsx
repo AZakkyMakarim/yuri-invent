@@ -33,7 +33,10 @@ export default function OutboundPage() {
     const [search, setSearch] = useState('');
 
     useEffect(() => {
-        loadData();
+        const timeout = setTimeout(() => {
+            loadData();
+        }, 300);
+        return () => clearTimeout(timeout);
     }, [search]);
 
     const loadData = async () => {
@@ -48,13 +51,19 @@ export default function OutboundPage() {
     };
 
     const getStatusBadge = (status: string) => {
-        let color = "bg-gray-100 text-gray-800";
-        if (status === 'DRAFT') color = "bg-gray-100 text-gray-800";
-        if (status === 'APPROVED') color = "bg-blue-100 text-blue-800";
-        if (status === 'RELEASED') color = "bg-green-100 text-green-800";
-        if (status === 'REJECTED') color = "bg-red-100 text-red-800";
+        const styles = {
+            DRAFT: 'bg-slate-100 text-slate-700 border-slate-200',
+            APPROVED: 'bg-blue-50 text-blue-700 border-blue-200',
+            RELEASED: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+            REJECTED: 'bg-rose-50 text-rose-700 border-rose-200'
+        };
+        const colorClass = styles[status as keyof typeof styles] || styles.DRAFT;
 
-        return <Badge className={color}>{status}</Badge>;
+        return (
+            <span className={`px-2.5 py-0.5 rounded-full text-xs font-medium border ${colorClass}`}>
+                {status}
+            </span>
+        );
     };
 
     return (
@@ -82,7 +91,7 @@ export default function OutboundPage() {
                         <div className="relative w-full sm:w-72">
                             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-(--color-text-muted)" />
                             <Input
-                                placeholder="Search Code, Mitra, or Purpose..."
+                                placeholder="Search Code, Partner, or Purpose..."
                                 className="pl-9 bg-(--color-bg-secondary) border-(--color-border)"
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value)}
@@ -97,9 +106,10 @@ export default function OutboundPage() {
                                 <TableRow>
                                     <TableHead>Outbound Code</TableHead>
                                     <TableHead>Date</TableHead>
-                                    <TableHead>Destination (Mitra)</TableHead>
+                                    <TableHead>Type</TableHead>
+                                    <TableHead>Destination</TableHead>
                                     <TableHead>Purpose</TableHead>
-                                    <TableHead>Items</TableHead>
+                                    <TableHead>Lines</TableHead>
                                     <TableHead>Status</TableHead>
                                     <TableHead className="text-right">Action</TableHead>
                                 </TableRow>
@@ -107,7 +117,7 @@ export default function OutboundPage() {
                             <TableBody>
                                 {loading ? (
                                     <TableRow>
-                                        <TableCell colSpan={7} className="h-24 text-center">
+                                        <TableCell colSpan={8} className="h-24 text-center">
                                             <div className="flex justify-center items-center gap-2">
                                                 <Loader2 className="h-6 w-6 animate-spin text-(--color-primary)" />
                                                 <span>Loading data...</span>
@@ -116,7 +126,7 @@ export default function OutboundPage() {
                                     </TableRow>
                                 ) : data.length === 0 ? (
                                     <TableRow>
-                                        <TableCell colSpan={7} className="h-24 text-center text-(--color-text-muted)">
+                                        <TableCell colSpan={8} className="h-24 text-center text-(--color-text-muted)">
                                             No outbound requests found.
                                         </TableCell>
                                     </TableRow>
@@ -136,18 +146,23 @@ export default function OutboundPage() {
                                                 </div>
                                             </TableCell>
                                             <TableCell>
+                                                <Badge variant="neutral" className="text-xs font-normal border border-gray-200 bg-transparent text-gray-600">
+                                                    {item.type?.replace('_', ' ') || 'INTERNAL'}
+                                                </Badge>
+                                            </TableCell>
+                                            <TableCell>
                                                 <div className="flex items-center gap-2">
                                                     <Users size={14} className="text-(--color-text-muted)" />
-                                                    <span>{item.mitra?.name || 'Internal'}</span>
+                                                    <span className="font-medium">{item.partner?.name || 'Internal / Self'}</span>
                                                 </div>
                                             </TableCell>
-                                            <TableCell className="text-sm">
+                                            <TableCell className="text-sm max-w-[200px] truncate">
                                                 {item.purpose || '-'}
                                             </TableCell>
                                             <TableCell>
-                                                <div className="flex items-center gap-1">
-                                                    <FileText size={14} className="text-(--color-text-muted)" />
-                                                    <span>{item._count?.items || 0} Lines</span>
+                                                <div className="flex items-center gap-1 text-sm text-gray-500">
+                                                    <FileText size={14} />
+                                                    <span>{item._count?.items || 0}</span>
                                                 </div>
                                             </TableCell>
                                             <TableCell>

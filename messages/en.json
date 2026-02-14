@@ -458,6 +458,7 @@
     },
     "inbound": {
         "title": "Inbound List",
+        "viewDetails": "View Details",
         "description": "Track incoming goods and GRN history",
         "searchPlaceholder": "Search GRN, PO, or Vendor...",
         "allStatus": "All Status",

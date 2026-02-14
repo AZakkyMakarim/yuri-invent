@@ -94,10 +94,11 @@ export default function StockAdjustmentVerificationPage() {
                             <TableHeader className="bg-gray-50">
                                 <TableRow>
                                     <TableHead>Code</TableHead>
+                                    <TableHead>Item</TableHead>
                                     <TableHead>Type</TableHead>
+                                    <TableHead>Variance</TableHead>
                                     <TableHead>Requested By</TableHead>
                                     <TableHead>Requested Date</TableHead>
-                                    <TableHead className="text-right">Items</TableHead>
                                     <TableHead className="text-right">Action</TableHead>
                                 </TableRow>
                             </TableHeader>
@@ -107,7 +108,18 @@ export default function StockAdjustmentVerificationPage() {
                                         <TableCell className="font-mono font-bold text-gray-900">
                                             {adj.adjustmentCode}
                                         </TableCell>
+                                        <TableCell>
+                                            <div className="flex flex-col">
+                                                <span className="font-medium text-gray-900">{adj.item?.name}</span>
+                                                <span className="text-xs text-gray-500">{adj.item?.sku}</span>
+                                            </div>
+                                        </TableCell>
                                         <TableCell>{getTypeBadge(adj.adjustmentType)}</TableCell>
+                                        <TableCell>
+                                            <span className={`font-medium ${adj.qtyVariance > 0 ? 'text-green-600' : 'text-red-600'}`}>
+                                                {adj.qtyVariance > 0 ? '+' : ''}{adj.qtyVariance} {adj.item?.uom?.symbol}
+                                            </span>
+                                        </TableCell>
                                         <TableCell>
                                             <div className="flex items-center gap-2 text-sm">
                                                 <User size={14} className="text-gray-400" />
@@ -116,9 +128,6 @@ export default function StockAdjustmentVerificationPage() {
                                         </TableCell>
                                         <TableCell className="text-sm text-gray-500">
                                             {format(new Date(adj.createdAt), 'dd MMM yyyy, HH:mm')}
-                                        </TableCell>
-                                        <TableCell className="text-right font-medium">
-                                            {adj._count?.items || 0}
                                         </TableCell>
                                         <TableCell className="text-right">
                                             <Link href={`/stock-adjustment/${adj.id}`}>

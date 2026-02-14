@@ -1,7 +1,7 @@
 'use server';
 
 import prisma from '@/lib/prisma';
-import { Prisma, StockOpnameStatus } from '@prisma/client';
+import { Prisma, StockOpnameStatus, StockMovementType, ApprovalStatus, AdjustmentType } from '@prisma/client';
 import { revalidatePath } from 'next/cache';
 
 export async function getOpnameList(
@@ -246,64 +246,80 @@ export async function finalizeOpname(opnameId: string, userId: string) {
             // 2. Identify Variances
             const varianceItems = opname.counts.filter(c => c.variance !== 0 && c.variance !== null);
 
-            // 3. Create Stock Adjustment if there are variances
-            if (varianceItems.length > 0) {
-                // Generate code
+            // 3. Process Per Item
+            for (const item of varianceItems) {
+                // Generate code for each adjustment
                 const date = new Date();
                 const dateStr = date.toISOString().slice(0, 10).replace(/-/g, '');
-                const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+                const random = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
                 const adjCode = `ADJ-OP-${dateStr}-${random}`;
 
+                // Create Adjustment Record
+                // Cast to any to bypass outdated Types until prisma generate runs
+                const adjustmentData: any = {
+                    adjustmentCode: adjCode,
+                    // Use string literals to satisfy runtime if enum undefined, or match schema
+                    adjustmentType: 'OPNAME_RESULT',
+                    adjustmentSource: 'STOCK_OPNAME',
+                    adjustmentMethod: 'REAL_QTY',
+
+                    itemId: item.itemId,
+                    qtySystem: item.systemQty,
+                    qtyInput: item.finalQty!, // Real Physical Qty
+                    qtyVariance: item.variance!,
+
+                    stockOpnameId: opnameId,
+                    status: ApprovalStatus.APPROVED, // Auto-approved
+                    notes: `Auto-generated from Stock Opname ${opname.opnameCode}`,
+
+                    createdById: userId,
+                    approvedById: userId,
+                    approvedAt: new Date(),
+                };
+
                 const adjustment = await tx.stockAdjustment.create({
-                    data: {
-                        adjustmentCode: adjCode,
-                        adjustmentType: 'OPNAME_RESULT', // Use string literal or enum if imported
-                        stockOpnameId: opnameId,
-                        status: 'APPROVED', // Auto-approved? Or PENDING? Usually verified by virtue of finalizing opname. Let's say APPROVED.
-                        notes: `Auto-generated from Stock Opname ${opname.opnameCode}`,
-                        createdById: userId,
-                        approvedById: userId, // Auto-approved by finalizer
-                        approvedAt: new Date(),
-                        items: {
-                            create: varianceItems.map(item => ({
-                                itemId: item.itemId,
-                                systemQty: item.systemQty,
-                                adjustedQty: item.finalQty!,
-                                variance: item.variance!,
-                                reason: 'Stock Opname Result'
-                            }))
-                        }
-                    }
+                    data: adjustmentData
                 });
 
-                // 4. Update Inventory & Stock Cards (Similar to Approve Adjustment)
-                for (const item of varianceItems) {
-                    const movementType = item.variance! > 0 ? 'ADJUSTMENT_IN' : 'ADJUSTMENT_OUT';
+                // Update Inventory & Stock Cards
+                const movementType = checkedMovementType(item.variance!);
 
-                    // Update Item Stock
-                    await tx.item.update({
-                        where: { id: item.itemId },
-                        data: { currentStock: item.finalQty! }
-                    });
+                // Fetch latest stock to ensure concurrency safety
+                const currentItem = await tx.item.findUnique({
+                    where: { id: item.itemId }
+                });
 
-                    // Create Stock Card
-                    await tx.stockCard.create({
-                        data: {
-                            itemId: item.itemId,
-                            movementType: movementType as any,
-                            referenceType: 'ADJUSTMENT',
-                            referenceId: adjCode,
-                            stockAdjustmentId: adjustment.id,
-                            quantityBefore: item.systemQty,
-                            quantityChange: item.variance!,
-                            quantityAfter: item.finalQty!,
-                            notes: `Opname ${opname.opnameCode}`
-                        }
-                    });
+                if (!currentItem) throw new Error(`Item ${item.itemId} not found`);
+
+                const newStock = currentItem.currentStock + item.variance!;
+
+                if (newStock < 0) {
+                    throw new Error(`Opname finalization would result in negative stock for item ${currentItem.sku}. Current: ${currentItem.currentStock}, Variance: ${item.variance}`);
                 }
+
+                // Update Item Stock
+                await tx.item.update({
+                    where: { id: item.itemId },
+                    data: { currentStock: newStock }
+                });
+
+                // Create Stock Card
+                await tx.stockCard.create({
+                    data: {
+                        itemId: item.itemId,
+                        movementType: movementType,
+                        referenceType: 'ADJUSTMENT',
+                        referenceId: adjCode,
+                        stockAdjustmentId: adjustment.id,
+                        quantityBefore: currentItem.currentStock,
+                        quantityChange: item.variance!,
+                        quantityAfter: newStock,
+                        notes: `Opname ${opname.opnameCode}`
+                    }
+                });
             }
 
-            // 5. Finalize Opname
+            // 4. Finalize Opname
             await tx.stockOpname.update({
                 where: { id: opnameId },
                 data: {
@@ -319,4 +335,8 @@ export async function finalizeOpname(opnameId: string, userId: string) {
         console.error('Failed to finalize opname:', error);
         return { success: false, error: error.message };
     }
+}
+
+function checkedMovementType(variance: number): StockMovementType {
+    return variance > 0 ? StockMovementType.ADJUSTMENT_IN : StockMovementType.ADJUSTMENT_OUT;
 }

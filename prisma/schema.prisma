@@ -47,9 +47,18 @@ enum POStatus {
 }
 
 enum InboundStatus {
-  PENDING_VERIFICATION
-  VERIFIED
-  REJECTED
+  PENDING
+  PARTIAL
+  COMPLETED
+  READY_FOR_PAYMENT
+  PAID
+}
+
+enum InboundItemStatus {
+  OPEN_ISSUE
+  COMPLETED
+  RESOLVED
+  CLOSED_SHORT
 }
 
 enum OutboundStatus {
@@ -130,6 +139,21 @@ enum BankName {
   MANDIRI
 }
 
+enum AdjustmentSource {
+  STOCK_OPNAME
+  MANUAL
+}
+
+enum AdjustmentMethod {
+  REAL_QTY
+  DELTA_QTY
+}
+
+enum DeltaType {
+  INCREASE
+  DECREASE
+}
+
 // =============================================================================
 // AUTHENTICATION & RBAC (Role-Based Access Control)
 // =============================================================================
@@ -154,6 +178,7 @@ model User {
   verifiedInbounds         Inbound[]          @relation("InboundVerifiedBy")
   createdOutbounds         Outbound[]         @relation("OutboundCreatedBy")
   approvedOutbounds        Outbound[]         @relation("OutboundApprovedBy")
+  releasedOutbounds        Outbound[]         @relation("OutboundReleasedBy")
   stockOpnamesCounterA     StockOpnameCount[] @relation("CounterA")
   stockOpnamesCounterB     StockOpnameCount[] @relation("CounterB")
   createdAdjustments       StockAdjustment[]  @relation("AdjustmentCreatedBy")
@@ -359,7 +384,8 @@ model Item {
   outboundItems        OutboundItem[]
   stockCards           StockCard[]
   stockOpnameCounts    StockOpnameCount[]
-  stockAdjustmentItems StockAdjustmentItem[]
+
+  stockAdjustments     StockAdjustment[]
   returnItems          ReturnItem[]
   priceHistories       ItemPriceHistory[]
   vendorSupplies       VendorItem[]          @relation("ItemVendorSupplies")
@@ -367,6 +393,7 @@ model Item {
   partnerPrices        PartnerItemPrice[]
   warehouseStocks      WarehouseStock[]
   countingSheetItems   CountingSheetItem[]
+  stockAdjustmentItems StockAdjustmentItem[]
 
   @@map("items")
 }
@@ -488,7 +515,7 @@ model PurchaseRequest {
   paymentDate         DateTime?
   financeNotes        String?
   paymentRealizedById String?
-  
+
   // PO Processing (Step 2)
   poNumber               String? // Generated when accepted by purchasing (Step 2)
   poSentAt               DateTime?
@@ -522,14 +549,14 @@ model PurchaseRequest {
 }
 
 model PurchaseRequestItem {
-  id                String  @id @default(cuid())
+  id                String   @id @default(cuid())
   purchaseRequestId String
   itemId            String
   quantity          Int
-  unitPrice         Decimal @db.Decimal(18, 2)
-  totalPrice        Decimal @db.Decimal(18, 2)
+  unitPrice         Decimal  @db.Decimal(18, 2)
+  totalPrice        Decimal  @db.Decimal(18, 2)
   verifiedUnitPrice Decimal? @db.Decimal(18, 2) // Real price input by Purchasing
-  receivedQuantity  Int     @default(0)
+  receivedQuantity  Int      @default(0)
   notes             String?
 
   // Relations
@@ -566,11 +593,16 @@ model Inbound {
   grnNumber         String        @unique // Goods Received Note Number
   purchaseRequestId String
   vendorId          String
-  warehouseId       String? // Added relation
+  warehouseId       String?
   receiveDate       DateTime      @default(now())
-  status            InboundStatus @default(PENDING_VERIFICATION)
+  status            InboundStatus @default(PENDING)
   notes             String?
   proofDocumentUrl  String? // Proof of delivery (Surat Jalan)
+
+  // SPK Payment Fields
+  paymentAmount   Decimal?  @db.Decimal(18, 2)
+  paymentDate     DateTime?
+  paymentProofUrl String? // Bukti transfer/pembayaran
 
   createdById       String
   verifiedById      String?
@@ -580,7 +612,7 @@ model Inbound {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  parentInboundId String? // For split shipments (Shortage)
+  parentInboundId String? // Legacy: For split shipments (Shortage) - Might be deprecated in new flow
   parentInbound   Inbound?  @relation("InboundSplit", fields: [parentInboundId], references: [id])
   childInbounds   Inbound[] @relation("InboundSplit")
 
@@ -598,14 +630,21 @@ model Inbound {
 }
 
 model InboundItem {
-  id               String  @id @default(cuid())
-  inboundId        String
-  itemId           String
-  expectedQuantity Int
-  receivedQuantity Int
-  acceptedQuantity Int     @default(0)
-  rejectedQuantity Int     @default(0)
-  notes            String?
+  id        String @id @default(cuid())
+  inboundId String
+  itemId    String
+
+  // Quantities
+  expectedQuantity Int // Fixed from PO
+  receivedQuantity Int @default(0) // Physical count
+  acceptedQuantity Int @default(0) // received - rejected
+  rejectedQuantity Int @default(0) // Damaged/Wrong
+
+  // Stock Tracking
+  quantityAddedToStock Int @default(0) // Amount already added to warehouse stock to calculate deltas
+
+  status InboundItemStatus @default(OPEN_ISSUE)
+  notes  String?
 
   // Discrepancy Tracking
   discrepancyType        InboundDiscrepancyType @default(NONE)
@@ -624,31 +663,47 @@ model InboundItem {
 // OUTBOUND (BARANG KELUAR)
 // =============================================================================
 
+enum OutboundType {
+  MITRA
+  INTERNAL_USE
+}
+
 model Outbound {
   id           String         @id @default(cuid())
   outboundCode String         @unique
-  warehouseId  String? // Added relation
+  warehouseId  String?
   partnerId    String?
+  
+  // New Type Field
+  type         OutboundType   @default(INTERNAL_USE)
+  
   requestDate  DateTime       @default(now())
-  releaseDate  DateTime?
+  releaseDate  DateTime?      // Legacy or Planned Release Date
   status       OutboundStatus @default(DRAFT)
-  purpose      String? // Internal use, Sale, etc.
+  purpose      String?        // Description
   notes        String?
 
   createdById   String
   approvedById  String?
   approvedAt    DateTime?
   approvalNotes String?
+  
+  // New Release Fields
+  releasedById  String?
+  releasedAt    DateTime?
+  
+  // Legacy Flag
+  isLegacy      Boolean        @default(false)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   // Relations
-  // Relations
   warehouse  Warehouse?     @relation(fields: [warehouseId], references: [id])
   partner    Partner?       @relation(fields: [partnerId], references: [id])
   createdBy  User           @relation("OutboundCreatedBy", fields: [createdById], references: [id])
   approvedBy User?          @relation("OutboundApprovedBy", fields: [approvedById], references: [id])
+  releasedBy User?          @relation("OutboundReleasedBy", fields: [releasedById], references: [id])
   items      OutboundItem[]
   stockCards StockCard[]
 
@@ -679,6 +734,7 @@ model Partner {
   email       String?
   contactName String?
   bankName    String?
+  bankBranch  String?
   bankAccount String?
   isActive    Boolean  @default(true)
   createdAt   DateTime @default(now())
@@ -759,10 +815,10 @@ model StockOpname {
   updatedAt     DateTime          @updatedAt
 
   // Relations
-  warehouse  Warehouse?         @relation(fields: [warehouseId], references: [id])
-  counts     StockOpnameCount[]
-  adjustment StockAdjustment?
-  sheets     CountingSheet[]
+  warehouse   Warehouse?         @relation(fields: [warehouseId], references: [id])
+  counts      StockOpnameCount[]
+  adjustments StockAdjustment[]
+  sheets      CountingSheet[]
 
   @@map("stock_opnames")
 }
@@ -852,12 +908,25 @@ model CountingSheetItem {
 // =============================================================================
 
 model StockAdjustment {
-  id             String         @id @default(cuid())
-  adjustmentCode String         @unique
-  adjustmentType AdjustmentType
-  stockOpnameId  String?        @unique // Link if from Opname
-  status         ApprovalStatus @default(DRAFT)
-  notes          String?
+  id             String @id @default(cuid())
+  adjustmentCode String @unique
+
+  // Classification
+  adjustmentType   AdjustmentType
+  adjustmentSource AdjustmentSource @default(MANUAL)
+
+  // Legacy fields (Made optional for migration)
+  adjustmentMethod AdjustmentMethod?
+  deltaType        DeltaType?
+  itemId           String?
+  qtySystem        Int?
+  qtyInput         Int?
+  qtyVariance      Int?
+  stockOpnameId    String?
+
+  // Context
+  status ApprovalStatus @default(DRAFT)
+  notes  String?
 
   createdById   String
   approvedById  String?
@@ -868,23 +937,34 @@ model StockAdjustment {
   updatedAt DateTime @updatedAt
 
   // Relations
-  stockOpname StockOpname?          @relation(fields: [stockOpnameId], references: [id])
-  createdBy   User                  @relation("AdjustmentCreatedBy", fields: [createdById], references: [id])
-  approvedBy  User?                 @relation("AdjustmentApprovedBy", fields: [approvedById], references: [id])
-  items       StockAdjustmentItem[]
+  stockOpname StockOpname? @relation(fields: [stockOpnameId], references: [id])
+  item        Item?        @relation(fields: [itemId], references: [id])
+  createdBy   User         @relation("AdjustmentCreatedBy", fields: [createdById], references: [id])
+  approvedBy  User?        @relation("AdjustmentApprovedBy", fields: [approvedById], references: [id])
   stockCards  StockCard[]
+
+  // New Relation
+  adjustmentItems StockAdjustmentItem[]
 
   @@map("stock_adjustments")
 }
 
 model StockAdjustmentItem {
-  id                String  @id @default(cuid())
+  id                String @id @default(cuid())
   stockAdjustmentId String
   itemId            String
-  systemQty         Int
-  adjustedQty       Int
-  variance          Int // adjustedQty - systemQty
-  reason            String?
+
+  qtySystem   Int
+  qtyInput    Int // Real or Delta based on method
+  qtyVariance Int
+
+  adjustmentMethod AdjustmentMethod
+  deltaType        DeltaType?
+
+  notes String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   // Relations
   stockAdjustment StockAdjustment @relation(fields: [stockAdjustmentId], references: [id], onDelete: Cascade)

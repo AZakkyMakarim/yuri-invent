@@ -1,0 +1,5 @@
+Message: default for column "status" cannot be cast automatically to type "InboundStatus"
+Stack: error: default for column "status" cannot be cast automatically to type "InboundStatus"
+    at D:\IT SA Zakky\Projects\yuri-invent\node_modules\pg\lib\client.js:624:17
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async migrate (D:\IT SA Zakky\Projects\yuri-invent\scripts\manual_migration_inbound.js:58:9)

@@ -21,6 +21,7 @@ export default function CreateOutboundPage() {
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     // Form State
+    const [type, setType] = useState<'MITRA' | 'INTERNAL_USE'>('INTERNAL_USE');
     const [partnerId, setPartnerId] = useState('');
     const [warehouseId, setWarehouseId] = useState('');
     const [warehouses, setWarehouses] = useState<any[]>([]);
@@ -96,7 +97,8 @@ export default function CreateOutboundPage() {
         try {
             const result = await createOutbound({
                 userId: user.id,
-                partnerId: partnerId || undefined,
+                type: type,
+                partnerId: type === 'MITRA' ? partnerId : undefined, // Only send partner if MITRA
                 warehouseId: warehouseId || undefined,
                 purpose,
                 notes,
@@ -146,6 +148,24 @@ export default function CreateOutboundPage() {
 
                             <div className="space-y-4">
                                 <div className="space-y-2">
+                                    <label className="text-sm font-medium">Outbound Type</label>
+                                    <div className="flex gap-2 p-1 bg-gray-100 rounded-lg">
+                                        <button
+                                            className={`flex-1 py-1.5 text-xs font-medium rounded-md transition-colors ${type === 'INTERNAL_USE' ? 'bg-white shadow-sm text-blue-700' : 'text-gray-500 hover:text-gray-700'}`}
+                                            onClick={() => setType('INTERNAL_USE')}
+                                        >
+                                            Internal
+                                        </button>
+                                        <button
+                                            className={`flex-1 py-1.5 text-xs font-medium rounded-md transition-colors ${type === 'MITRA' ? 'bg-white shadow-sm text-blue-700' : 'text-gray-500 hover:text-gray-700'}`}
+                                            onClick={() => setType('MITRA')}
+                                        >
+                                            Mitra / Partner
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div className="space-y-2">
                                     <label className="text-sm font-medium">Source Warehouse</label>
                                     <select
                                         className="w-full h-10 px-3 rounded-md border border-input bg-background"
@@ -159,21 +179,21 @@ export default function CreateOutboundPage() {
                                             </option>
                                         ))}
                                     </select>
-                                    <p className="text-xs text-gray-500">If internal use, select where items are taken from.</p>
                                 </div>
 
-                                <div className="space-y-2">
-                                    <label className="text-sm font-medium">Destination (Partner/Mitra)</label>
-                                    <Dropdown
-                                        options={partnerOptions}
-                                        value={partnerId}
-                                        onChange={(val) => setPartnerId(val)}
-                                        placeholder="Select Partner..."
-                                        searchable
-                                        clearable
-                                    />
-                                    <p className="text-xs text-gray-500">Select Partner or leave filter empty for Internal Use</p>
-                                </div>
+                                {type === 'MITRA' && (
+                                    <div className="space-y-2 animate-in fade-in slide-in-from-top-2">
+                                        <label className="text-sm font-medium">Destination (Partner)</label>
+                                        <Dropdown
+                                            options={partnerOptions}
+                                            value={partnerId}
+                                            onChange={(val) => setPartnerId(val)}
+                                            placeholder="Select Partner..."
+                                            searchable
+                                            clearable
+                                        />
+                                    </div>
+                                )}
 
                                 <div className="space-y-2">
                                     <label className="text-sm font-medium">Purpose</label>

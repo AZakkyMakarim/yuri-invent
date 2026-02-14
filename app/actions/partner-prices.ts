@@ -19,22 +19,33 @@ export async function getPartnerPrices(partnerId: string) {
         });
 
         // Get existing custom prices
-        const prices = await prisma.partnerItemPrice.findMany({
+        const partnerPrices = await prisma.partnerItemPrice.findMany({
             where: { partnerId }
         });
 
-        // Map prices to items
-        const priceMap = new Map(prices.map(p => [p.itemId, p.price]));
+        // Get HPP History (Latest Price)
+        const history = await prisma.itemPriceHistory.findMany({
+            distinct: ['itemId'],
+            orderBy: { createdAt: 'desc' },
+            select: { itemId: true, unitPrice: true }
+        });
+
+        // Map prices: { "itemId": price }
+        const priceMap = new Map(partnerPrices.map(p => [p.itemId, p.price.toNumber()]));
+
+        // Map HPP: { "itemId": price }
+        const hppMap = new Map(history.map(h => [h.itemId, h.unitPrice.toNumber()]));
 
         const result = items.map(item => ({
             itemId: item.id,
             sku: item.sku,
             name: item.name,
             uom: item.uom.symbol,
+            hpp: hppMap.get(item.id) || 0,
             price: priceMap.get(item.id) || 0 // Default to 0 if not set
         }));
 
-        return { success: true, data: serializeDecimal(result) };
+        return { success: true, data: result };
     } catch (error: any) {
         return { success: false, error: error.message };
     }

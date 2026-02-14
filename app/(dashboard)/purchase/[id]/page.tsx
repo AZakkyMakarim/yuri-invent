@@ -209,7 +209,7 @@ export default async function PRDetailPage({ params }: PageProps) {
 
                     {/* RIGHT COLUMN: Approval Status Sidebar (1/3 Width) */}
                     <div className="lg:col-span-1">
-                        <Card className="border-(--color-border) shadow-sm h-full max-h-[600px] overflow-y-auto sticky top-6">
+                        <Card className="border-(--color-border) shadow-sm max-h-[600px] overflow-y-auto sticky top-6">
                             <CardHeader className="pb-3 border-b border-(--color-border) bg-(--color-bg-secondary)/20">
                                 <CardTitle className="text-base font-semibold">Approval Status</CardTitle>
                             </CardHeader>

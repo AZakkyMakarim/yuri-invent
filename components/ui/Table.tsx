@@ -65,14 +65,17 @@ export function TableHead({ children, className, ...props }: TableHeadProps) {
 }
 
 // Table Cell
-interface TableCellProps {
+interface TableCellProps extends React.TdHTMLAttributes<HTMLTableCellElement> {
     children: ReactNode;
     className?: string;
-    colSpan?: number;
 }
 
-export function TableCell({ children, className, colSpan }: TableCellProps) {
-    return <td className={cn(className)} colSpan={colSpan}>{children}</td>;
+export function TableCell({ children, className, ...props }: TableCellProps) {
+    return (
+        <td className={cn(className)} {...props}>
+            {children}
+        </td>
+    );
 }
 
 // Empty State

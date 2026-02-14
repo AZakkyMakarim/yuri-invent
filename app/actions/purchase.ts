@@ -3,7 +3,7 @@
 import { prisma } from '@/lib/prisma';
 import { serializeDecimal } from '@/lib/utils';
 import { revalidatePath } from 'next/cache';
-import { Prisma } from '@prisma/client';
+import { Prisma, InboundStatus } from '@prisma/client';
 
 export type PRLineInput = {
     itemId: string;
@@ -688,7 +688,7 @@ export async function finalizePurchaseOrder(prId: string, userId: string) {
                     vendorId: pr.vendorId,
                     warehouseId: pr.targetWarehouseId,
                     receiveDate: new Date(), // Default to now, or carry over from PR if we stored it
-                    status: 'PENDING_VERIFICATION',
+                    status: InboundStatus.PENDING,
                     notes: `Created from PO ${pr.poNumber}`,
                     createdById: userId,
                     items: {

@@ -43,6 +43,7 @@ export async function createPartner(data: any) {
                 email: data.email,
                 contactName: data.contactName,
                 bankName: data.bankName,
+                bankBranch: data.bankBranch,
                 bankAccount: data.bankAccount,
                 isActive: data.isActive
             }
@@ -65,6 +66,7 @@ export async function updatePartner(id: string, data: any) {
                 email: data.email,
                 contactName: data.contactName,
                 bankName: data.bankName,
+                bankBranch: data.bankBranch,
                 bankAccount: data.bankAccount,
                 isActive: data.isActive
             }
@@ -77,23 +79,51 @@ export async function updatePartner(id: string, data: any) {
     }
 }
 
-export async function deletePartner(id: string) {
-    try {
-        await prisma.partner.delete({ where: { id } });
-        revalidatePath('/master/partners');
-        return { success: true };
-    } catch (error: any) {
-        return { success: false, error: error.message };
-    }
-}
-
 export async function getPartner(id: string) {
     try {
         const partner = await prisma.partner.findUnique({
             where: { id }
         });
         return { success: true, data: partner };
+
     } catch (error: any) {
         return { success: false, error: error.message };
     }
 }
+
+// Get Sales History (Outbounds to this partner)
+export async function getPartnerSalesHistory(partnerId: string) {
+    try {
+        const sales = await prisma.outbound.findMany({
+            where: { partnerId },
+            include: {
+                items: {
+                    include: {
+                        item: true
+                    }
+                }
+            },
+            orderBy: { requestDate: 'desc' }
+        });
+
+        const formattedSales = sales.map(s => ({
+            id: s.id,
+            date: s.requestDate,
+            code: s.outboundCode,
+            status: s.status,
+            itemCount: s.items.length,
+            notes: s.notes,
+            items: s.items.map(i => ({
+                name: i.item.name,
+                sku: i.item.sku,
+                qty: i.releasedQty
+            }))
+        }));
+
+        return { success: true, data: formattedSales };
+    } catch (error: any) {
+        return { success: false, error: error.message };
+    }
+}
+
+

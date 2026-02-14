@@ -1,270 +1,234 @@
-'use client';
-
-import { useState, useEffect } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { notFound } from 'next/navigation';
+import { getReturnById } from '@/app/actions/return';
+import { Badge } from '@/components/ui/Badge';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/Table';
+import { ArrowLeft, User, Clock, Truck, FileText, Package } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
-import { Card, CardContent } from '@/components/ui/Card';
-import { Input } from '@/components/ui/Input';
-import { Loader2, ArrowLeft, CheckCircle, XCircle, Truck, CheckSquare, Printer } from 'lucide-react';
-import { getReturnById, submitReturn, approveReturn, rejectReturn, markReturnAsSent, completeReturn } from '@/app/actions/return';
-import { useAuth } from '@/contexts/AuthContext';
-import { formatDate, formatCurrency } from '@/lib/utils';
+import ResultActions from './ReturnActions';
+import { formatCurrency, formatDate } from '@/lib/utils';
 import { ReturnStatus } from '@prisma/client';
 
-export default function ReturnDetailPage() {
-    const params = useParams();
-    const router = useRouter();
-    const { user } = useAuth();
-    const id = params.id as string;
+interface PageProps {
+    params: Promise<{ id: string }>
+}
 
-    const [returnData, setReturnData] = useState<any>(null);
-    const [loading, setLoading] = useState(true);
-    const [processing, setProcessing] = useState(false);
-    const [rejectReason, setRejectReason] = useState('');
-    const [showRejectInput, setShowRejectInput] = useState(false);
+export default async function ReturnDetailPage({ params }: PageProps) {
+    const { id } = await params;
 
-    useEffect(() => {
-        fetchReturn();
-    }, [id]);
+    const result = await getReturnById(id);
 
-    const fetchReturn = async () => {
-        setLoading(true);
-        const res = await getReturnById(id);
-        if (res.success) {
-            setReturnData(res.data);
-        } else {
-            alert(res.error);
-            router.push('/returns');
-        }
-        setLoading(false);
-    };
-
-    const handleAction = async (action: string) => {
-        if (!user) return;
-        setProcessing(true);
-        let res;
-
-        try {
-            switch (action) {
-                case 'SUBMIT':
-                    res = await submitReturn(id);
-                    break;
-                case 'APPROVE':
-                    res = await approveReturn(id, user.id);
-                    break;
-                case 'REJECT':
-                    if (!rejectReason) {
-                        alert("Please provide a rejection reason");
-                        setProcessing(false);
-                        return;
-                    }
-                    res = await rejectReturn(id, user.id, rejectReason);
-                    break;
-                case 'SEND':
-                    res = await markReturnAsSent(id);
-                    break;
-                case 'COMPLETE':
-                    res = await completeReturn(id);
-                    break;
-            }
-
-            if (res?.success) {
-                await fetchReturn();
-                setShowRejectInput(false);
-            } else {
-                alert('Action failed: ' + res?.error);
-            }
-        } catch (error: any) {
-            console.error(error);
-            alert('An error occurred');
-        } finally {
-            setProcessing(false);
-        }
-    };
-
-    if (loading) {
-        return (
-            <div className="flex h-screen items-center justify-center">
-                <Loader2 className="animate-spin h-8 w-8 text-blue-600" />
-            </div>
-        );
+    if (!result.success || !result.data) {
+        notFound();
     }
 
-    if (!returnData) return null;
+    const returnData = result.data;
 
-    const isDraft = returnData.status === 'DRAFT';
-    const isPending = returnData.status === 'PENDING_APPROVAL';
-    const isApproved = returnData.status === 'APPROVED';
-    const isSent = returnData.status === 'SENT_TO_VENDOR';
-    const isCompleted = returnData.status === 'COMPLETED';
+    const getStatusBadge = (status: ReturnStatus) => {
+        const styles: Record<string, string> = {
+            DRAFT: "bg-gray-100 text-gray-800",
+            PENDING_APPROVAL: "bg-yellow-100 text-yellow-800",
+            APPROVED: "bg-green-100 text-green-800",
+            REJECTED: "bg-red-100 text-red-800",
+            SENT_TO_VENDOR: "bg-blue-100 text-blue-800",
+            COMPLETED: "bg-purple-100 text-purple-800",
+        };
 
-    // Check permissions (simplified)
-    const canApprove = user?.role?.name === 'Manager' || user?.role?.name === 'Admin';
+        return (
+            <Badge className={styles[status] || "bg-gray-100 text-gray-800"}>
+                {status.replace(/_/g, ' ')}
+            </Badge>
+        );
+    };
 
     return (
-        <div className="p-6 max-w-5xl mx-auto space-y-6 animate-in fade-in duration-500">
-            {/* Header */}
-            <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                    <Link href="/returns">
-                        <Button variant="ghost" size="md">
-                            <ArrowLeft size={20} />
-                        </Button>
-                    </Link>
-                    <div>
-                        <div className="flex items-center gap-3">
-                            <h1 className="text-2xl font-bold text-gray-900">{returnData.returnCode}</h1>
-                            <span className={`px-3 py-1 rounded-full text-xs font-medium 
-                                ${returnData.status === 'APPROVED' ? 'bg-green-100 text-green-800' :
-                                    returnData.status === 'REJECTED' ? 'bg-red-100 text-red-800' :
-                                        'bg-blue-100 text-blue-800'}`}>
-                                {returnData.status.replace(/_/g, ' ')}
-                            </span>
-                        </div>
-                        <p className="text-gray-500 text-sm mt-1">
-                            Ref PR: {returnData.purchaseRequest?.prNumber || '-'} • Created by {returnData.createdBy?.name} on {formatDate(returnData.createdAt)}
-                        </p>
+        <div className="space-y-6 max-w-5xl mx-auto p-6 animate-in fade-in duration-500">
+            {/* Header Navigation */}
+            <div className="flex items-center gap-4">
+                <Link href="/returns">
+                    <Button variant="ghost" size="sm">
+                        <ArrowLeft className="h-5 w-5" />
+                    </Button>
+                </Link>
+                <div>
+                    <h1 className="text-2xl font-bold text-(--color-text-primary)">
+                        {returnData.returnCode}
+                    </h1>
+                    <div className="flex items-center gap-2 text-sm text-(--color-text-secondary)">
+                        <Clock className="w-4 h-4" />
+                        <span>Created on {formatDate(returnData.createdAt)}</span>
                     </div>
                 </div>
+                <div className="ml-auto flex items-center gap-3">
+                    {getStatusBadge(returnData.status)}
 
-                <div className="flex gap-2">
-                    {/* Action Buttons */}
-                    {isDraft && (
-                        <Button onClick={() => handleAction('SUBMIT')} disabled={processing}>
-                            {processing ? <Loader2 className="animate-spin mr-2 h-4 w-4" /> : <CheckCircle className="mr-2 h-4 w-4" />}
-                            Submit for Approval
-                        </Button>
-                    )}
-
-                    {isPending && canApprove && (
-                        <>
-                            <Button onClick={() => setShowRejectInput(true)} variant="danger" disabled={processing}>
-                                <XCircle className="mr-2 h-4 w-4" /> Reject
-                            </Button>
-                            <Button onClick={() => handleAction('APPROVE')} disabled={processing} className="bg-green-600 hover:bg-green-700">
-                                <CheckCircle className="mr-2 h-4 w-4" /> Approve
-                            </Button>
-                        </>
-                    )}
-
-                    {isApproved && (
-                        <Button onClick={() => handleAction('SEND')} disabled={processing}>
-                            <Truck className="mr-2 h-4 w-4" /> Mark as Sent
-                        </Button>
-                    )}
-
-                    {isSent && (
-                        <Button onClick={() => handleAction('COMPLETE')} disabled={processing} className="bg-green-600 hover:bg-green-700">
-                            <CheckSquare className="mr-2 h-4 w-4" /> Complete Return
-                        </Button>
-                    )}
-
-                    {/* Print Button (Placeholder) */}
-                    <Button variant="ghost">
-                        <Printer className="mr-2 h-4 w-4" /> Print
-                    </Button>
+                    <ResultActions
+                        id={returnData.id}
+                        status={returnData.status}
+                        approvedBy={returnData.approvedBy}
+                        sentToVendorAt={returnData.sentToVendorAt}
+                    />
                 </div>
             </div>
 
-            {/* Reject Input */}
-            {showRejectInput && (
-                <Card className="border-red-200 bg-red-50">
-                    <CardContent className="p-4 flex gap-4 items-end">
-                        <div className="flex-1">
-                            <label className="text-sm font-medium text-red-800">Rejection Reason</label>
-                            <Input
-                                value={rejectReason}
-                                onChange={(e) => setRejectReason(e.target.value)}
-                                placeholder="Why is this being rejected?"
-                                className="bg-white"
-                            />
-                        </div>
-                        <div className="flex gap-2">
-                            <Button variant="ghost" onClick={() => setShowRejectInput(false)}>Cancel</Button>
-                            <Button variant="danger" onClick={() => handleAction('REJECT')} disabled={processing}>Confirm Reject</Button>
-                        </div>
-                    </CardContent>
-                </Card>
-            )}
-
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {/* Main Content */}
-                <div className="lg:col-span-2 space-y-6">
-                    <Card>
-                        <CardContent className="p-6">
-                            <h3 className="font-semibold text-lg mb-4">Returned Items</h3>
-                            <div className="overflow-x-auto">
-                                <table className="w-full text-sm">
-                                    <thead className="bg-gray-50 text-gray-500">
-                                        <tr>
-                                            <th className="px-4 py-2 text-left">Item</th>
-                                            <th className="px-4 py-2 text-right">Qty</th>
-                                            <th className="px-4 py-2 text-right">Unit Price</th>
-                                            <th className="px-4 py-2 text-right">Total</th>
-                                            <th className="px-4 py-2 text-left">Reason</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody className="divide-y">
-                                        {returnData.items.map((item: any) => (
-                                            <tr key={item.id}>
-                                                <td className="px-4 py-3">
-                                                    <p className="font-medium">{item.item.name}</p>
-                                                    <p className="text-xs text-gray-500">{item.item.sku}</p>
-                                                </td>
-                                                <td className="px-4 py-3 text-right">{item.quantity} {item.item.uom?.symbol}</td>
-                                                <td className="px-4 py-3 text-right">{formatCurrency(Number(item.unitPrice))}</td>
-                                                <td className="px-4 py-3 text-right font-medium">{formatCurrency(Number(item.totalPrice))}</td>
-                                                <td className="px-4 py-3 text-gray-500 italic">{item.reason || '-'}</td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            </div>
+                <div className="md:col-span-2 space-y-6">
+                    {/* Items Table */}
+                    <Card className="border-(--color-border) shadow-sm">
+                        <CardHeader className="pb-3 border-b border-(--color-border) bg-(--color-bg-secondary)">
+                            <CardTitle className="text-base flex items-center gap-2">
+                                <Package className="w-4 h-4 text-(--color-primary)" />
+                                Returned Items
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent className="p-0">
+                            <Table>
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHead>Item Details</TableHead>
+                                        <TableHead className="text-right">Qty</TableHead>
+                                        <TableHead className="text-right">Unit Price</TableHead>
+                                        <TableHead className="text-right">Total</TableHead>
+                                        <TableHead>Reason</TableHead>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                    {returnData.items?.map((item: any) => (
+                                        <TableRow key={item.id} className="hover:bg-(--color-bg-hover)">
+                                            <TableCell>
+                                                <div className="flex flex-col">
+                                                    <span className="font-bold text-(--color-text-primary)">{item.item.name}</span>
+                                                    <span className="text-xs text-(--color-text-secondary) font-mono">{item.item.sku || item.item.code}</span>
+                                                </div>
+                                            </TableCell>
+                                            <TableCell className="text-right font-medium">
+                                                {item.quantity} {item.item.uom?.symbol}
+                                            </TableCell>
+                                            <TableCell className="text-right">
+                                                {formatCurrency(Number(item.unitPrice))}
+                                            </TableCell>
+                                            <TableCell className="text-right font-bold text-(--color-text-primary)">
+                                                {formatCurrency(Number(item.totalPrice))}
+                                            </TableCell>
+                                            <TableCell className="text-sm text-(--color-text-muted) italic">
+                                                {item.reason || '-'}
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
                         </CardContent>
                     </Card>
+
+                    {/* Notes */}
+                    {returnData.notes && (
+                        <Card className="border-(--color-border) shadow-sm">
+                            <CardHeader className="pb-3 border-b border-(--color-border) bg-(--color-bg-secondary)">
+                                <CardTitle className="text-base font-semibold">Notes</CardTitle>
+                            </CardHeader>
+                            <CardContent className="pt-4">
+                                <p className="text-sm text-(--color-text-primary) whitespace-pre-wrap">
+                                    {returnData.notes}
+                                </p>
+                            </CardContent>
+                        </Card>
+                    )}
                 </div>
 
                 {/* Sidebar Info */}
-                <div className="lg:col-span-1 space-y-6">
-                    <Card>
-                        <CardContent className="p-6 space-y-4">
-                            <h3 className="font-semibold text-lg">Vendor Details</h3>
+                <div className="space-y-6">
+                    {/* General Info */}
+                    <Card className="border-(--color-border) shadow-sm">
+                        <CardHeader className="pb-3 border-b border-(--color-border) bg-(--color-bg-secondary)">
+                            <CardTitle className="text-base flex items-center gap-2">
+                                <FileText className="w-4 h-4 text-(--color-primary)" />
+                                Return Information
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent className="pt-4 space-y-4">
                             <div>
-                                <p className="text-sm text-gray-500">Vendor Name</p>
-                                <p className="font-medium">{returnData.vendor.name}</p>
+                                <p className="text-xs text-(--color-text-muted) uppercase font-semibold">Reason</p>
+                                <p className="font-medium text-(--color-text-primary)">
+                                    {returnData.reason.replace(/_/g, ' ')}
+                                </p>
                             </div>
                             <div>
-                                <p className="text-sm text-gray-500">Address</p>
-                                <p className="text-sm">{returnData.vendor.address || '-'}</p>
+                                <p className="text-xs text-(--color-text-muted) uppercase font-semibold">PR Number</p>
+                                <p className="font-medium text-(--color-text-primary)">
+                                    {returnData.purchaseRequest?.prNumber || '-'}
+                                </p>
                             </div>
                             <div>
-                                <p className="text-sm text-gray-500">Code</p>
-                                <p className="text-sm font-mono bg-gray-100 inline-block px-1 rounded">{returnData.vendor.code}</p>
+                                <p className="text-xs text-(--color-text-muted) uppercase font-semibold">Created By</p>
+                                <div className="flex items-center gap-1.5 mt-1">
+                                    <div className="bg-(--color-bg-tertiary) p-1 rounded-full">
+                                        <User size={12} className="text-(--color-text-secondary)" />
+                                    </div>
+                                    <span className="text-sm font-medium">{returnData.createdBy?.name || 'System'}</span>
+                                </div>
                             </div>
                         </CardContent>
                     </Card>
 
-                    <Card>
-                        <CardContent className="p-6 space-y-4">
-                            <h3 className="font-semibold text-lg">Approval Info</h3>
+                    {/* Vendor Info */}
+                    <Card className="border-(--color-border) shadow-sm">
+                        <CardHeader className="pb-3 border-b border-(--color-border) bg-(--color-bg-secondary)">
+                            <CardTitle className="text-base flex items-center gap-2">
+                                <Truck className="w-4 h-4 text-(--color-primary)" />
+                                Vendor Details
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent className="pt-4 space-y-4">
+                            <div>
+                                <p className="text-xs text-(--color-text-muted) uppercase font-semibold">Vendor Name</p>
+                                <p className="font-medium text-lg text-(--color-text-primary)">
+                                    {returnData.vendor?.name || '-'}
+                                </p>
+                            </div>
+                            <div>
+                                <p className="text-xs text-(--color-text-muted) uppercase font-semibold">Address</p>
+                                <p className="text-sm text-(--color-text-primary)">{returnData.vendor?.address || '-'}</p>
+                            </div>
+                        </CardContent>
+                    </Card>
+
+                    {/* Approval Info */}
+                    <Card className="border-(--color-border) shadow-sm">
+                        <CardHeader className="pb-3 border-b border-(--color-border) bg-(--color-bg-secondary)">
+                            <CardTitle className="text-base font-semibold">Approval Status</CardTitle>
+                        </CardHeader>
+                        <CardContent className="pt-4">
                             {returnData.status === 'PENDING_APPROVAL' ? (
-                                <div className="p-3 bg-yellow-50 text-yellow-800 rounded-md text-sm flex items-center gap-2">
-                                    <Loader2 className="animate-spin h-4 w-4" /> Awaiting Management Approval
+                                <div className="p-3 bg-yellow-50 text-yellow-800 rounded-md text-sm dark:bg-yellow-900/30 dark:text-yellow-200">
+                                    Awaiting Management Approval
                                 </div>
                             ) : returnData.approvedBy ? (
-                                <div>
-                                    <p className="text-sm text-gray-500">{returnData.status === 'REJECTED' ? 'Rejected By' : 'Approved By'}</p>
-                                    <p className="font-medium">{returnData.approvedBy.name}</p>
-                                    <p className="text-xs text-gray-500">{formatDate(returnData.approvedAt)}</p>
+                                <div className="space-y-2">
+                                    <div>
+                                        <p className="text-xs text-(--color-text-muted) uppercase font-semibold">
+                                            {returnData.status === 'REJECTED' ? 'Rejected By' : 'Approved By'}
+                                        </p>
+                                        <div className="flex items-center gap-1.5 mt-1">
+                                            <div className="bg-(--color-bg-tertiary) p-1 rounded-full">
+                                                <User size={12} className="text-(--color-text-secondary)" />
+                                            </div>
+                                            <span className="text-sm font-medium">{returnData.approvedBy.name}</span>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <p className="text-xs text-(--color-text-muted) uppercase font-semibold">Date</p>
+                                        <p className="text-sm">{formatDate(returnData.approvedAt)}</p>
+                                    </div>
                                     {returnData.approvalNotes && (
-                                        <div className="mt-2 p-2 bg-gray-50 text-xs italic border-l-2 border-gray-300">
+                                        <div className="mt-2 p-2 bg-(--color-bg-tertiary) text-xs italic border-l-2 border-(--color-border)">
                                             "{returnData.approvalNotes}"
                                         </div>
                                     )}
                                 </div>
                             ) : (
-                                <p className="text-sm text-gray-400 italic">No approval data yet.</p>
+                                <p className="text-sm text-(--color-text-muted) italic">No approval data yet.</p>
                             )}
                         </CardContent>
                     </Card>

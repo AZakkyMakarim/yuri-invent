@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
-import { Plus, Search, Pencil, Trash2, Check, X, TableProperties } from 'lucide-react';
+import { Plus, Search, Pencil, Trash2, Check, X, TableProperties, Eye } from 'lucide-react';
 import {
     Table,
     TableHeader,
@@ -20,7 +20,7 @@ import {
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Badge } from '@/components/ui/Badge';
-import { getPartners, createPartner, updatePartner, deletePartner } from '@/app/actions/partners';
+import { getPartners, createPartner, updatePartner } from '@/app/actions/partners';
 import { useRouter } from 'next/navigation';
 
 interface Partner {
@@ -28,8 +28,12 @@ interface Partner {
     code: string;
     name: string;
     contactName: string | null;
+    bankName: string | null;
+    bankBranch?: string | null;
+    bankAccount: string | null;
     phone: string | null;
     email: string | null;
+    address: string | null;
     isActive: boolean;
 }
 
@@ -59,6 +63,7 @@ export default function PartnersPage() {
         email: '',
         contactName: '',
         bankName: '',
+        bankBranch: '',
         bankAccount: '',
         isActive: true
     });
@@ -85,6 +90,7 @@ export default function PartnersPage() {
             email: '',
             contactName: '',
             bankName: '',
+            bankBranch: '',
             bankAccount: '',
             isActive: true
         });
@@ -106,6 +112,7 @@ export default function PartnersPage() {
             email: partner.email || '',
             contactName: partner.contactName || '',
             bankName: partner.bankName || '',
+            bankBranch: partner.bankBranch || '',
             bankAccount: partner.bankAccount || '',
             isActive: partner.isActive
         });
@@ -127,13 +134,6 @@ export default function PartnersPage() {
         } catch (error) {
             console.error('Failed to save partner:', error);
             alert('Failed to save partner');
-        }
-    };
-
-    const handleDelete = async (id: string) => {
-        if (confirm('Are you sure you want to delete this partner?')) {
-            await deletePartner(id);
-            fetchPartners();
         }
     };
 
@@ -193,10 +193,13 @@ export default function PartnersPage() {
                 <Table>
                     <TableHeader className="bg-(--color-bg-secondary)">
                         <TableRow>
+                            <TableHead>No</TableHead>
                             <TableHead>Code</TableHead>
                             <TableHead>Name</TableHead>
                             <TableHead>Contact Person</TableHead>
-                            <TableHead>Phone / Email</TableHead>
+                            <TableHead>Phone</TableHead>
+                            <TableHead>Email</TableHead>
+                            <TableHead>Address</TableHead>
                             <TableHead>Status</TableHead>
                             <TableHead className="text-right">Actions</TableHead>
                         </TableRow>
@@ -207,29 +210,27 @@ export default function PartnersPage() {
                         ) : filteredPartners.length === 0 ? (
                             <TableEmpty colSpan={6} message="No partners found." />
                         ) : (
-                            filteredPartners.map((partner) => (
+                            filteredPartners.map((partner, index) => (
                                 <TableRow key={partner.id} onClick={() => router.push(`/master/partners/${partner.id}`)} className="cursor-pointer hover:bg-(--color-bg-secondary)">
+                                    <TableCell>{index + 1}</TableCell>
                                     <TableCell className="font-mono">{partner.code}</TableCell>
                                     <TableCell className="font-medium">{partner.name}</TableCell>
                                     <TableCell>{partner.contactName || '-'}</TableCell>
-                                    <TableCell>
-                                        <div className="flex flex-col text-xs">
-                                            <span>{partner.phone}</span>
-                                            <span className="text-(--color-text-muted)">{partner.email}</span>
-                                        </div>
-                                    </TableCell>
+                                    <TableCell>{partner.phone || '-'}</TableCell>
+                                    <TableCell>{partner.email || '-'}</TableCell>
+                                    <TableCell>{partner.address || '-'}</TableCell>
                                     <TableCell>
                                         <Badge variant={partner.isActive ? 'success' : 'neutral'}>
                                             {partner.isActive ? 'Active' : 'Inactive'}
                                         </Badge>
                                     </TableCell>
-                                    <TableCell className="text-right">
-                                        <div className="flex justify-end gap-2" onClick={(e) => e.stopPropagation()}>
+                                    <TableCell className="text-center">
+                                        <div className="flex justify-start gap-2" onClick={(e) => e.stopPropagation()}>
+                                            <Button variant="ghost" size="sm" onClick={() => router.push(`/master/partners/${partner.id}`)} title="View Detail">
+                                                <Eye size={16} className="text-blue-500" />
+                                            </Button>
                                             <Button variant="ghost" size="sm" onClick={() => handleOpenEdit(partner)}>
                                                 <Pencil size={16} />
-                                            </Button>
-                                            <Button variant="ghost" size="sm" onClick={() => handleDelete(partner.id)} className="text-red-500 hover:text-red-700">
-                                                <Trash2 size={16} />
                                             </Button>
                                         </div>
                                     </TableCell>
@@ -287,18 +288,23 @@ export default function PartnersPage() {
                         <label className="text-sm font-medium">Address</label>
                         <Input value={formData.address} onChange={e => setFormData({ ...formData, address: e.target.value })} />
                     </div>
-                    <div className="grid grid-cols-2 gap-4">
+
+                    <div className="grid grid-cols-2 gap-4 pt-2 border-t border-(--color-border)">
                         <div className="space-y-2">
                             <label className="text-sm font-medium">Bank Name</label>
-                            <Input value={formData.bankName} onChange={e => setFormData({ ...formData, bankName: e.target.value })} />
+                            <Input value={formData.bankName} onChange={e => setFormData({ ...formData, bankName: e.target.value })} placeholder="e.g. BCA" />
                         </div>
                         <div className="space-y-2">
-                            <label className="text-sm font-medium">Bank Account</label>
-                            <Input value={formData.bankAccount} onChange={e => setFormData({ ...formData, bankAccount: e.target.value })} />
+                            <label className="text-sm font-medium">Cabang Bank</label>
+                            <Input value={formData.bankBranch} onChange={e => setFormData({ ...formData, bankBranch: e.target.value })} placeholder="e.g. KCU Sudirman" />
+                        </div>
+                        <div className="space-y-2 col-span-2">
+                            <label className="text-sm font-medium">Nomor Rekening</label>
+                            <Input value={formData.bankAccount} onChange={e => setFormData({ ...formData, bankAccount: e.target.value })} placeholder="e.g. 1234567890" />
                         </div>
                     </div>
                 </form>
-            </Modal>
+            </Modal >
         </div >
     );
 }

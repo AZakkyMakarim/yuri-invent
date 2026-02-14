@@ -57,22 +57,25 @@ export async function getItemsForPicker(vendorId?: string) {
 
 export async function searchItems(query: string) {
     try {
-        if (!query) return [];
+        let whereClause: any = { isActive: true };
+
+        if (query) {
+            whereClause.OR = [
+                { name: { contains: query, mode: 'insensitive' } },
+                { sku: { contains: query, mode: 'insensitive' } }
+            ];
+        }
 
         const items = await prisma.item.findMany({
-            where: {
-                OR: [
-                    { name: { contains: query, mode: 'insensitive' } },
-                    { sku: { contains: query, mode: 'insensitive' } }
-                ],
-                isActive: true
-            },
+            where: whereClause,
             take: 20,
+            orderBy: { name: 'asc' },
             select: {
                 id: true,
                 name: true,
                 sku: true,
-                currentStock: true
+                currentStock: true,
+                uom: { select: { symbol: true } }
             }
         });
 
